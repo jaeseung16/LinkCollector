@@ -49,6 +49,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9023F54C258EBFC100192D42 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				905E9C4C25897B870090BFC6 /* ContentView.swift */,
+				9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */,
+				9009B7D1258C1715001B4A3F /* AddLinkView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		905E9C3C25897B870090BFC6 = {
 			isa = PBXGroup;
 			children = (
@@ -69,18 +79,16 @@
 		905E9C4725897B870090BFC6 /* LinkCollector */ = {
 			isa = PBXGroup;
 			children = (
+				9023F54C258EBFC100192D42 /* Views */,
 				90C56AC0258ACD1300D716BC /* Model */,
 				905E9C6025897D960090BFC6 /* LinkCollector.entitlements */,
 				905E9C4825897B870090BFC6 /* AppDelegate.swift */,
 				905E9C4A25897B870090BFC6 /* SceneDelegate.swift */,
-				905E9C4C25897B870090BFC6 /* ContentView.swift */,
 				905E9C5125897B890090BFC6 /* Assets.xcassets */,
 				905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */,
 				905E9C5925897B890090BFC6 /* Info.plist */,
 				905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */,
 				905E9C5325897B890090BFC6 /* Preview Content */,
-				9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */,
-				9009B7D1258C1715001B4A3F /* AddLinkView.swift */,
 			);
 			path = LinkCollector;
 			sourceTree = "<group>";
