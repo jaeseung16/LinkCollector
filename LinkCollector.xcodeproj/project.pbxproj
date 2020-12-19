@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9009B7C4258C0D2F001B4A3F /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7C3258C0D2F001B4A3F /* LinkeEntity+Extension.swift */; };
+		9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */; };
+		9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7D1258C1715001B4A3F /* AddLinkView.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
 		905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4A25897B870090BFC6 /* SceneDelegate.swift */; };
 		905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4C25897B870090BFC6 /* ContentView.swift */; };
@@ -14,9 +17,13 @@
 		905E9C5225897B890090BFC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5125897B890090BFC6 /* Assets.xcassets */; };
 		905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5425897B890090BFC6 /* Preview Assets.xcassets */; };
 		905E9C5825897B890090BFC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */; };
+		905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9009B7C3258C0D2F001B4A3F /* LinkeEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LinkeEntity+Extension.swift"; sourceTree = "<group>"; };
+		9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDetailView.swift; sourceTree = "<group>"; };
+		9009B7D1258C1715001B4A3F /* AddLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLinkView.swift; sourceTree = "<group>"; };
 		905E9C4525897B870090BFC6 /* LinkCollector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkCollector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		905E9C4825897B870090BFC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		905E9C4A25897B870090BFC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -26,6 +33,8 @@
 		905E9C5425897B890090BFC6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		905E9C5725897B890090BFC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		905E9C5925897B890090BFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		905E9C6025897D960090BFC6 /* LinkCollector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollector.entitlements; sourceTree = "<group>"; };
+		905E9C6225897DE00090BFC6 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +54,7 @@
 			children = (
 				905E9C4725897B870090BFC6 /* LinkCollector */,
 				905E9C4625897B870090BFC6 /* Products */,
+				905E9C6125897DE00090BFC6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +69,8 @@
 		905E9C4725897B870090BFC6 /* LinkCollector */ = {
 			isa = PBXGroup;
 			children = (
+				90C56AC0258ACD1300D716BC /* Model */,
+				905E9C6025897D960090BFC6 /* LinkCollector.entitlements */,
 				905E9C4825897B870090BFC6 /* AppDelegate.swift */,
 				905E9C4A25897B870090BFC6 /* SceneDelegate.swift */,
 				905E9C4C25897B870090BFC6 /* ContentView.swift */,
@@ -66,6 +79,8 @@
 				905E9C5925897B890090BFC6 /* Info.plist */,
 				905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */,
 				905E9C5325897B890090BFC6 /* Preview Content */,
+				9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */,
+				9009B7D1258C1715001B4A3F /* AddLinkView.swift */,
 			);
 			path = LinkCollector;
 			sourceTree = "<group>";
@@ -76,6 +91,22 @@
 				905E9C5425897B890090BFC6 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		905E9C6125897DE00090BFC6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				905E9C6225897DE00090BFC6 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		90C56AC0258ACD1300D716BC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9009B7C3258C0D2F001B4A3F /* LinkeEntity+Extension.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,8 +179,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9009B7C4258C0D2F001B4A3F /* LinkeEntity+Extension.swift in Sources */,
+				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
 				905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */,
+				9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */,
 				905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */,
 				905E9C5025897B870090BFC6 /* LinkCollector.xcdatamodeld in Sources */,
 			);
@@ -290,16 +324,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
-				DEVELOPMENT_TEAM = RWVTTVMWBE;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.LinkCollector;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -311,16 +346,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
-				DEVELOPMENT_TEAM = RWVTTVMWBE;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.LinkCollector;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
