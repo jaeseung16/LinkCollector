@@ -8,31 +8,28 @@
 import SwiftUI
 
 struct LinkDetailView: View {
-    let url: URL?
-    let longitude: Double?
-    let latitude: Double?
-    let created: Date?
+    let entity: LinkEntity!
+    
+    var dateFormatter: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .full
+        dateFormatter.timeStyle = .long
+        dateFormatter.locale = Locale(identifier: "en_US")
+        return dateFormatter
+    }
     
     var body: some View {
         ScrollView {
             VStack {
-                created.map {
-                    Text("\($0)")
+                entity.created.map {
+                    Text(dateFormatter.string(from: $0))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                url.map {
-                    Text("\($0)")
-                        .font(.body)
+                entity.url.map {
+                    Link(entity.title ?? "link", destination: $0)
                 }
-                latitude.map {
-                    Text("\($0)")
-                        .font(.body)
-                }
-                longitude.map {
-                    Text("\($0)")
-                        .font(.body)
-                }
+                
             }
             .multilineTextAlignment(.center)
             .padding()
@@ -42,7 +39,16 @@ struct LinkDetailView: View {
 }
 
 struct LinkDetailView_Previews: PreviewProvider {
+    static var linkEntity: LinkEntity {
+        let link = LinkEntity()
+        link.title = "example"
+        link.url = URL(string: "http://www.google.com")
+        link.latitude = -97.822
+        link.longitude = 37.751
+        return link
+    }
+    
     static var previews: some View {
-        LinkDetailView(url: URL(string: "http://www.google.com"), longitude: 37.751, latitude: -97.822, created: Date())
+        LinkDetailView(entity: linkEntity)
     }
 }

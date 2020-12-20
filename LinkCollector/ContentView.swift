@@ -11,15 +11,32 @@ struct ContentView: View {
     @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     @Environment(\.managedObjectContext) private var viewContext
     
+    @ObservedObject var locationViewModel = LocationViewModel()
+    
+    var dateFormatter: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .long
+        dateFormatter.locale = Locale(identifier: "en_US")
+        return dateFormatter
+    }
+    
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
                 List {
                     ForEach(links, id: \.id) { link in
-                        //NavigationLink(destination: makeDetailView(from: link)) {
-                        Link(link.title ?? "", destination: link.url!)
-                        //}
+                        NavigationLink(destination: makeDetailView(from: link)) {
+                            Text(link.title ?? dateFormatter.string(from: link.created!))
+                                .font(.body)
+                        }
                     }
+                }
+                
+                Text("Current Location")
+                HStack {
+                    Text("Latitude: \(locationViewModel.userLatitude)")
+                    Text("Longitude: \(locationViewModel.userLongitude)")
                 }
                 
                 NavigationLink(destination: AddLinkView()) {
@@ -33,7 +50,7 @@ struct ContentView: View {
     }
     
     private func makeDetailView(from link: LinkEntity) -> LinkDetailView {
-        return LinkDetailView(url: link.url, longitude: link.longitude, latitude: link.latitude, created: link.created)
+        return LinkDetailView(entity: link)
     }
     
 }
