@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import CoreLocation
 
-class LocationViewModel: NSObject, ObservableObject{
+class LocationViewModel: NSObject, ObservableObject {
     @Published var userLatitude: Double = 0
     @Published var userLongitude: Double = 0
     

@@ -10,8 +10,15 @@ import SwiftUI
 struct AddLinkView: View {
     @State private var title: String = ""
     @State private var url: String = ""
-    @State private var latitude: String = ""
-    @State private var longitude: String = ""
+    @State private var tags: String = ""
+    @State private var titleCandidates = [Title]()
+    @State private var titleCandidate = Title(text: "")
+    
+    @State private var urlUpdated = false
+    
+    @State private var showProgress = false
+    
+    @EnvironmentObject var locationViewModel: LocationViewModel
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
@@ -30,45 +37,84 @@ struct AddLinkView: View {
     }
     
     var body: some View {
-        VStack(alignment: .center) {
-            Form {
-                Section(header: Text("Title")) {
-                    TextField("Insert title", text: $title)
-                        .autocapitalization(.sentences)
-                }
-                
-                Section(header: Text("URL")) {
-                    TextField("Insert url", text: $url)
+        ZStack {
+            
+            VStack(alignment: .center) {
+                Form {
+                    Section(header: Text("URL")) {
+                        TextField("Insert url", text: $url, onCommit: {
+                            updateURL()
+                            urlUpdated = true
+                        })
                         .autocapitalization(.none)
-                }
+                    }
 
-                Section(header: Text("Latitude")) {
-                    TextField("Insert latitude", text: $latitude)
-                        .autocapitalization(.none)
-                }
-                
-                Section(header: Text("Longitude")) {
-                    TextField("Insert longitude", text: $longitude)
-                        .autocapitalization(.none)
-                }
-                
-            }
-
-            Button(
-                action: {
-                    LinkEntity.create(title: title, url: url, latitude: latitude, longitude: longitude, context: viewContext)
-                    presentationMode.wrappedValue.dismiss()
-                },
-                label: {
-                    HStack {
-                        Text("Save Link")
+                    /*
+                    Section(header: Text("Latitude")) {
+                        TextField("Insert latitude", text: $latitude)
+                            .autocapitalization(.none)
+                    }
+                    
+                    Section(header: Text("Longitude")) {
+                        TextField("Insert longitude", text: $longitude)
+                            .autocapitalization(.none)
+                    }
+                    */
+                    
+                    Section(header: Text("Tags")) {
+                        TextField("Insert tags", text: $tags)
+                            .autocapitalization(.none)
+                    }
+                    
+                    Section(header: Text("Title")) {
+                        TextField("Insert title", text: $title)
+                            .autocapitalization(.sentences)
                     }
                 }
-            )
+                
+                VStack {
+                    Text("Current Location")
+                    Text("Latitude: \(locationViewModel.userLatitude)")
+                    Text("Longitude: \(locationViewModel.userLongitude)")
+                }
+                .foregroundColor(.gray)
+                
+                Button(
+                    action: {
+                        LinkEntity.create(title: title, url: url, latitude: locationViewModel.userLatitude, longitude: locationViewModel.userLongitude, context: viewContext)
+                        presentationMode.wrappedValue.dismiss()
+                    },
+                    label: {
+                        HStack {
+                            Text("Save Link")
+                        }
+                    }
+                )
+            }
+            .navigationBarTitle("Add Place")
+            
+            ProgressView().opacity(self.showProgress ? 1.0 : 0.0)
+            
         }
-        .navigationBarTitle("Add Place")
+        
     }
     
+    private func updateURL() {
+        showProgress = true
+        guard let htmlURL = URL(string: url) else {
+            return
+        }
+       
+        let parser = HTMLParser(url: htmlURL)
+        
+        if let ogTitle = parser.ogTitle {
+            self.title = ogTitle.text
+        } else if let title = parser.title {
+            self.title = title.text
+        }
+        
+        showProgress = false
+    }
 }
 
 struct AddLinkView_Previews: PreviewProvider {

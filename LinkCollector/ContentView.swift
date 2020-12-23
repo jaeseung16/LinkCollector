@@ -11,7 +11,7 @@ struct ContentView: View {
     @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     @Environment(\.managedObjectContext) private var viewContext
     
-    @ObservedObject var locationViewModel = LocationViewModel()
+    @EnvironmentObject var locationViewModel: LocationViewModel
     
     var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
@@ -33,13 +33,9 @@ struct ContentView: View {
                     }
                 }
                 
-                Text("Current Location")
-                HStack {
-                    Text("Latitude: \(locationViewModel.userLatitude)")
-                    Text("Longitude: \(locationViewModel.userLongitude)")
-                }
+                Spacer()
                 
-                NavigationLink(destination: AddLinkView()) {
+                NavigationLink(destination: AddLinkView().environmentObject(locationViewModel)) {
                     HStack {
                         Text("Add Link")
                     }
