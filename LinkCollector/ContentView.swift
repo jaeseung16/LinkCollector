@@ -31,6 +31,7 @@ struct ContentView: View {
                                 .font(.body)
                         }
                     }
+                    .onDelete(perform: self.removeLink)
                 }
                 
                 Spacer()
@@ -47,6 +48,19 @@ struct ContentView: View {
     
     private func makeDetailView(from link: LinkEntity) -> LinkDetailView {
         return LinkDetailView(entity: link)
+    }
+    
+    private func removeLink(indexSet: IndexSet) -> Void {
+        for index in indexSet {
+            let link = links[index]
+            viewContext.delete(link)
+        }
+        
+        do {
+            try viewContext.save()
+        } catch {
+            print(error)
+        }
     }
     
 }
