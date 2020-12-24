@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct LinkDetailView: View {
     let entity: LinkEntity!
@@ -18,23 +19,41 @@ struct LinkDetailView: View {
         return dateFormatter
     }
     
+    private var location: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(
+            latitude: entity.latitude,
+            longitude: entity.longitude
+        )
+    }
+    
     var body: some View {
-        ScrollView {
-            VStack {
-                entity.created.map {
-                    Text(dateFormatter.string(from: $0))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                entity.url.map {
-                    Link(entity.title ?? "link", destination: $0)
-                }
-                
+        VStack {
+            Spacer()
+            
+            entity.created.map {
+                Text(dateFormatter.string(from: $0))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
-            .multilineTextAlignment(.center)
-            .padding()
+            
+            Spacer()
+            
+            entity.url.map {
+                Link(entity.title ?? "link", destination: $0)
+            }
+            
+            Divider()
+            
+            entity.url.map {
+                WebView(url: $0)
+                    .shadow(color: Color.gray, radius: 1.0)
+                    //.border(Color.gray, width: 1.0)
+                    .padding()
+            }
+            
+            //MapView(location: location)
         }
-        .navigationBarTitle(Text(""), displayMode: .inline)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
