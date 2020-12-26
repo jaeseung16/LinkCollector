@@ -64,5 +64,10 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Need you location while using the app</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

@@ -23,6 +23,8 @@ struct AddLinkView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
     
+    var htmlParser = HTMLParser()
+    
     var contents: String {
         if let urlURL = URL(string: url) {
             do {
@@ -91,7 +93,7 @@ struct AddLinkView: View {
                     }
                 )
             }
-            .navigationBarTitle("Add Place")
+            .navigationBarTitle("Add Link")
             
             ProgressView().opacity(self.showProgress ? 1.0 : 0.0)
             
@@ -105,15 +107,10 @@ struct AddLinkView: View {
             return
         }
        
-        let parser = HTMLParser(url: htmlURL)
-        
-        if let ogTitle = parser.ogTitle {
-            self.title = ogTitle.text
-        } else if let title = parser.title {
-            self.title = title.text
+        htmlParser.parse(url: htmlURL) { result in
+            self.title = result
+            self.showProgress = false
         }
-        
-        showProgress = false
     }
 }
 
