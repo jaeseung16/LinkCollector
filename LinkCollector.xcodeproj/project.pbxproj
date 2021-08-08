@@ -11,6 +11,10 @@
 		9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */; };
 		9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7D1258C1715001B4A3F /* AddLinkView.swift */; };
 		9023F553258ECA3300192D42 /* LocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023F552258ECA3300192D42 /* LocationViewModel.swift */; };
+		902C9B8726C063000071CADB /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C9B8626C063000071CADB /* ShareViewController.swift */; };
+		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
+		902C9B8E26C063000071CADB /* LinkCollectorShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkCollectorShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
 		905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4A25897B870090BFC6 /* SceneDelegate.swift */; };
 		905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4C25897B870090BFC6 /* ContentView.swift */; };
@@ -19,7 +23,6 @@
 		905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5425897B890090BFC6 /* Preview Assets.xcassets */; };
 		905E9C5825897B890090BFC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */; };
 		905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
-		907258C1259BEDD9007B3D42 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907258C0259BEDD9007B3D42 /* CalendarView.swift */; };
 		90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 90A290A4258FA519004988D9 /* SwiftSoup */; };
 		90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
@@ -28,11 +31,41 @@
 		90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		902C9B8C26C063000071CADB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 905E9C3D25897B870090BFC6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 902C9B8326C063000071CADB;
+			remoteInfo = LinkCollectorShareExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		902C9B9326C063000071CADB /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				902C9B8E26C063000071CADB /* LinkCollectorShareExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		9009B7C3258C0D2F001B4A3F /* LinkeEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LinkeEntity+Extension.swift"; sourceTree = "<group>"; };
 		9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDetailView.swift; sourceTree = "<group>"; };
 		9009B7D1258C1715001B4A3F /* AddLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLinkView.swift; sourceTree = "<group>"; };
 		9023F552258ECA3300192D42 /* LocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewModel.swift; sourceTree = "<group>"; };
+		902C9B8426C063000071CADB /* LinkCollectorShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkCollectorShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		902C9B8626C063000071CADB /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		902C9B8926C063000071CADB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		902C9B8B26C063000071CADB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		902C9B8F26C063000071CADB /* LinkCollectorShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollectorShareExtension.entitlements; sourceTree = "<group>"; };
+		902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = LinkCollectorShareExtension.js; sourceTree = "<group>"; };
 		905E9C4525897B870090BFC6 /* LinkCollector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkCollector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		905E9C4825897B870090BFC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		905E9C4A25897B870090BFC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -44,7 +77,6 @@
 		905E9C5925897B890090BFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		905E9C6025897D960090BFC6 /* LinkCollector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollector.entitlements; sourceTree = "<group>"; };
 		905E9C6225897DE00090BFC6 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
-		907258C0259BEDD9007B3D42 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -53,6 +85,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		902C9B8126C063000071CADB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		905E9C4225897B870090BFC6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -76,11 +115,31 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		902C9B8526C063000071CADB /* LinkCollectorShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				902C9B9426C06E5C0071CADB /* Resources */,
+				902C9B8F26C063000071CADB /* LinkCollectorShareExtension.entitlements */,
+				902C9B8626C063000071CADB /* ShareViewController.swift */,
+				902C9B8826C063000071CADB /* MainInterface.storyboard */,
+				902C9B8B26C063000071CADB /* Info.plist */,
+			);
+			path = LinkCollectorShareExtension;
+			sourceTree = "<group>";
+		};
+		902C9B9426C06E5C0071CADB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		905E9C3C25897B870090BFC6 = {
 			isa = PBXGroup;
 			children = (
-				907258C0259BEDD9007B3D42 /* CalendarView.swift */,
 				905E9C4725897B870090BFC6 /* LinkCollector */,
+				902C9B8526C063000071CADB /* LinkCollectorShareExtension */,
 				905E9C4625897B870090BFC6 /* Products */,
 				905E9C6125897DE00090BFC6 /* Frameworks */,
 			);
@@ -90,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				905E9C4525897B870090BFC6 /* LinkCollector.app */,
+				902C9B8426C063000071CADB /* LinkCollectorShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -143,6 +203,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		902C9B8326C063000071CADB /* LinkCollectorShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 902C9B9026C063000071CADB /* Build configuration list for PBXNativeTarget "LinkCollectorShareExtension" */;
+			buildPhases = (
+				902C9B8026C063000071CADB /* Sources */,
+				902C9B8126C063000071CADB /* Frameworks */,
+				902C9B8226C063000071CADB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LinkCollectorShareExtension;
+			productName = LinkCollectorShareExtension;
+			productReference = 902C9B8426C063000071CADB /* LinkCollectorShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		905E9C4425897B870090BFC6 /* LinkCollector */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 905E9C5C25897B890090BFC6 /* Build configuration list for PBXNativeTarget "LinkCollector" */;
@@ -150,10 +227,12 @@
 				905E9C4125897B870090BFC6 /* Sources */,
 				905E9C4225897B870090BFC6 /* Frameworks */,
 				905E9C4325897B870090BFC6 /* Resources */,
+				902C9B9326C063000071CADB /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				902C9B8D26C063000071CADB /* PBXTargetDependency */,
 			);
 			name = LinkCollector;
 			packageProductDependencies = (
@@ -169,9 +248,12 @@
 		905E9C3D25897B870090BFC6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1230;
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1230;
 				TargetAttributes = {
+					902C9B8326C063000071CADB = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 					905E9C4425897B870090BFC6 = {
 						CreatedOnToolsVersion = 12.3;
 					};
@@ -194,11 +276,21 @@
 			projectRoot = "";
 			targets = (
 				905E9C4425897B870090BFC6 /* LinkCollector */,
+				902C9B8326C063000071CADB /* LinkCollectorShareExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		902C9B8226C063000071CADB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */,
+				902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		905E9C4325897B870090BFC6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -212,6 +304,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		902C9B8026C063000071CADB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		905E9C4125897B870090BFC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -224,7 +324,6 @@
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
 				905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */,
-				907258C1259BEDD9007B3D42 /* CalendarView.swift in Sources */,
 				9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */,
 				905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */,
 				90C68DB1259538B200C78C1E /* WebView.swift in Sources */,
@@ -235,7 +334,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		902C9B8D26C063000071CADB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 902C9B8326C063000071CADB /* LinkCollectorShareExtension */;
+			targetProxy = 902C9B8C26C063000071CADB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		902C9B8826C063000071CADB /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				902C9B8926C063000071CADB /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
 		905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -247,6 +362,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		902C9B9126C063000071CADB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		902C9B9226C063000071CADB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		905E9C5A25897B890090BFC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -366,6 +525,7 @@
 		905E9C5D25897B890090BFC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
@@ -389,6 +549,7 @@
 		905E9C5E25897B890090BFC6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
@@ -412,6 +573,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		902C9B9026C063000071CADB /* Build configuration list for PBXNativeTarget "LinkCollectorShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				902C9B9126C063000071CADB /* Debug */,
+				902C9B9226C063000071CADB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		905E9C4025897B870090BFC6 /* Build configuration list for PBXProject "LinkCollector" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
