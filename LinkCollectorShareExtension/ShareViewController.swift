@@ -44,7 +44,7 @@ class ShareViewController: SLComposeServiceViewController {
     }
     
     private func accessWebpageProperties(extensionItem: NSExtensionItem) {
-        let propertyList = String(kUTTypePropertyList)
+        let propertyList = "com.apple.property-list" //String(kUTTypePropertyList)
 
         if let userInfo = extensionItem.userInfo, let attachments = userInfo[NSExtensionItemAttachmentsKey] as? [NSItemProvider] {
             
