@@ -3,7 +3,9 @@ var LinkCollectorExtensionJavaScriptClass = function() {};
 LinkCollectorExtensionJavaScriptClass.prototype = {
     run: function(arguments) {
     // Pass the baseURI of the webpage to the extension.
-        arguments.completionFunction({"baseURI": document.baseURI, "title": document.title});
+        arguments.completionFunction({"baseURI": document.baseURI,
+            "title": document.title,
+            "URL": document.URL});
     },
  
 // Note that the finalize function is only available in iOS.
