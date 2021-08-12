@@ -10,8 +10,13 @@ import Social
 
 class ShareViewController: UIViewController {
 
+    private let locationManager = CLLocationManager()
+    private var location: CLLocation?
+    
     @IBOutlet weak var urlLabel: UILabel!
     @IBOutlet weak var titleTextField: UITextField!
+    @IBOutlet weak var locationTextField: UILabel!
+    
     
     /*
     override func isContentValid() -> Bool {
@@ -34,6 +39,11 @@ class ShareViewController: UIViewController {
         return []
     }
     */
+    
+    override func viewWillAppear(_ animated: Bool) {
+        locationManager.delegate = self
+        locationManager.requestLocation()
+    }
     
     override func viewDidLoad() {
         if let extensionContext = extensionContext, !extensionContext.inputItems.isEmpty {
@@ -64,8 +74,16 @@ class ShareViewController: UIViewController {
                         DispatchQueue.main.async {
                             self.urlLabel.text = results["URL"] as? String ?? "http://"
                             self.titleTextField.text = results["title"] as? String ?? "Enter title"
+                            
+                            self.lookUpCurrentLocation() { place in
+                                if place == nil {
+                                    self.locationTextField.text = "Unknown"
+                                } else {
+                                    print("\(place!.name) \(place!.subLocality) \(place!.locality) \(place!.postalCode)")
+                                    self.locationTextField.text = place!.locality
+                                }
+                            }
                         }
-                        
                     }
                 }
             }
@@ -85,4 +103,37 @@ class ShareViewController: UIViewController {
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
     
+    private func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void) {
+        // Use the last reported location.
+        if let lastLocation = self.locationManager.location {
+            let geocoder = CLGeocoder()
+            
+            // Look up the location and pass it to the completion handler
+            geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+                if error == nil {
+                    let firstLocation = placemarks?[0]
+                    completionHandler(firstLocation)
+                }
+                else {
+                    completionHandler(nil)
+                }
+            })
+        }
+        else {
+            completionHandler(nil)
+        }
+    }
+    
+}
+
+extension ShareViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("didUpdateLocations")
+        guard let location = locations.last else { return }
+        self.location = location
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("didFailWithError: \(error)")
+    }
 }
