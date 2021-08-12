@@ -10,6 +10,8 @@ import Social
 
 class ShareViewController: UIViewController {
 
+    private let persistenceController = PersistenceController.shared
+    
     private let locationManager = CLLocationManager()
     private var location: CLLocation?
     
@@ -66,11 +68,17 @@ class ShareViewController: UIViewController {
             print("attachments = \(attachments)")
             for attachment in attachments {
                 attachment.loadItem(forTypeIdentifier: propertyList, options: nil) { item, error in
-                    print("item = \(item), error = \(error)")
+                    guard error != nil else {
+                        let alert = UIAlertController(title: "Link Collector", message: "Cannot read the webpage's properties", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                            NSLog("Cannot load properties: attachment = \(attachment)")
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                        return
+                    }
+                    
                     if let dictionary = item as? NSDictionary,
                        let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary {
-                        print("results = \(results)")
-                        
                         DispatchQueue.main.async {
                             self.urlLabel.text = results["URL"] as? String ?? "http://"
                             self.titleTextField.text = results["title"] as? String ?? "Enter title"
@@ -79,7 +87,6 @@ class ShareViewController: UIViewController {
                                 if place == nil {
                                     self.locationTextField.text = "Unknown"
                                 } else {
-                                    print("\(place!.name) \(place!.subLocality) \(place!.locality) \(place!.postalCode)")
                                     self.locationTextField.text = place!.locality
                                 }
                             }
@@ -88,18 +95,19 @@ class ShareViewController: UIViewController {
                 }
             }
         }
-        
     }
     
-    
     @IBAction func cancel(_ sender: UIButton) {
-        print("cancel")
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
     
     @IBAction func post(_ sender: UIButton) {
-        print("URL = \(urlLabel.text)")
-        print("titel = \(titleTextField.text)")
+        LinkEntity.create(title: titleTextField.text,
+                          url: urlLabel.text,
+                          latitude: location != nil ? location!.coordinate.latitude : 0.0,
+                          longitude: location != nil ? location!.coordinate.latitude : 0.0,
+                          context: persistenceController.container.viewContext)
+     
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
     
