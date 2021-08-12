@@ -8,8 +8,12 @@
 import UIKit
 import Social
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: UIViewController {
 
+    @IBOutlet weak var urlLabel: UILabel!
+    @IBOutlet weak var titleTextField: UITextField!
+    
+    /*
     override func isContentValid() -> Bool {
         // Do validation of contentText and/or NSExtensionContext attachments here
         return true
@@ -29,7 +33,8 @@ class ShareViewController: SLComposeServiceViewController {
         // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
         return []
     }
-
+    */
+    
     override func viewDidLoad() {
         if let extensionContext = extensionContext, !extensionContext.inputItems.isEmpty {
             print("extensionContext.inputItems.count = \(extensionContext.inputItems.count)")
@@ -55,11 +60,29 @@ class ShareViewController: SLComposeServiceViewController {
                     if let dictionary = item as? NSDictionary,
                        let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary {
                         print("results = \(results)")
+                        
+                        DispatchQueue.main.async {
+                            self.urlLabel.text = results["URL"] as? String ?? "http://"
+                            self.titleTextField.text = results["title"] as? String ?? "Enter title"
+                        }
+                        
                     }
                 }
             }
-            
         }
         
     }
+    
+    
+    @IBAction func cancel(_ sender: UIButton) {
+        print("cancel")
+        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+    }
+    
+    @IBAction func post(_ sender: UIButton) {
+        print("URL = \(urlLabel.text)")
+        print("titel = \(titleTextField.text)")
+        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+    }
+    
 }
