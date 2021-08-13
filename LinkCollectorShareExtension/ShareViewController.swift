@@ -7,6 +7,7 @@
 
 import UIKit
 import Social
+import CoreLocation
 
 class ShareViewController: UIViewController {
 
@@ -19,29 +20,6 @@ class ShareViewController: UIViewController {
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var locationTextField: UILabel!
     
-    
-    /*
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        return true
-    }
-
-    override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-        
-        print("\(self.textView.text)")
-        
-        
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-    }
-
-    override func configurationItems() -> [Any]! {
-        // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-        return []
-    }
-    */
-    
     override func viewWillAppear(_ animated: Bool) {
         locationManager.delegate = self
         locationManager.requestLocation()
@@ -51,9 +29,7 @@ class ShareViewController: UIViewController {
         if let extensionContext = extensionContext, !extensionContext.inputItems.isEmpty {
             print("extensionContext.inputItems.count = \(extensionContext.inputItems.count)")
             for inputItem in extensionContext.inputItems {
-                //print("inputItem = \(inputItem)")
                 if let item = inputItem as? NSExtensionItem {
-                    //print("item = \(item)")
                     accessWebpageProperties(extensionItem: item)
                 }
             }
@@ -68,28 +44,17 @@ class ShareViewController: UIViewController {
             print("attachments = \(attachments)")
             for attachment in attachments {
                 attachment.loadItem(forTypeIdentifier: propertyList, options: nil) { item, error in
-                    guard error != nil else {
-                        let alert = UIAlertController(title: "Link Collector", message: "Cannot read the webpage's properties", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
-                            NSLog("Cannot load properties: attachment = \(attachment)")
-                        }))
-                        self.present(alert, animated: true, completion: nil)
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            self.showAlert(attachment: attachment, error: error!)
+                        }
                         return
                     }
                     
                     if let dictionary = item as? NSDictionary,
                        let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary {
                         DispatchQueue.main.async {
-                            self.urlLabel.text = results["URL"] as? String ?? "http://"
-                            self.titleTextField.text = results["title"] as? String ?? "Enter title"
-                            
-                            self.lookUpCurrentLocation() { place in
-                                if place == nil {
-                                    self.locationTextField.text = "Unknown"
-                                } else {
-                                    self.locationTextField.text = place!.locality
-                                }
-                            }
+                            self.update(with: results)
                         }
                     }
                 }
@@ -97,11 +62,34 @@ class ShareViewController: UIViewController {
         }
     }
     
-    @IBAction func cancel(_ sender: UIButton) {
+    private func showAlert(attachment: NSItemProvider, error: Error) {
+        let alert = UIAlertController(title: "Link Collector", message: "Cannot read the webpage's properties", preferredStyle: .alert)
+        let action = UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default) { _ in
+            NSLog("Cannot read properties: attachment = \(attachment), \(error)")
+        }
+        
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func update(with results: NSDictionary) {
+        urlLabel.text = results["URL"] as? String ?? "http://"
+        titleTextField.text = results["title"] as? String ?? "Enter title"
+        
+        lookUpCurrentLocation() { place in
+            if place == nil {
+                self.locationTextField.text = "Unknown"
+            } else {
+                self.locationTextField.text = place!.locality
+            }
+        }
+    }
+    
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
     
-    @IBAction func post(_ sender: UIButton) {
+    @IBAction func post(_ sender: UIBarButtonItem) {
         LinkEntity.create(title: titleTextField.text,
                           url: urlLabel.text,
                           latitude: location != nil ? location!.coordinate.latitude : 0.0,
@@ -112,22 +100,17 @@ class ShareViewController: UIViewController {
     }
     
     private func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void) {
-        // Use the last reported location.
-        if let lastLocation = self.locationManager.location {
+        if let lastLocation = locationManager.location {
             let geocoder = CLGeocoder()
-            
-            // Look up the location and pass it to the completion handler
-            geocoder.reverseGeocodeLocation(lastLocation, completionHandler: { (placemarks, error) in
+            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
                 if error == nil {
                     let firstLocation = placemarks?[0]
                     completionHandler(firstLocation)
-                }
-                else {
+                } else {
                     completionHandler(nil)
                 }
-            })
-        }
-        else {
+            }
+        } else {
             completionHandler(nil)
         }
     }
@@ -136,12 +119,11 @@ class ShareViewController: UIViewController {
 
 extension ShareViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("didUpdateLocations")
         guard let location = locations.last else { return }
         self.location = location
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("didFailWithError: \(error)")
+        NSLog("didFailWithError: \(error)")
     }
 }
