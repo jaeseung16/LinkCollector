@@ -13,6 +13,7 @@ class ShareViewController: UIViewController {
 
     private let persistenceController = PersistenceController.shared
     
+    private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
     private var location: CLLocation?
     
@@ -37,25 +38,57 @@ class ShareViewController: UIViewController {
     }
     
     private func accessWebpageProperties(extensionItem: NSExtensionItem) {
-        let propertyList = "com.apple.property-list" //String(kUTTypePropertyList)
-
         if let userInfo = extensionItem.userInfo, let attachments = userInfo[NSExtensionItemAttachmentsKey] as? [NSItemProvider] {
-            
-            print("attachments = \(attachments)")
             for attachment in attachments {
-                attachment.loadItem(forTypeIdentifier: propertyList, options: nil) { item, error in
-                    guard error == nil else {
-                        DispatchQueue.main.async {
-                            self.showAlert(attachment: attachment, error: error!)
+                print("registeredTypeIdentifiers = \(attachment.registeredTypeIdentifiers)")
+                
+                for typeIdentifier in attachment.registeredTypeIdentifiers {
+                    switch TypeIdentifier.init(rawValue: typeIdentifier) {
+                    case .propertyList:
+                        attachment.loadItem(forTypeIdentifier: TypeIdentifier.propertyList.rawValue, options: nil) { item, error in
+                            guard error == nil else {
+                                DispatchQueue.main.async {
+                                    self.showAlert(attachment: attachment, error: error!)
+                                }
+                                return
+                            }
+                            
+                            if let dictionary = item as? NSDictionary,
+                               let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary {
+                                DispatchQueue.main.async {
+                                    self.update(with: results)
+                                }
+                            }
                         }
-                        return
-                    }
-                    
-                    if let dictionary = item as? NSDictionary,
-                       let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary {
-                        DispatchQueue.main.async {
-                            self.update(with: results)
+                    case .publicURL:
+                        attachment.loadItem(forTypeIdentifier: TypeIdentifier.publicURL.rawValue, options: nil) { item, error in
+                            guard error == nil else {
+                                DispatchQueue.main.async {
+                                    self.showAlert(attachment: attachment, error: error!)
+                                }
+                                return
+                            }
+                            
+                            if let publicURL = item as? URL {
+                                self.update(with: publicURL)
+                            }
                         }
+                    case .plainText:
+                        attachment.loadItem(forTypeIdentifier: TypeIdentifier.plainText.rawValue, options: nil) { item, error in
+                            guard error == nil else {
+                                DispatchQueue.main.async {
+                                    self.showAlert(attachment: attachment, error: error!)
+                                }
+                                return
+                            }
+                            
+                            if let text = item as? String {
+                                self.update(with: text)
+                            }
+                        }
+                    case .none:
+                        print("Ignore typeIdentifier = \(typeIdentifier)")
+                        continue
                     }
                 }
             }
@@ -81,6 +114,56 @@ class ShareViewController: UIViewController {
                 self.locationTextField.text = "Unknown"
             } else {
                 self.locationTextField.text = place!.locality
+            }
+        }
+    }
+    
+    private func update(with publicURL: URL) {
+        DispatchQueue.main.async {
+            self.urlLabel.text = publicURL.absoluteString
+        }
+        
+        htmlParser.parse(url: publicURL) { result in
+            DispatchQueue.main.async {
+                self.titleTextField.text = result != "" ? result : "Enter title"
+            }
+        }
+        
+        lookUpCurrentLocation() { place in
+            DispatchQueue.main.async {
+                if place == nil {
+                    self.locationTextField.text = "Unknown"
+                } else {
+                    self.locationTextField.text = place!.locality
+                }
+            }
+        }
+    }
+    
+    private func update(with plainText: String) {
+        DispatchQueue.main.async {
+            self.urlLabel.text = plainText
+        }
+        
+        if let htmlURL = URL(string: plainText) {
+            htmlParser.parse(url: htmlURL) { result in
+                DispatchQueue.main.async {
+                    self.titleTextField.text = result
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.titleTextField.text = "Enter title"
+            }
+        }
+        
+        lookUpCurrentLocation() { place in
+            DispatchQueue.main.async {
+                if place == nil {
+                    self.locationTextField.text = "Unknown"
+                } else {
+                    self.locationTextField.text = place!.locality
+                }
             }
         }
     }

@@ -10,14 +10,14 @@ import SwiftSoup
 
 class HTMLParser {
     var document: Document?
-    var title = Title(text: "")
-    var ogTitle = Title(text: "")
+    var title = ""
+    var ogTitle = ""
     
     var titleToReturn: String {
-        if self.ogTitle.text != "" {
-            return self.ogTitle.text
-        } else if self.title.text != "" {
-            return self.title.text
+        if self.ogTitle != "" {
+            return self.ogTitle
+        } else if self.title != "" {
+            return self.title
         } else {
             return ""
         }
@@ -36,10 +36,9 @@ class HTMLParser {
         if self.document != nil {
             do {
                 let titleTags = try document!.select("title")
-                
                 for titleTag in titleTags {
                     let titleText = try titleTag.text()
-                    self.title = Title(text: titleText)
+                    self.title = titleText
                 }
             } catch {
                 print("Cannot find any title tags")
@@ -53,7 +52,7 @@ class HTMLParser {
                     
                     if property == "og:title" {
                         let content = try metaTag.attr("content")
-                        self.ogTitle = Title(text: content)
+                        self.ogTitle = content
                     }
                 }
             } catch {
@@ -64,10 +63,11 @@ class HTMLParser {
         if let host = url.host {
             if host.contains("youtube.com") {
                 findYouTubeTitle(url) { result in
-                    self.ogTitle = Title(text: result.title)
+                    self.ogTitle = result.title
                     completionHandler(self.titleToReturn)
                 }
             } else {
+                print("titleToReturn = \(titleToReturn)")
                 completionHandler(titleToReturn)
             }
         } else {

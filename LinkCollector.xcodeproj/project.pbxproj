@@ -34,6 +34,10 @@
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
 		90C68DB1259538B200C78C1E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB0259538B200C78C1E /* WebView.swift */; };
 		90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
+		90FD201D26C95DD4008CC190 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
+		90FD201E26C95DD8008CC190 /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
+		90FD202026C95F94008CC190 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 90FD201F26C95F94008CC190 /* SwiftSoup */; };
+		90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FD202126C9A78E008CC190 /* TypeIdentifier.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +92,7 @@
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		90C68DB0259538B200C78C1E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeOEmbed.swift; sourceTree = "<group>"; };
+		90FD202126C9A78E008CC190 /* TypeIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeIdentifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +101,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */,
+				90FD202026C95F94008CC190 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,6 +136,7 @@
 				902C9B8626C063000071CADB /* ShareViewController.swift */,
 				902C9B8826C063000071CADB /* MainInterface.storyboard */,
 				902C9B8B26C063000071CADB /* Info.plist */,
+				90FD202126C9A78E008CC190 /* TypeIdentifier.swift */,
 			);
 			path = LinkCollectorShareExtension;
 			sourceTree = "<group>";
@@ -224,6 +231,9 @@
 			dependencies = (
 			);
 			name = LinkCollectorShareExtension;
+			packageProductDependencies = (
+				90FD201F26C95F94008CC190 /* SwiftSoup */,
+			);
 			productName = LinkCollectorShareExtension;
 			productReference = 902C9B8426C063000071CADB /* LinkCollectorShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -318,8 +328,11 @@
 			files = (
 				90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */,
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
+				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
 				90BBCE7526C5CC0700DEA194 /* LinkeEntity+Extension.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
+				90FD201D26C95DD4008CC190 /* HTMLParser.swift in Sources */,
+				90FD201E26C95DD8008CC190 /* YouTubeOEmbed.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,7 +394,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -403,7 +416,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -627,6 +640,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		90A290A4258FA519004988D9 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+		90FD201F26C95F94008CC190 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
