@@ -39,7 +39,20 @@ struct LinkDetailView: View {
             Spacer()
             
             entity.url.map {
+                #if os(macOS)
                 Link(entity.title ?? "link", destination: $0)
+                    .foregroundColor(.blue)
+                    .onHover(perform: { hovering in
+                        if hovering {
+                            NSCursor.pointingHand.push()
+                        } else {
+                            NSCursor.pop()
+                        }
+                    })
+                #else
+                Link(entity.title ?? "link", destination: $0)
+                    .foregroundColor(.blue)
+                #endif
             }
             
             Divider()
