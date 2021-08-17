@@ -87,19 +87,25 @@
                                     <constraint firstAttribute="trailing" secondItem="ps9-Zw-MZR" secondAttribute="trailing" constant="8" id="mp4-dA-QlV"/>
                                 </constraints>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="UwQ-iv-JWG">
+                                <rect key="frame" x="197" y="205" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="1Xd-am-t49"/>
                         <color key="backgroundColor" systemColor="opaqueSeparatorColor"/>
                         <constraints>
                             <constraint firstItem="QGG-Ji-w2K" firstAttribute="top" secondItem="1Xd-am-t49" secondAttribute="top" id="33L-Sa-E0J"/>
                             <constraint firstItem="1Xd-am-t49" firstAttribute="trailing" secondItem="QGG-Ji-w2K" secondAttribute="trailing" id="7Sx-ot-RnO"/>
+                            <constraint firstItem="UwQ-iv-JWG" firstAttribute="centerX" secondItem="ps9-Zw-MZR" secondAttribute="centerX" id="FNM-pW-RNt"/>
                             <constraint firstItem="eeE-1v-SKy" firstAttribute="width" secondItem="1Xd-am-t49" secondAttribute="width" id="PNJ-7Q-Pis"/>
+                            <constraint firstItem="UwQ-iv-JWG" firstAttribute="centerY" secondItem="ps9-Zw-MZR" secondAttribute="centerY" id="eVX-sX-usZ"/>
                             <constraint firstItem="eeE-1v-SKy" firstAttribute="centerX" secondItem="1Xd-am-t49" secondAttribute="centerX" id="gwr-AR-I14"/>
                             <constraint firstItem="eeE-1v-SKy" firstAttribute="top" secondItem="QGG-Ji-w2K" secondAttribute="bottom" constant="8" id="qr4-GM-XQg"/>
                             <constraint firstItem="QGG-Ji-w2K" firstAttribute="leading" secondItem="1Xd-am-t49" secondAttribute="leading" id="y7v-B5-xbJ"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="UwQ-iv-JWG" id="Rb4-iH-uCl"/>
                         <outlet property="locationTextField" destination="gtE-oP-rTU" id="k8N-dQ-gH6"/>
                         <outlet property="titleTextField" destination="ps9-Zw-MZR" id="N4D-pN-1ju"/>
                         <outlet property="urlLabel" destination="DL1-na-gRK" id="9IS-T1-dKN"/>

@@ -20,6 +20,7 @@ class ShareViewController: UIViewController {
     @IBOutlet weak var urlLabel: UILabel!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var locationTextField: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     override func viewWillAppear(_ animated: Bool) {
         locationManager.delegate = self
@@ -27,6 +28,8 @@ class ShareViewController: UIViewController {
     }
     
     override func viewDidLoad() {
+        self.activityIndicator.stopAnimating()
+        
         if let extensionContext = extensionContext, !extensionContext.inputItems.isEmpty {
             print("extensionContext.inputItems.count = \(extensionContext.inputItems.count)")
             for inputItem in extensionContext.inputItems {
@@ -121,11 +124,13 @@ class ShareViewController: UIViewController {
     private func update(with publicURL: URL) {
         DispatchQueue.main.async {
             self.urlLabel.text = publicURL.absoluteString
+            self.activityIndicator.startAnimating()
         }
         
         htmlParser.parse(url: publicURL) { result in
             DispatchQueue.main.async {
                 self.titleTextField.text = result != "" ? result : "Enter title"
+                self.activityIndicator.stopAnimating()
             }
         }
         
@@ -143,17 +148,20 @@ class ShareViewController: UIViewController {
     private func update(with plainText: String) {
         DispatchQueue.main.async {
             self.urlLabel.text = plainText
+            self.activityIndicator.startAnimating()
         }
         
         if let htmlURL = URL(string: plainText) {
             htmlParser.parse(url: htmlURL) { result in
                 DispatchQueue.main.async {
                     self.titleTextField.text = result
+                    self.activityIndicator.stopAnimating()
                 }
             }
         } else {
             DispatchQueue.main.async {
                 self.titleTextField.text = "Enter title"
+                self.activityIndicator.stopAnimating()
             }
         }
         
