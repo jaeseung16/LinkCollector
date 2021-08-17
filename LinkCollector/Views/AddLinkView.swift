@@ -18,7 +18,7 @@ struct AddLinkView: View {
     
     @State private var showProgress = false
     
-    @EnvironmentObject var locationViewModel: LocationViewModel
+    @EnvironmentObject var locationViewModel: LinkCollectorViewModel
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode

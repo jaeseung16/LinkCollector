@@ -71,7 +71,7 @@ struct PersistenceController {
             }
         })
         
-        container.viewContext.name = "BawiBrowser"
+        container.viewContext.name = "LinkCollector"
 
         purgeHistory()
         

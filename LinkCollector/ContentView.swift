@@ -11,7 +11,7 @@ struct ContentView: View {
     @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     @Environment(\.managedObjectContext) private var viewContext
     
-    @EnvironmentObject var locationViewModel: LocationViewModel
+    @EnvironmentObject var locationViewModel: LinkCollectorViewModel
     
     let calendar = Calendar(identifier: .iso8601)
     let today = Date()
