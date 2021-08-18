@@ -10,7 +10,7 @@ import MapKit
 
 struct LinkDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var locationViewModel: LinkCollectorViewModel
+    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     let entity: LinkEntity!
     
@@ -68,6 +68,11 @@ struct LinkDetailView: View {
             //MapView(location: location)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .alert(isPresented: $linkCollectorViewModel.showAlert, content: {
+            Alert(title: Text("Unable to Save Data"),
+                  message: Text(linkCollectorViewModel.message),
+                  dismissButton: .default(Text("Dismiss")))
+        })
     }
 }
 

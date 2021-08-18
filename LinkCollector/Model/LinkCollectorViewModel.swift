@@ -13,11 +13,35 @@ import CoreData
 class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var userLatitude: Double = 0
     @Published var userLongitude: Double = 0
+    @Published var userLocality: String = "Unknown"
     
     private let locationManager = CLLocationManager()
     
     private let persistenteContainer = PersistenceController.shared.container
     private var subscriptions: Set<AnyCancellable> = []
+    
+    @Published var showAlert = false
+    var message = ""
+    
+    var linkDTO = LinkDTO(id: UUID(), title: "", note: "") {
+        didSet {
+            if let existingEntity = getLinkEntity(id: linkDTO.id) {
+                existingEntity.title = linkDTO.title
+                existingEntity.note = linkDTO.note
+
+                print("existingEntity = \(existingEntity)")
+                
+                do {
+                    try saveContext()
+                } catch {
+                    let nsError = error as NSError
+                    print("While saving \(linkDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    message = "Cannot update title = \(linkDTO.title) and note = \(linkDTO.note)"
+                    showAlert.toggle()
+                }
+            }
+        }
+    }
     
     override init() {
         super.init()
@@ -26,11 +50,51 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
+        lookUpCurrentLocation()
         
         NotificationCenter.default
           .publisher(for: .NSPersistentStoreRemoteChange)
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
+    }
+    
+    private func getLinkEntity(id: UUID) -> LinkEntity? {
+        let predicate = NSPredicate(format: "id == %@", argumentArray: [id])
+        
+        let fetchRequest = NSFetchRequest<LinkEntity>(entityName: "LinkEntity")
+        fetchRequest.predicate = predicate
+        
+        var fetchedLinks = [LinkEntity]()
+        do {
+            fetchedLinks = try persistenteContainer.viewContext.fetch(fetchRequest)
+            
+            print("fetchedLinks = \(fetchedLinks)")
+        } catch {
+            fatalError("Failed to fetch link: \(error)")
+        }
+        
+        return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
+    }
+    
+    private func saveContext() throws -> Void {
+        persistenteContainer.viewContext.transactionAuthor = "App"
+        try persistenteContainer.viewContext.save()
+        persistenteContainer.viewContext.transactionAuthor = nil
+    }
+    
+    func lookUpCurrentLocation() {
+        if let lastLocation = locationManager.location {
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
+                if error == nil {
+                    self.userLocality = placemarks?[0].locality ?? "Unknown"
+                } else {
+                    self.userLocality = "Unknown"
+                }
+            }
+        } else {
+            self.userLocality = "Unknown"
+        }
     }
     
     private lazy var historyRequestQueue = DispatchQueue(label: "history")

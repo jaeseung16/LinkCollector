@@ -10,6 +10,7 @@ import SwiftUI
 struct AddLinkView: View {
     @State private var title: String = ""
     @State private var url: String = ""
+    @State private var note: String = ""
     @State private var tags: String = ""
     @State private var titleCandidates = [Title]()
     @State private var titleCandidate = Title(text: "")
@@ -18,7 +19,7 @@ struct AddLinkView: View {
     
     @State private var showProgress = false
     
-    @EnvironmentObject var locationViewModel: LinkCollectorViewModel
+    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
@@ -47,43 +48,33 @@ struct AddLinkView: View {
                         TextField("Insert url", text: $url, onCommit: {
                             updateURL()
                             urlUpdated = true
+                            linkCollectorViewModel.lookUpCurrentLocation()
                         })
                         .autocapitalization(.none)
-                    }
-
-                    /*
-                    Section(header: Text("Latitude")) {
-                        TextField("Insert latitude", text: $latitude)
-                            .autocapitalization(.none)
-                    }
-                    
-                    Section(header: Text("Longitude")) {
-                        TextField("Insert longitude", text: $longitude)
-                            .autocapitalization(.none)
-                    }
-                    */
-                    
-                    Section(header: Text("Tags")) {
-                        TextField("Insert tags", text: $tags)
-                            .autocapitalization(.none)
                     }
                     
                     Section(header: Text("Title")) {
                         TextField("Insert title", text: $title)
                             .autocapitalization(.sentences)
                     }
+                    
+                    Section(header: Text("Note")) {
+                        TextField("Insert note", text: $note)
+                    }
+                    
+                    Section(header: Text("Tags")) {
+                        TextField("Insert tags", text: $tags)
+                            .autocapitalization(.none)
+                    }
+                    
+                    Section(header: Text("Location"), content: {
+                        Text("Location: \(linkCollectorViewModel.userLocality)")
+                    })
                 }
-                
-                VStack {
-                    Text("Current Location")
-                    Text("Latitude: \(locationViewModel.userLatitude)")
-                    Text("Longitude: \(locationViewModel.userLongitude)")
-                }
-                .foregroundColor(.gray)
                 
                 Button(
                     action: {
-                        LinkEntity.create(title: title, url: url, latitude: locationViewModel.userLatitude, longitude: locationViewModel.userLongitude, context: viewContext)
+                        LinkEntity.create(title: title, url: url, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, context: viewContext)
                         presentationMode.wrappedValue.dismiss()
                     },
                     label: {

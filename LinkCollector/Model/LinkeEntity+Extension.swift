@@ -9,14 +9,16 @@ import Foundation
 import CoreData
 
 extension LinkEntity {
-    static func create(title: String?, url: String?, latitude: Double, longitude: Double, context: NSManagedObjectContext) {
+    static func create(title: String?, url: String?, note: String?, latitude: Double, longitude: Double, context: NSManagedObjectContext) {
         let newLink = LinkEntity(context: context)
         newLink.id = UUID()
         newLink.title = title?.isEmpty == false ? title! : nil
         newLink.url = url?.isEmpty == false ? URL(string: url!) : nil
+        newLink.note = note?.isEmpty == false ? note! : nil
         newLink.latitude = latitude
         newLink.longitude = longitude
         newLink.created = Date()
+        newLink.lastupd = Date()
         context.saveContext()
     }
     

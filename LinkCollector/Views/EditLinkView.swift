@@ -10,63 +10,74 @@ import SwiftUI
 struct EditLinkView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
-    @EnvironmentObject var editLinkViewModel: EditLinkViewModel
+    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
-    @State var presenting = false
+    @State var titleColor = Color.white
+    @State var noteColor = Color.white
     
-    @State var title = ""
-    @State var note = ""
+    @State var saveButtonEnabled = false
+    
+    @State var id: UUID
+    @State var title: String
+    @State var note: String
+    
+    @State var titleBeforeEditing = ""
+    @State var noteBeforeEditing = ""
     
     var body: some View {
         VStack {
-            HStack {
-                Text("Title")
-                
-                Spacer()
-                
-                TextField("Title", text: $editLinkViewModel.title) { isEditing in
-                    print("\(isEditing)")
-                } onCommit: {
-                    _ = editLinkViewModel.$title
-                        .sink() { _ in
-                            editLinkViewModel.titleUpdated.toggle()
+            Form {
+                Section(header: Text("Title")) {
+                    TextField("Title", text: $title) { isEditing in
+                        if isEditing && titleBeforeEditing == "" {
+                            titleBeforeEditing = title
                         }
+                    } onCommit: {
+                        saveButtonEnabled = titleBeforeEditing != title
+                    }
+                }
+                
+                Section(header: Text("Note")) {
+                    TextField("Note", text: $note) { isEditing in
+                        if isEditing && noteBeforeEditing == "" {
+                            noteBeforeEditing = note
+                        }
+                    } onCommit: {
+                        saveButtonEnabled = noteBeforeEditing != note
+                    }
                 }
             }
             
             HStack {
-                Text("Note")
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Label("Cancel", systemImage: "chevron.backward")
+                })
                 
                 Spacer()
                 
-                TextField("Note", text: $editLinkViewModel.note) { isEditing in
-                    print("\(isEditing)")
-                } onCommit: {
-                    _ = editLinkViewModel.$note
-                        .sink() { _ in
-                            editLinkViewModel.noteUpdated.toggle()
-                        }
-                }
+                Button(action: {
+                    self.save()
+                }, label: {
+                    Label("Save", systemImage: "square.and.arrow.down")
+                })
+                .disabled(!saveButtonEnabled)
+                .foregroundColor(saveButtonEnabled ? Color.blue : Color.gray)
             }
             
         }
-        .navigationBarItems(trailing:
-                                Button(action: {
-                                    presentationMode.wrappedValue.dismiss()
-                                }, label: {
-                                    Label("Save", systemImage: "square.and.arrow.down")
-                                }))
+        .padding()
     }
     
     private func save() -> Void {
-        
-        
-        self.presenting.toggle()
+        linkCollectorViewModel.linkDTO = LinkDTO(id: id, title: title, note: note)
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
 struct EditLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        EditLinkView()
+        EditLinkView(id: UUID(), title: "title", note: "note")
     }
 }

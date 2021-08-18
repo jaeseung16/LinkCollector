@@ -11,7 +11,9 @@ struct ContentView: View {
     @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     @Environment(\.managedObjectContext) private var viewContext
     
-    @EnvironmentObject var locationViewModel: LinkCollectorViewModel
+    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
+    
+    @State var showEditLinkView = false
     
     let calendar = Calendar(identifier: .iso8601)
     let today = Date()
@@ -31,7 +33,7 @@ struct ContentView: View {
                     Section(header: ListHeader(text: "today")) {
                         ForEach(
                             links.filter { (entity) -> Bool in
-                                calendar.isDateInToday(entity.created!)
+                                return entity.id == nil ? false : calendar.isDateInToday(entity.created!)
                             },
                             id: \.id
                         ) { link in
@@ -51,7 +53,7 @@ struct ContentView: View {
                                 
                                 let dateInterval = DateInterval(start: sevenDaysAgo, end: todayStartOfDay)
                                 
-                                return dateInterval.contains(entity.created!)
+                                return entity.id == nil ? false : dateInterval.contains(entity.created!)
                             },
                             id: \.id
                         ) { link in
@@ -73,7 +75,7 @@ struct ContentView: View {
                                 
                                 let dateInterval = DateInterval(start: firstDayOfMonth, end: sevenDaysAgo)
                                 
-                                return dateInterval.contains(entity.created!)
+                                return entity.id == nil ? false : dateInterval.contains(entity.created!)
                             },
                             id: \.id
                         ) { link in
@@ -91,7 +93,7 @@ struct ContentView: View {
                                 let daysOfMonth = calendar.component(.day, from: today)
                                 let firstDayOfMonth = calendar.date(byAdding: .day, value: -daysOfMonth, to: today)!
                                 
-                                return entity.created! < firstDayOfMonth
+                                return entity.id == nil ? false : entity.created! < firstDayOfMonth
                             },
                             id: \.id
                         ) { link in
@@ -107,7 +109,7 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                NavigationLink(destination: AddLinkView().environmentObject(locationViewModel)) {
+                NavigationLink(destination: AddLinkView().environmentObject(linkCollectorViewModel)) {
                     HStack {
                         Text("Add Link")
                     }
@@ -122,16 +124,21 @@ struct ContentView: View {
     private func makeDetailView(from link: LinkEntity) -> some View {
         return LinkDetailView(entity: link)
             .environment(\.managedObjectContext, viewContext)
-            .environmentObject(locationViewModel)
+            .environmentObject(linkCollectorViewModel)
             .navigationTitle(link.title ?? "")
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: EditLinkView(title: link.title ?? "", note: "")
-                                    .environmentObject(EditLinkViewModel(linkEntity: link))) {
+                    Button {
+                        self.showEditLinkView = true
+                    } label: {
                         Label("Edit", systemImage: "pencil.circle")
                     }
                 }
             })
+            .sheet(isPresented: $showEditLinkView) {
+                EditLinkView(id: link.id!, title: link.title ?? "", note: link.note ?? "")
+                    .environmentObject(linkCollectorViewModel)
+            }
     }
     
     private func removeLink(indexSet: IndexSet) -> Void {
