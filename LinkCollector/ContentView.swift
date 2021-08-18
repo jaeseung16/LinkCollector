@@ -136,7 +136,10 @@ struct ContentView: View {
                 }
             })
             .sheet(isPresented: $showEditLinkView) {
-                EditLinkView(id: link.id!, title: link.title ?? "", note: link.note ?? "")
+                EditLinkView(id: link.id!,
+                             title: link.title ?? "",
+                             note: link.note ?? "",
+                             tags: link.tags?.allObjects as? [TagEntity] ?? [TagEntity]() )
                     .environmentObject(linkCollectorViewModel)
             }
     }

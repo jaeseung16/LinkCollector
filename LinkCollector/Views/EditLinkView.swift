@@ -20,6 +20,7 @@ struct EditLinkView: View {
     @State var id: UUID
     @State var title: String
     @State var note: String
+    @State var tags: [TagEntity]
     
     @State var titleBeforeEditing = ""
     @State var noteBeforeEditing = ""
@@ -44,6 +45,12 @@ struct EditLinkView: View {
                         }
                     } onCommit: {
                         saveButtonEnabled = noteBeforeEditing != note
+                    }
+                }
+                
+                Section(header: Text("Tags")) {
+                    ForEach(tags) { tag in
+                        Text(tag.name ?? "")
                     }
                 }
             }
@@ -78,6 +85,6 @@ struct EditLinkView: View {
 
 struct EditLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        EditLinkView(id: UUID(), title: "title", note: "note")
+        EditLinkView(id: UUID(), title: "title", note: "note", tags: [TagEntity]())
     }
 }
