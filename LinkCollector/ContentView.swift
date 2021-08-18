@@ -117,8 +117,21 @@ struct ContentView: View {
         }
     }
     
-    private func makeDetailView(from link: LinkEntity) -> LinkDetailView {
+    @State var isActive = false
+    
+    private func makeDetailView(from link: LinkEntity) -> some View {
         return LinkDetailView(entity: link)
+            .environment(\.managedObjectContext, viewContext)
+            .environmentObject(locationViewModel)
+            .navigationTitle(link.title ?? "")
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: EditLinkView(title: link.title ?? "", note: "")
+                                    .environmentObject(EditLinkViewModel(linkEntity: link))) {
+                        Label("Edit", systemImage: "pencil.circle")
+                    }
+                }
+            })
     }
     
     private func removeLink(indexSet: IndexSet) -> Void {

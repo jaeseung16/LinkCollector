@@ -9,6 +9,9 @@ import SwiftUI
 import MapKit
 
 struct LinkDetailView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var locationViewModel: LinkCollectorViewModel
+    
     let entity: LinkEntity!
     
     var dateFormatter: DateFormatter {
@@ -28,8 +31,6 @@ struct LinkDetailView: View {
     
     var body: some View {
         VStack {
-            Spacer()
-            
             entity.created.map {
                 Text(dateFormatter.string(from: $0))
                     .font(.caption)
@@ -39,7 +40,7 @@ struct LinkDetailView: View {
             Spacer()
             
             entity.url.map {
-                #if os(macOS)
+                #if targetEnvironment(macCatalyst)
                 Link(entity.title ?? "link", destination: $0)
                     .foregroundColor(.blue)
                     .onHover(perform: { hovering in
