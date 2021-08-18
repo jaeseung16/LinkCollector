@@ -72,19 +72,22 @@ struct AddLinkView: View {
                     })
                 }
                 
-                Button(
-                    action: {
-                        LinkEntity.create(title: title, url: url, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, context: viewContext)
-                        presentationMode.wrappedValue.dismiss()
-                    },
-                    label: {
-                        HStack {
-                            Text("Save Link")
-                        }
-                    }
-                )
+                
             }
             .navigationBarTitle("Add Link")
+            .navigationBarItems(trailing:
+                                    Button(
+                                        action: {
+                                            LinkEntity.create(title: title, url: url, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, context: viewContext)
+                                            presentationMode.wrappedValue.dismiss()
+                                        },
+                                        label: {
+                                            HStack {
+                                                Label("Save", systemImage: "square.and.arrow.down")
+                                            }
+                                        }
+                                    )
+            )
             
             ProgressView().opacity(self.showProgress ? 1.0 : 0.0)
             

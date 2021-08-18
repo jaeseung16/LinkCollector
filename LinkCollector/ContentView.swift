@@ -106,16 +106,15 @@ struct ContentView: View {
                     }
                 }
                 .listStyle(GroupedListStyle())
-                
-                Spacer()
-                
-                NavigationLink(destination: AddLinkView().environmentObject(linkCollectorViewModel)) {
-                    HStack {
-                        Text("Add Link")
-                    }
-                }
             }
             .navigationBarTitle("Link Collector")
+            .navigationBarItems(trailing:
+                                    NavigationLink(destination: AddLinkView().environmentObject(linkCollectorViewModel)) {
+                                        HStack {
+                                            Label("Add", systemImage: "plus")
+                                        }
+                                    }
+            )
         }
     }
     
