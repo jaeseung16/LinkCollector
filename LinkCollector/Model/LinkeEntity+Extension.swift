@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 extension LinkEntity {
-    static func create(title: String?, url: String?, note: String?, latitude: Double, longitude: Double, context: NSManagedObjectContext) {
+    static func create(title: String?, url: String?, note: String?, latitude: Double, longitude: Double, context: NSManagedObjectContext) -> LinkEntity {
         let newLink = LinkEntity(context: context)
         newLink.id = UUID()
         newLink.title = title?.isEmpty == false ? title! : nil
@@ -20,6 +20,8 @@ extension LinkEntity {
         newLink.created = Date()
         newLink.lastupd = Date()
         context.saveContext()
+        
+        return newLink
     }
     
     public override func awakeFromInsert() {

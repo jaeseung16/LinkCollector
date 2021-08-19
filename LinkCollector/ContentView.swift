@@ -13,6 +13,7 @@ struct ContentView: View {
     
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
+    @State var showAddLinkView = false
     @State var showEditLinkView = false
     
     let calendar = Calendar(identifier: .iso8601)
@@ -109,12 +110,16 @@ struct ContentView: View {
             }
             .navigationBarTitle("Link Collector")
             .navigationBarItems(trailing:
-                                    NavigationLink(destination: AddLinkView().environmentObject(linkCollectorViewModel)) {
-                                        HStack {
-                                            Label("Add", systemImage: "plus")
-                                        }
-                                    }
+                                    Button(action: {
+                                        self.showAddLinkView = true
+                                    }, label: {
+                                        Label("Add", systemImage: "plus")
+                                    })
             )
+            .sheet(isPresented: $showAddLinkView) {
+                AddLinkView()
+                    .environmentObject(linkCollectorViewModel)
+            }
         }
     }
     
