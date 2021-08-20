@@ -20,7 +20,8 @@ struct EditLinkView: View {
     @State var id: UUID
     @State var title: String
     @State var note: String
-    @State var tags: [TagEntity]
+    @State var tags: [String]
+    @State var editTags = false
     
     @State var titleBeforeEditing = ""
     @State var noteBeforeEditing = ""
@@ -49,8 +50,27 @@ struct EditLinkView: View {
                 }
                 
                 Section(header: Text("Tags")) {
-                    ForEach(tags) { tag in
-                        Text(tag.name ?? "")
+                    Button {
+                        editTags.toggle()
+                    } label: {
+                        Label("Add tags", systemImage: "tag")
+                    }
+                    
+                    ScrollView {
+                        LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+                            ForEach(self.tags, id: \.self) { tag in
+                                Button {
+                                    print("\(tag)")
+                                } label: {
+                                    Text(tag)
+                                }
+                            }
+                        }
+                    }
+                    .sheet(isPresented: $editTags) {
+                        AddTagView(tags: $tags)
+                            .environment(\.managedObjectContext, viewContext)
+                            .environmentObject(linkCollectorViewModel)
                     }
                 }
             }
@@ -78,13 +98,19 @@ struct EditLinkView: View {
     }
     
     private func save() -> Void {
-        linkCollectorViewModel.linkDTO = LinkDTO(id: id, title: title, note: note)
+        let linkDTO = LinkDTO(id: id, title: title, note: note)
+        linkCollectorViewModel.linkDTO = linkDTO
+        
+        for tag in tags {
+            linkCollectorViewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
+        }
+        
         presentationMode.wrappedValue.dismiss()
     }
 }
 
 struct EditLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        EditLinkView(id: UUID(), title: "title", note: "note", tags: [TagEntity]())
+        EditLinkView(id: UUID(), title: "title", note: "note", tags: [String]())
     }
 }

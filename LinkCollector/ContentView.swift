@@ -125,6 +125,21 @@ struct ContentView: View {
     
     @State var isActive = false
     
+    private func getTagList(of link: LinkEntity) -> [String] {
+        var tagList = [String]()
+        
+        if let tags = link.tags {
+            for tag in tags {
+                if let tag = tag as? TagEntity {
+                    if let name = tag.name {
+                        tagList.append(name)
+                    }
+                }
+            }
+        }
+        return tagList
+    }
+    
     private func makeDetailView(from link: LinkEntity) -> some View {
         return LinkDetailView(entity: link)
             .environment(\.managedObjectContext, viewContext)
@@ -143,7 +158,7 @@ struct ContentView: View {
                 EditLinkView(id: link.id!,
                              title: link.title ?? "",
                              note: link.note ?? "",
-                             tags: link.tags?.allObjects as? [TagEntity] ?? [TagEntity]() )
+                             tags: getTagList(of: link))
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(linkCollectorViewModel)
             }
