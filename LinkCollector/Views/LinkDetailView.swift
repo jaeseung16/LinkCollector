@@ -12,6 +12,17 @@ struct LinkDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
+    @Environment(\.presentationMode) private var presentationMode
+    
+    @State var showEditLinkView = false
+    @State var saveButtonClicked = false {
+        didSet {
+            if saveButtonClicked {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+    }
+    
     let entity: LinkEntity!
     
     var dateFormatter: DateFormatter {
@@ -23,10 +34,8 @@ struct LinkDetailView: View {
     }
     
     private var location: CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(
-            latitude: entity.latitude,
-            longitude: entity.longitude
-        )
+        return CLLocationCoordinate2D(latitude: entity.latitude,
+                                      longitude: entity.longitude)
     }
     
     private var tags: [TagEntity] {
@@ -39,43 +48,53 @@ struct LinkDetailView: View {
     
     var body: some View {
         VStack {
-            entity.note.map {
-                Text($0)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            ForEach(self.tags, id: \.id) { tag in
-                if let name = tag.name {
-                    Text(name)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-            
             entity.created.map {
                 Text(dateFormatter.string(from: $0))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             
-            Spacer()
-            
             entity.url.map {
                 #if targetEnvironment(macCatalyst)
-                Link(entity.url?.absoluteString ?? "link", destination: $0)
-                    .foregroundColor(.blue)
-                    .onHover(perform: { hovering in
-                        if hovering {
-                            NSCursor.pointingHand.push()
-                        } else {
-                            NSCursor.pop()
-                        }
-                    })
+                Link(destination: $0) {
+                    Label("Open in Browser", systemImage: "link")
+                }
+                .foregroundColor(.blue)
+                .onHover(perform: { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                })
                 #else
-                Link(entity.url?.absoluteString ?? "link", destination: $0)
-                    .foregroundColor(.blue)
+                Link(destination: $0) {
+                    Label("Open in Browser", systemImage: "link")
+                }
+                .foregroundColor(.blue)
                 #endif
+            }
+            
+            entity.note.map {
+                Text($0)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }
+            
+            if !self.tags.isEmpty {
+                HStack {
+                    Image(systemName: "tag")
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+                        ForEach(self.tags, id: \.id) { tag in
+                            if let name = tag.name {
+                                Text(name)
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
             }
             
             Divider()
@@ -86,8 +105,6 @@ struct LinkDetailView: View {
                     //.border(Color.gray, width: 1.0)
                     .padding()
             }
-            
-            //MapView(location: location)
         }
         .navigationBarTitleDisplayMode(.inline)
         .alert(isPresented: $linkCollectorViewModel.showAlert, content: {
@@ -95,12 +112,47 @@ struct LinkDetailView: View {
                   message: Text(linkCollectorViewModel.message),
                   dismissButton: .default(Text("Dismiss")))
         })
+        .toolbar(content: {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    self.showEditLinkView = true
+                } label: {
+                    Label("Edit", systemImage: "pencil.circle")
+                }
+            }
+        })
+        .sheet(isPresented: $showEditLinkView) {
+            EditLinkView(id: entity.id!,
+                         title: entity.title ?? "",
+                         note: entity.note ?? "",
+                         tags: getTagList(of: entity),
+                         saveButtonClicked: $saveButtonClicked)
+                .environment(\.managedObjectContext, viewContext)
+                .environmentObject(linkCollectorViewModel)
+        }
     }
+    
+    private func getTagList(of link: LinkEntity) -> [String] {
+        var tagList = [String]()
+        
+        if let tags = link.tags {
+            for tag in tags {
+                if let tag = tag as? TagEntity {
+                    if let name = tag.name {
+                        tagList.append(name)
+                    }
+                }
+            }
+        }
+        return tagList
+    }
+    
 }
 
 struct LinkDetailView_Previews: PreviewProvider {
     static var linkEntity: LinkEntity {
         let link = LinkEntity()
+        link.id = UUID()
         link.title = "example"
         link.url = URL(string: "http://www.google.com")
         link.latitude = -97.822

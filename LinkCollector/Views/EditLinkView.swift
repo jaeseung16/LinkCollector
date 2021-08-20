@@ -26,6 +26,8 @@ struct EditLinkView: View {
     @State var titleBeforeEditing = ""
     @State var noteBeforeEditing = ""
     
+    @Binding var saveButtonClicked: Bool
+    
     var body: some View {
         VStack {
             Form {
@@ -52,6 +54,7 @@ struct EditLinkView: View {
                 Section(header: Text("Tags")) {
                     Button {
                         editTags.toggle()
+                        saveButtonEnabled = true
                     } label: {
                         Label("Add tags", systemImage: "tag")
                     }
@@ -105,12 +108,14 @@ struct EditLinkView: View {
             linkCollectorViewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
         }
         
+        saveButtonClicked = true
         presentationMode.wrappedValue.dismiss()
     }
 }
 
 struct EditLinkView_Previews: PreviewProvider {
+    @State static var saveButtonClicked = false
     static var previews: some View {
-        EditLinkView(id: UUID(), title: "title", note: "note", tags: [String]())
+        EditLinkView(id: UUID(), title: "title", note: "note", tags: [String](), saveButtonClicked: $saveButtonClicked)
     }
 }
