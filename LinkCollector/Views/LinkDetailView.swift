@@ -29,8 +29,30 @@ struct LinkDetailView: View {
         )
     }
     
+    private var tags: [TagEntity] {
+        if entity.tags != nil, let tags = entity.tags?.allObjects as? [TagEntity] {
+            return tags
+        } else {
+            return [TagEntity]()
+        }
+    }
+    
     var body: some View {
         VStack {
+            entity.note.map {
+                Text($0)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            ForEach(self.tags, id: \.id) { tag in
+                if let name = tag.name {
+                    Text(name)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
             entity.created.map {
                 Text(dateFormatter.string(from: $0))
                     .font(.caption)
@@ -41,7 +63,7 @@ struct LinkDetailView: View {
             
             entity.url.map {
                 #if targetEnvironment(macCatalyst)
-                Link(entity.title ?? "link", destination: $0)
+                Link(entity.url?.absoluteString ?? "link", destination: $0)
                     .foregroundColor(.blue)
                     .onHover(perform: { hovering in
                         if hovering {
@@ -51,7 +73,7 @@ struct LinkDetailView: View {
                         }
                     })
                 #else
-                Link(entity.title ?? "link", destination: $0)
+                Link(entity.url?.absoluteString ?? "link", destination: $0)
                     .foregroundColor(.blue)
                 #endif
             }

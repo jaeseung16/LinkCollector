@@ -9,12 +9,16 @@ import Foundation
 import CoreData
 
 extension TagEntity {
-    static func create(name: String?, link: LinkEntity, context: NSManagedObjectContext) {
+    static func create(name: String?, link: LinkEntity?, context: NSManagedObjectContext) {
         let newTag = TagEntity(context: context)
         newTag.id = UUID()
         newTag.name = name
         newTag.created = Date()
-        newTag.addToLinks(link)
+        
+        if link != nil {
+            newTag.addToLinks(link!)
+        }
+        
         context.saveContext()
     }
     

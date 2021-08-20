@@ -181,7 +181,7 @@ class ShareViewController: UIViewController {
     }
     
     @IBAction func post(_ sender: UIBarButtonItem) {
-        LinkEntity.create(title: titleTextField.text,
+        let _ = LinkEntity.create(title: titleTextField.text,
                           url: urlLabel.text,
                           note: "",
                           latitude: location != nil ? location!.coordinate.latitude : 0.0,

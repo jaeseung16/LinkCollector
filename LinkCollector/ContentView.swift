@@ -144,6 +144,7 @@ struct ContentView: View {
                              title: link.title ?? "",
                              note: link.note ?? "",
                              tags: link.tags?.allObjects as? [TagEntity] ?? [TagEntity]() )
+                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(linkCollectorViewModel)
             }
     }

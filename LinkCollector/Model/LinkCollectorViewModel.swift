@@ -43,6 +43,37 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
+    var tagDTO = TagDTO(name: "", link: nil) {
+        didSet {
+            if let tagEntity = getTagEntity(with: tagDTO.name) {
+                if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
+                    if let links = tagEntity.links {
+                        if !links.contains(linkEntity) {
+                            tagEntity.addToLinks(linkEntity)
+                        }
+                    }
+                } else {
+                    message = "A tag \"\(tagDTO.name)\" already exists"
+                    showAlert.toggle()
+                }
+            } else {
+                let entity = TagEntity(context: persistenteContainer.viewContext)
+                entity.id = UUID()
+                entity.name = tagDTO.name
+                entity.created = Date()
+                
+                do {
+                    try saveContext()
+                } catch {
+                    let nsError = error as NSError
+                    print("While saving \(tagDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                    message = "Cannot save tag = \(tagDTO.name)"
+                    showAlert.toggle()
+                }
+            }
+        }
+    }
+    
     override init() {
         super.init()
         
@@ -74,6 +105,24 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
         
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
+    }
+    
+    private func getTagEntity(with name: String) -> TagEntity? {
+        let predicate = NSPredicate(format: "name == %@", argumentArray: [name])
+        
+        let fetchRequest = NSFetchRequest<TagEntity>(entityName: "TagEntity")
+        fetchRequest.predicate = predicate
+        
+        var fetchedTags = [TagEntity]()
+        do {
+            fetchedTags = try persistenteContainer.viewContext.fetch(fetchRequest)
+            
+            print("fetchedTags = \(fetchedTags)")
+        } catch {
+            fatalError("Failed to fetch link: \(error)")
+        }
+        
+        return fetchedTags.isEmpty ? nil : fetchedTags[0]
     }
     
     private func saveContext() throws -> Void {
