@@ -29,8 +29,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 existingEntity.title = linkDTO.title
                 existingEntity.note = linkDTO.note
 
-                print("existingEntity = \(existingEntity)")
-                
                 do {
                     try saveContext()
                 } catch {
@@ -61,15 +59,15 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 entity.id = UUID()
                 entity.name = tagDTO.name
                 entity.created = Date()
-                
-                do {
-                    try saveContext()
-                } catch {
-                    let nsError = error as NSError
-                    print("While saving \(tagDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    message = "Cannot save tag = \(tagDTO.name)"
-                    showAlert.toggle()
-                }
+            }
+            
+            do {
+                try saveContext()
+            } catch {
+                let nsError = error as NSError
+                print("While saving \(tagDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                message = "Cannot save tag = \(tagDTO.name)"
+                showAlert.toggle()
             }
         }
     }
@@ -98,8 +96,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         var fetchedLinks = [LinkEntity]()
         do {
             fetchedLinks = try persistenteContainer.viewContext.fetch(fetchRequest)
-            
-            print("fetchedLinks = \(fetchedLinks)")
         } catch {
             fatalError("Failed to fetch link: \(error)")
         }
@@ -116,8 +112,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         var fetchedTags = [TagEntity]()
         do {
             fetchedTags = try persistenteContainer.viewContext.fetch(fetchRequest)
-            
-            print("fetchedTags = \(fetchedTags)")
         } catch {
             fatalError("Failed to fetch link: \(error)")
         }
@@ -158,24 +152,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     if let historyResult = try backgroundContext.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
                        let history = historyResult.result as? [NSPersistentHistoryTransaction] {
                         for transaction in history.reversed() {
-                            //print("transaction: author = \(transaction.author), contextName = \(transaction.contextName), storeId = \(transaction.storeID), timeStamp = \(transaction.timestamp), \(transaction.objectIDNotification())")
                             self.persistenteContainer.viewContext.perform {
                                 if let userInfo = transaction.objectIDNotification().userInfo {
-                                    //print("transaction.objectIDNotification().userInfo = \(userInfo)")
-                                    if let insertedObjectIds = userInfo["inserted_objectsIDs"] {
-                                        if let idSet = insertedObjectIds as? NSSet {
-                                            for id in idSet {
-                                                print("inserted_objectsIDs: \(id) - \(self.persistenteContainer.viewContext.object(with: id as! NSManagedObjectID))")
-                                            }
-                                        }
-                                    } else if let updatedObjectIds = userInfo["updated_objectIDs"] {
-                                        if let idSet = updatedObjectIds as? NSSet {
-                                            for id in idSet {
-                                                print("updated_objectID: \(id) - \(self.persistenteContainer.viewContext.object(with: id as! NSManagedObjectID))")
-                                            }
-                                        }
-                                    }
-                                    
                                     NSManagedObjectContext.mergeChanges(fromRemoteContextSave: userInfo,
                                                                         into: [self.persistenteContainer.viewContext])
                                 }
