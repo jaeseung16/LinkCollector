@@ -15,6 +15,7 @@
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
 		902C9B8E26C063000071CADB /* LinkCollectorShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkCollectorShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
+		90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
 		905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4A25897B870090BFC6 /* SceneDelegate.swift */; };
 		905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4C25897B870090BFC6 /* ContentView.swift */; };
@@ -346,6 +347,7 @@
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
 				90BBCE7526C5CC0700DEA194 /* LinkeEntity+Extension.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
+				90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */,
 				90FD201D26C95DD4008CC190 /* HTMLParser.swift in Sources */,
 				90FD201E26C95DD8008CC190 /* YouTubeOEmbed.swift in Sources */,
 			);

@@ -14,6 +14,8 @@ struct LinkDetailView: View {
     
     @Environment(\.presentationMode) private var presentationMode
     
+    @State var showNote = false
+    @State var showTags = false
     @State var showEditLinkView = false
     @State var saveButtonClicked = false {
         didSet {
@@ -40,95 +42,153 @@ struct LinkDetailView: View {
     
     private var tags: [TagEntity] {
         if entity.tags != nil, let tags = entity.tags?.allObjects as? [TagEntity] {
-            return tags
+            return tags.sorted(by: { ($0.name ?? "") < ($1.name ?? "") })
         } else {
             return [TagEntity]()
         }
     }
     
     var body: some View {
-        VStack {
-            entity.created.map {
-                Text(dateFormatter.string(from: $0))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            entity.url.map {
-                #if targetEnvironment(macCatalyst)
-                Link(destination: $0) {
-                    Label("Open in Browser", systemImage: "link")
+        GeometryReader { geometry in
+            VStack {
+                headerView(geometry: geometry)
+                    .frame(width: geometry.size.width, height: 30, alignment: .center)
+                    .scaledToFit()
+                
+                entity.created.map {
+                    Text("Added on \(dateFormatter.string(from: $0))")
+                        .font(.body)
+                        .foregroundColor(.secondary)
                 }
-                .foregroundColor(.blue)
-                .onHover(perform: { hovering in
-                    if hovering {
-                        NSCursor.pointingHand.push()
-                    } else {
-                        NSCursor.pop()
+               
+                Divider()
+                
+                entity.url.map {
+                    WebView(url: $0)
+                        .shadow(color: Color.gray, radius: 1.0)
+                        //.border(Color.gray, width: 1.0)
+                        .padding()
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .alert(isPresented: $linkCollectorViewModel.showAlert, content: {
+                Alert(title: Text("Unable to Save Data"),
+                      message: Text(linkCollectorViewModel.message),
+                      dismissButton: .default(Text("Dismiss")))
+            })
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        self.showEditLinkView = true
+                    } label: {
+                        Label("Edit", systemImage: "pencil.circle")
                     }
-                })
-                #else
-                Link(destination: $0) {
-                    Label("Open in Browser", systemImage: "link")
                 }
-                .foregroundColor(.blue)
-                #endif
+            })
+            .sheet(isPresented: $showEditLinkView) {
+                EditLinkView(id: entity.id!,
+                             title: entity.title ?? "",
+                             note: entity.note ?? "",
+                             tags: getTagList(of: entity),
+                             saveButtonClicked: $saveButtonClicked)
+                    .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(linkCollectorViewModel)
             }
+        }
+    }
+    
+    private func headerView(geometry: GeometryProxy) -> some View {
+        HStack {
+            Spacer()
             
-            entity.note.map {
-                Text($0)
-                    .font(.body)
-                    .foregroundColor(.secondary)
+            openInBrowser(geometry: geometry)
+            
+            Spacer()
+            
+            note(geometry: geometry)
+            
+            Spacer()
+            
+            showTagsView(geometry: geometry)
+            
+            Spacer()
+        }
+    }
+    
+    private func openInBrowser(geometry: GeometryProxy) -> some View {
+        entity.url.map {
+            #if targetEnvironment(macCatalyst)
+            Link(destination: $0) {
+                Label("Open in Browser", systemImage: "link")
             }
-            
+            .foregroundColor(.blue)
+            .onHover(perform: { hovering in
+                if hovering {
+                    NSCursor.pointingHand.push()
+                } else {
+                    NSCursor.pop()
+                }
+            })
+            #else
+            Link(destination: $0) {
+                Label("Open in Browser", systemImage: "link")
+            }
+            .foregroundColor(.blue)
+            #endif
+        }
+    }
+    
+    private func note(geometry: GeometryProxy) -> some View {
+        Button {
+            showNote = true
+        } label: {
+            Label("note", systemImage: "note")
+        }
+        .popover(isPresented: $showNote) {
+                if let note = entity.note {
+                    Text(note)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .frame(width: 0.5 * geometry.size.width)
+                        .padding()
+                } else {
+                    Text("No note added")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .frame(width: 0.5 * geometry.size.width)
+                        .padding()
+                }
+        }
+    }
+    
+    @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
+    
+    private func showTagsView(geometry: GeometryProxy) -> some View {
+        Button {
+            showTags = true
+        } label: {
+            Label("tags", systemImage: "tag")
+        }
+        .popover(isPresented: $showTags) {
             if !self.tags.isEmpty {
-                HStack {
-                    Image(systemName: "tag")
-                    
-                    LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-                        ForEach(self.tags, id: \.id) { tag in
-                            if let name = tag.name {
-                                Text(name)
-                                    .font(.body)
-                                    .foregroundColor(.secondary)
-                            }
+                List {
+                    ForEach(self.tags, id: \.id) { tag in
+                        if let name = tag.name {
+                            Text(name)
+                                .font(.body)
+                                .foregroundColor(.secondary)
                         }
                     }
                 }
-            }
-            
-            Divider()
-            
-            entity.url.map {
-                WebView(url: $0)
-                    .shadow(color: Color.gray, radius: 1.0)
-                    //.border(Color.gray, width: 1.0)
+                .frame(width: 0.25 * geometry.size.width, height: bodyTextHeight * CGFloat(self.tags.count))
+                .padding()
+            } else {
+                Text("No tags added")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .frame(width: 0.25 * geometry.size.width)
                     .padding()
             }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .alert(isPresented: $linkCollectorViewModel.showAlert, content: {
-            Alert(title: Text("Unable to Save Data"),
-                  message: Text(linkCollectorViewModel.message),
-                  dismissButton: .default(Text("Dismiss")))
-        })
-        .toolbar(content: {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    self.showEditLinkView = true
-                } label: {
-                    Label("Edit", systemImage: "pencil.circle")
-                }
-            }
-        })
-        .sheet(isPresented: $showEditLinkView) {
-            EditLinkView(id: entity.id!,
-                         title: entity.title ?? "",
-                         note: entity.note ?? "",
-                         tags: getTagList(of: entity),
-                         saveButtonClicked: $saveButtonClicked)
-                .environment(\.managedObjectContext, viewContext)
-                .environmentObject(linkCollectorViewModel)
         }
     }
     
