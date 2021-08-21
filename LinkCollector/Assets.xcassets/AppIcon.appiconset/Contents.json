@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Artboard 140-2.png",
+      "filename" : "Artboard 140-1.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
@@ -13,7 +13,7 @@
       "size" : "20x20"
     },
     {
-      "filename" : "Artboard 158.png",
+      "filename" : "Artboard 158-1.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "29x29"
@@ -25,7 +25,7 @@
       "size" : "29x29"
     },
     {
-      "filename" : "Artboard 180-1.png",
+      "filename" : "Artboard 180.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "40x40"
@@ -49,37 +49,37 @@
       "size" : "60x60"
     },
     {
-      "filename" : "Artboard 129.png",
+      "filename" : "Artboard 120.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "20x20"
-    },
-    {
-      "filename" : "Artboard 140-1.png",
-      "idiom" : "ipad",
-      "scale" : "2x",
-      "size" : "20x20"
-    },
-    {
-      "filename" : "Artboard 129-1.png",
-      "idiom" : "ipad",
-      "scale" : "1x",
-      "size" : "29x29"
-    },
-    {
-      "filename" : "Artboard 158-1.png",
-      "idiom" : "ipad",
-      "scale" : "2x",
-      "size" : "29x29"
     },
     {
       "filename" : "Artboard 140.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "size" : "20x20"
+    },
+    {
+      "filename" : "Artboard 129.png",
+      "idiom" : "ipad",
+      "scale" : "1x",
+      "size" : "29x29"
+    },
+    {
+      "filename" : "Artboard 158.png",
+      "idiom" : "ipad",
+      "scale" : "2x",
+      "size" : "29x29"
+    },
+    {
+      "filename" : "Artboard 140-2.png",
       "idiom" : "ipad",
       "scale" : "1x",
       "size" : "40x40"
     },
     {
-      "filename" : "Artboard 180.png",
+      "filename" : "Artboard 180-1.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "40x40"
