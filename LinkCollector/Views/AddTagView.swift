@@ -12,9 +12,10 @@ struct AddTagView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
-    @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: false)]) private var existingTags: FetchedResults<TagEntity>
+    @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var existingTags: FetchedResults<TagEntity>
     
     @State private var tagName = ""
+    @State var isEditing = false
     @State var saveButtonEnabled = false
     
     @Binding var tags: [String]
@@ -34,7 +35,6 @@ struct AddTagView: View {
                         .frame(width: geometry.size.width, alignment: .center)
                 }
                 
-                
                 Divider()
                 
                 Form {
@@ -52,23 +52,11 @@ struct AddTagView: View {
                         }
                     }
                     
-                    Section(header: Text("Add a new tag")) {
+                    Section(header: addTagSectionHeaderView()) {
                         TextField("New tag", text: $tagName) { isEditing in
-                            print("\(isEditing)")
+                            self.isEditing = isEditing
                         } onCommit: {
-                            saveButtonEnabled = true
-                        }
-                        
-                        HStack {
-                            Spacer()
-                            
-                            Button(action: {
-                                self.save()
-                            }, label: {
-                                Label("Save", systemImage: "square.and.arrow.down")
-                            })
-                            .disabled(!saveButtonEnabled)
-                            .foregroundColor(saveButtonEnabled ? Color.blue : Color.gray)
+                            saveButtonEnabled = !tagName.isEmpty
                         }
                     }
                     
@@ -96,6 +84,22 @@ struct AddTagView: View {
             }
         }
         .padding()
+    }
+    
+    private func addTagSectionHeaderView() -> some View {
+        HStack {
+            Text("Add a new tag")
+            
+            Spacer()
+            
+            Button(action: {
+                self.save()
+            }, label: {
+                Label("Save", systemImage: "square.and.arrow.down")
+            })
+            .disabled(!saveButtonEnabled)
+            .foregroundColor(saveButtonEnabled ? Color.blue : Color.gray)
+        }
     }
     
     private func save() -> Void {
