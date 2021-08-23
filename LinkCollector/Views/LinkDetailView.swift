@@ -146,19 +146,19 @@ struct LinkDetailView: View {
         }
         .foregroundColor(Color.blue)
         .popover(isPresented: $showNote) {
-                if let note = entity.note {
-                    Text(note)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .frame(width: 0.5 * geometry.size.width)
-                        .padding()
-                } else {
-                    Text("No note added")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .frame(width: 0.5 * geometry.size.width)
-                        .padding()
-                }
+            if let note = entity.note, !note.isEmpty {
+                Text(note)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .frame(width: 0.5 * geometry.size.width)
+                    .padding()
+            } else {
+                Text("No note added")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .frame(width: 0.5 * geometry.size.width)
+                    .padding()
+            }
         }
     }
     
