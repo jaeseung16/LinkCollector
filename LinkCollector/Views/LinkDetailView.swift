@@ -92,24 +92,62 @@ struct LinkDetailView: View {
         HStack {
             Spacer()
             
+            #if targetEnvironment(macCatalyst)
             openInBrowser(geometry: geometry)
+                .onHover(perform: { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                })
+            #else
+            openInBrowser(geometry: geometry)
+            #endif
             
             Spacer()
-            
+            #if targetEnvironment(macCatalyst)
             note(geometry: geometry)
+                .onHover(perform: { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                })
+            #else
+            note(geometry: geometry)
+            #endif
             
             Spacer()
             
+            #if targetEnvironment(macCatalyst)
             showTagsView(geometry: geometry)
+                .onHover(perform: { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                })
+            #else
+            showTagsView(geometry: geometry)
+            #endif
             
             Spacer()
             
-            Button {
-                self.showEditLinkView = true
-            } label: {
-                Label("Edit", systemImage: "pencil.circle")
-            }
-            .foregroundColor(.blue)
+            #if targetEnvironment(macCatalyst)
+            editLinkView()
+                .onHover(perform: { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                })
+            #else
+            editLinkView()
+            #endif
             
             Spacer()
         }
@@ -117,24 +155,10 @@ struct LinkDetailView: View {
     
     private func openInBrowser(geometry: GeometryProxy) -> some View {
         entity.url.map {
-            #if targetEnvironment(macCatalyst)
             Link(destination: $0) {
                 Label("Open in Browser", systemImage: "link")
             }
-            .foregroundColor(.blue)
-            .onHover(perform: { hovering in
-                if hovering {
-                    NSCursor.pointingHand.push()
-                } else {
-                    NSCursor.pop()
-                }
-            })
-            #else
-            Link(destination: $0) {
-                Label("Open in Browser", systemImage: "link")
-            }
-            .foregroundColor(.blue)
-            #endif
+            .foregroundColor(.secondary)
         }
     }
     
@@ -144,21 +168,35 @@ struct LinkDetailView: View {
         } label: {
             Label("note", systemImage: "note")
         }
-        .foregroundColor(Color.blue)
+        .foregroundColor(.secondary)
         .popover(isPresented: $showNote) {
-            if let note = entity.note, !note.isEmpty {
-                Text(note)
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .frame(width: 0.5 * geometry.size.width)
-                    .padding()
-            } else {
-                Text("No note added")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .frame(width: 0.5 * geometry.size.width)
-                    .padding()
+            VStack {
+                Spacer()
+                
+                if let note = entity.note, !note.isEmpty {
+                    Text(note)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                        .frame(width: 0.5 * geometry.size.width)
+                        .padding()
+                } else {
+                    Text("No note added")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .frame(width: 0.5 * geometry.size.width)
+                        .padding()
+                }
+                
+                Spacer()
+                
+                Button {
+                    showNote = false
+                } label: {
+                    Text("Dismiss")
+                        .foregroundColor(.blue)
+                }
             }
+            .padding()
         }
     }
     
@@ -170,27 +208,43 @@ struct LinkDetailView: View {
         } label: {
             Label("tags", systemImage: "tag")
         }
-        .foregroundColor(Color.blue)
+        .foregroundColor(Color.secondary)
         .popover(isPresented: $showTags) {
-            if !self.tags.isEmpty {
-                List {
-                    ForEach(self.tags, id: \.id) { tag in
-                        if let name = tag.name {
-                            Text(name)
-                                .font(.body)
-                                .foregroundColor(.secondary)
+            VStack {
+                Spacer()
+                
+                if !self.tags.isEmpty {
+                    List {
+                        ForEach(self.tags, id: \.id) { tag in
+                            if let name = tag.name {
+                                Text(name)
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                            }
                         }
                     }
-                }
-                .frame(width: 0.25 * geometry.size.width, height: bodyTextHeight * CGFloat(self.tags.count))
-                .padding()
-            } else {
-                Text("No tags added")
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .frame(width: 0.25 * geometry.size.width)
+                    .frame(width: 0.25 * geometry.size.width, height: bodyTextHeight * CGFloat(self.tags.count))
                     .padding()
+                } else {
+                    VStack {
+                        Text("No tags added")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .frame(width: 0.25 * geometry.size.width)
+                            .padding()
+                    }
+                }
+                
+                Spacer()
+                
+                Button {
+                    showTags = false
+                } label: {
+                    Text("Dismiss")
+                        .foregroundColor(.blue)
+                }
             }
+            .padding()
         }
     }
     
@@ -209,6 +263,14 @@ struct LinkDetailView: View {
         return tagList
     }
     
+    private func editLinkView() -> some View {
+        Button {
+            self.showEditLinkView = true
+        } label: {
+            Label("EDIT", systemImage: "pencil.circle")
+        }
+        .foregroundColor(.blue)
+    }
 }
 
 struct LinkDetailView_Previews: PreviewProvider {
