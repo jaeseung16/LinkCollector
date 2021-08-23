@@ -114,6 +114,7 @@ struct ContentView: View {
                                     }, label: {
                                         Label("Add", systemImage: "plus")
                                     })
+                                    .foregroundColor(Color.blue)
             )
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()

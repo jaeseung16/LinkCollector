@@ -76,15 +76,6 @@ struct LinkDetailView: View {
                       message: Text(linkCollectorViewModel.message),
                       dismissButton: .default(Text("Dismiss")))
             })
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        self.showEditLinkView = true
-                    } label: {
-                        Label("Edit", systemImage: "pencil.circle")
-                    }
-                }
-            })
             .sheet(isPresented: $showEditLinkView) {
                 EditLinkView(id: entity.id!,
                              title: entity.title ?? "",
@@ -110,6 +101,15 @@ struct LinkDetailView: View {
             Spacer()
             
             showTagsView(geometry: geometry)
+            
+            Spacer()
+            
+            Button {
+                self.showEditLinkView = true
+            } label: {
+                Label("Edit", systemImage: "pencil.circle")
+            }
+            .foregroundColor(.blue)
             
             Spacer()
         }
@@ -144,6 +144,7 @@ struct LinkDetailView: View {
         } label: {
             Label("note", systemImage: "note")
         }
+        .foregroundColor(Color.blue)
         .popover(isPresented: $showNote) {
                 if let note = entity.note {
                     Text(note)
@@ -169,6 +170,7 @@ struct LinkDetailView: View {
         } label: {
             Label("tags", systemImage: "tag")
         }
+        .foregroundColor(Color.blue)
         .popover(isPresented: $showTags) {
             if !self.tags.isEmpty {
                 List {

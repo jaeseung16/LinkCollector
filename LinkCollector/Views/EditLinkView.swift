@@ -51,22 +51,13 @@ struct EditLinkView: View {
                     }
                 }
                 
-                Section(header: Text("Tags")) {
-                    Button {
-                        editTags.toggle()
-                        saveButtonEnabled = true
-                    } label: {
-                        Label("Add tags", systemImage: "tag")
-                    }
-                    
-                    ScrollView {
-                        LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-                            ForEach(self.tags, id: \.self) { tag in
-                                Button {
-                                    print("\(tag)")
-                                } label: {
-                                    Text(tag)
-                                }
+                Section(header: tagSectionHeaderView()) {
+                    LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+                        ForEach(self.tags, id: \.self) { tag in
+                            Button {
+                                print("\(tag)")
+                            } label: {
+                                Text(tag)
                             }
                         }
                     }
@@ -84,6 +75,7 @@ struct EditLinkView: View {
                 }, label: {
                     Label("Cancel", systemImage: "chevron.backward")
                 })
+                .foregroundColor(Color.blue)
                 
                 Spacer()
                 
@@ -98,6 +90,23 @@ struct EditLinkView: View {
             
         }
         .padding()
+    }
+    
+    private func tagSectionHeaderView() -> some View {
+        HStack {
+            Text("Tags")
+            
+            Spacer()
+            
+            Button {
+                editTags.toggle()
+                saveButtonEnabled = true
+            } label: {
+                Label("Add tags", systemImage: "tag")
+                    .foregroundColor(Color.blue)
+            }
+        }
+        
     }
     
     private func save() -> Void {
