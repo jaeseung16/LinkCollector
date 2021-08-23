@@ -219,13 +219,13 @@
 			isa = PBXGroup;
 			children = (
 				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
+				90A5BB9026C478D10044A0EA /* Persistence.swift */,
 				9009B7C3258C0D2F001B4A3F /* LinkeEntity+Extension.swift */,
+				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
 				90A290A7258FB663004988D9 /* HTMLParser.swift */,
 				90A290AA258FB695004988D9 /* Title.swift */,
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
-				90A5BB9026C478D10044A0EA /* Persistence.swift */,
 				90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */,
-				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
 				90D25DC126CEF2BB007F7819 /* TagDTO.swift */,
 			);
 			path = Model;
