@@ -14,6 +14,8 @@ struct ContentView: View {
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @State var showAddLinkView = false
+    @State var showAlert = false
+    @State var message = ""
     
     let calendar = Calendar(identifier: .iso8601)
     let today = Date()
@@ -73,6 +75,11 @@ struct ContentView: View {
                 AddLinkView()
                     .environmentObject(linkCollectorViewModel)
             }
+            .alert(isPresented: $showAlert, content: {
+                Alert(title: Text("Unable to Save Data"),
+                      message: Text(message),
+                      dismissButton: .default(Text("Dismiss")))
+            })
         }
     }
     
@@ -110,7 +117,8 @@ struct ContentView: View {
         do {
             try viewContext.save()
         } catch {
-            print(error)
+            message = "Failed to delete the selected link"
+            showAlert = true
         }
     }
 }
