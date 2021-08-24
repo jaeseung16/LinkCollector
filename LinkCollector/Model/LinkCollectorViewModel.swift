@@ -140,6 +140,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
+    // MARK: - Persistence History Request
     private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
         historyRequestQueue.async {
@@ -207,6 +208,5 @@ extension LinkCollectorViewModel: CLLocationManagerDelegate {
       guard let location = locations.last else { return }
       userLatitude = location.coordinate.latitude
       userLongitude = location.coordinate.longitude
-      print(location)
     }
 }
