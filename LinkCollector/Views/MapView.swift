@@ -21,18 +21,14 @@ struct MapView: View {
     var body: some View {
         Map(coordinateRegion: $region, annotationItems: [AnnotationItem(location: location)]) { item in
             MapPin(coordinate: item.location)
-            
         }
         .onAppear {
             setRegion(location)
         }
     }
     
-    private func setRegion(_ location: CLLocationCoordinate2D) {
-        region = MKCoordinateRegion(
-            center: location,
-            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
-        )
+    private func setRegion(_ location: CLLocationCoordinate2D) -> Void {
+        region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
     }
 }
 
