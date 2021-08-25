@@ -8,14 +8,34 @@
 import SwiftUI
 
 struct ContentView: View {
-    @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     @Environment(\.managedObjectContext) private var viewContext
-    
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
+    @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
+    @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var tags: FetchedResults<TagEntity>
+    
     @State var showAddLinkView = false
+    @State var showTagListView = false
     @State var showAlert = false
     @State var message = ""
+    
+    @State var selectedTags = Set<TagEntity>()
+    var filteredLinks: Array<LinkEntity> {
+        if selectedTags.isEmpty {
+            return links.map { $0 }
+        } else {
+            return links.filter { link in
+                if let tags = link.tags, tags.count > 0 {
+                    for tag in tags {
+                        if selectedTags.contains(tag as! TagEntity) {
+                            return true
+                        }
+                    }
+                }
+                return false
+            }
+        }
+    }
     
     let calendar = Calendar(identifier: .iso8601)
     let today = Date()
@@ -53,7 +73,7 @@ struct ContentView: View {
         NavigationView {
             VStack(alignment: .center) {
                 List {
-                    ForEach(links, id: \.id) { link in
+                    ForEach(filteredLinks, id: \.id) { link in
                         if link.created != nil {
                             makeNavigationLink(from: link)
                         }
@@ -64,12 +84,22 @@ struct ContentView: View {
             }
             .navigationBarTitle("Link Collector")
             .navigationBarItems(trailing:
-                                    Button(action: {
-                                        self.showAddLinkView = true
-                                    }, label: {
-                                        Label("Add", systemImage: "plus")
-                                    })
-                                    .foregroundColor(Color.blue)
+                                    HStack {
+                                        Button(action: {
+                                            self.showTagListView = true
+                                        }, label: {
+                                            Label("Tags", systemImage: "tag")
+                                        })
+                                        .foregroundColor(Color.blue)
+                                        
+                                        Button(action: {
+                                            self.showAddLinkView = true
+                                        }, label: {
+                                            Label("Add", systemImage: "plus")
+                                        })
+                                        .foregroundColor(Color.blue)
+                                    }
+                                    
             )
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
@@ -80,6 +110,50 @@ struct ContentView: View {
                       message: Text(message),
                       dismissButton: .default(Text("Dismiss")))
             })
+            .sheet(isPresented: $showTagListView) {
+                VStack {
+                    Form {
+                        Section(header: Text("Tags")) {
+                            ForEach(tags, id: \.id) { tag in
+                                if tag.name != nil {
+                                    Text(tag.name!)
+                                        .foregroundColor(selectedTags.contains(tag) ? .yellow : .purple)
+                                        .onTapGesture {
+                                            if !selectedTags.contains(tag) {
+                                                selectedTags.insert(tag)
+                                            } else {
+                                                selectedTags.remove(tag)
+                                            }
+                                        }
+                                }
+                                
+                            }
+                        }
+                        
+                        Section(header: Text("Selected Tags")) {
+                            ForEach(Array(selectedTags), id: \.id) { tag in
+                                if tag.name != nil {
+                                    Text(tag.name!)
+                                        .foregroundColor(selectedTags.contains(tag) ? .yellow : .purple)
+                                }
+                                
+                            }
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        showTagListView = false
+                        print("selectedTags = \(selectedTags)")
+                    } label: {
+                        Text("Dismiss")
+                    }
+
+                }
+                .padding()
+                
+            }
         }
     }
     
