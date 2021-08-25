@@ -10,9 +10,8 @@ import MapKit
 
 struct LinkDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
-    
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @State var showNote = false
     @State var showTags = false
@@ -27,7 +26,7 @@ struct LinkDetailView: View {
     
     let entity: LinkEntity!
     
-    var dateFormatter: DateFormatter {
+    private var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .full
         dateFormatter.timeStyle = .long
@@ -36,8 +35,7 @@ struct LinkDetailView: View {
     }
     
     private var location: CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: entity.latitude,
-                                      longitude: entity.longitude)
+        CLLocationCoordinate2D(latitude: entity.latitude, longitude: entity.longitude)
     }
     
     private var tags: [TagEntity] {
@@ -56,11 +54,17 @@ struct LinkDetailView: View {
                     .scaledToFit()
                 
                 entity.created.map {
-                    Text("Added on \(dateFormatter.string(from: $0))")
+                    Text("Added: \(dateFormatter.string(from: $0))")
                         .font(.body)
                         .foregroundColor(.secondary)
                 }
                
+                entity.lastupd.map {
+                    Text("Last updated: \(dateFormatter.string(from: $0))")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                
                 Divider()
                 
                 entity.url.map {
@@ -106,6 +110,7 @@ struct LinkDetailView: View {
             #endif
             
             Spacer()
+            
             #if targetEnvironment(macCatalyst)
             note(geometry: geometry)
                 .onHover(perform: { hovering in
