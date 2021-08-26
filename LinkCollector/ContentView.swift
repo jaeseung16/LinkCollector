@@ -83,33 +83,16 @@ struct ContentView: View {
                 .listStyle(GroupedListStyle())
             }
             .navigationBarTitle("Link Collector")
-            .navigationBarItems(trailing:
-                                    HStack {
-                                        Button(action: {
-                                            self.showTagListView = true
-                                        }, label: {
-                                            Label("Tags", systemImage: "tag")
-                                        })
-                                        .foregroundColor(Color.blue)
-                                        
-                                        Button(action: {
-                                            self.showAddLinkView = true
-                                        }, label: {
-                                            Label("Add", systemImage: "plus")
-                                        })
-                                        .foregroundColor(Color.blue)
-                                    }
-                                    
-            )
+            .navigationBarItems(trailing: navigationBarItems())
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
                     .environmentObject(linkCollectorViewModel)
             }
-            .alert(isPresented: $showAlert, content: {
+            .alert(isPresented: $showAlert) {
                 Alert(title: Text("Unable to Save Data"),
                       message: Text(message),
                       dismissButton: .default(Text("Dismiss")))
-            })
+            }
             .sheet(isPresented: $showTagListView) {
                 selectTags()
             }
@@ -152,6 +135,24 @@ struct ContentView: View {
         } catch {
             message = "Failed to delete the selected link"
             showAlert = true
+        }
+    }
+    
+    private func navigationBarItems() -> some View {
+        HStack {
+            Button(action: {
+                self.showTagListView = true
+            }, label: {
+                Label("Tags", systemImage: "tag")
+            })
+            .foregroundColor(Color.blue)
+            
+            Button(action: {
+                self.showAddLinkView = true
+            }, label: {
+                Label("Add", systemImage: "plus")
+            })
+            .foregroundColor(Color.blue)
         }
     }
     
