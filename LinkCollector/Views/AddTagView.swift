@@ -23,72 +23,108 @@ struct AddTagView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                ZStack {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }, label: {
-                        Label("Done", systemImage: "chevron.backward")
-                    })
-                    .frame(width: geometry.size.width, alignment: .leading)
-                    
-                    Text("Add Tags")
-                        .frame(width: geometry.size.width, alignment: .center)
-                }
+                barItems(in: geometry)
                 
                 Divider()
                 
-                Form {
-                    Section(header: Text("Tags to attach")) {
-                        LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-                            ForEach(self.tags, id: \.self) { tag in
-                                Button {
-                                    if let index = self.tags.firstIndex(of: tag) {
-                                        tags.remove(at: index)
-                                    }
-                                } label: {
-                                    Text(tag)
-                                }
-                            }
-                        }
-                    }
+                sectionHeader(text: "Tags to attach")
+                tagsToAttach()
+                
+                Spacer(minLength: 20.0)
+                
+                sectionHeaderWithSaveButton(text: "Add a new tag")
+                addNewTag()
                     
-                    Section(header: addTagSectionHeaderView()) {
-                        TextField("New tag", text: $tagName) { isEditing in
-                            self.isEditing = isEditing
-                        } onCommit: {
-                            saveButtonEnabled = !tagName.isEmpty
-                        }
-                    }
-                    
-                    Section(header: Text("Tags")) {
-                        List {
-                            ForEach(self.existingTags, id: \.id) { tag in
-                                if let name = tag.name {
-                                    Button {
-                                        if tags.contains(name) {
-                                            if let index = tags.firstIndex(of: name) {
-                                                tags.remove(at: index)
-                                            }
-                                        } else {
-                                            tags.append(name)
-                                        }
-                                    } label: {
-                                        Text(tag.name ?? "")
-                                    }
-                                }
-                            }
-                            .onDelete(perform: self.removeTag)
-                        }
-                    }
-                }
+                Spacer(minLength: 20.0)
+                
+                sectionHeader(text: "Tags")
+                existingTagsListView()
             }
         }
         .padding()
     }
     
-    private func addTagSectionHeaderView() -> some View {
+    private func barItems(in geometry: GeometryProxy) -> some View {
+        ZStack {
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Label("Done", systemImage: "chevron.backward")
+                    .foregroundColor(.blue)
+            })
+            .frame(width: geometry.size.width, alignment: .leading)
+            
+            Text("Add Tags")
+                .frame(width: geometry.size.width, alignment: .center)
+        }
+    }
+    
+    private func tagsToAttach() -> some View {
+        LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+            ForEach(self.tags, id: \.self) { tag in
+                ZStack {
+                    RoundedRectangle(cornerRadius: 20.0)
+                        .foregroundColor(.secondary)
+                    
+                    Button {
+                        if let index = self.tags.firstIndex(of: tag) {
+                            tags.remove(at: index)
+                        }
+                    } label: {
+                        Text(tag)
+                            .font(.title3)
+                            .foregroundColor(.primary)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func addNewTag() -> some View {
+        TextField("New tag", text: $tagName) { isEditing in
+            self.isEditing = isEditing
+        } onCommit: {
+            saveButtonEnabled = !tagName.isEmpty
+        }
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+    }
+    
+    private func existingTagsListView() -> some View {
+        List {
+            ForEach(self.existingTags, id: \.id) { tag in
+                if let name = tag.name {
+                    Button {
+                        if tags.contains(name) {
+                            if let index = tags.firstIndex(of: name) {
+                                tags.remove(at: index)
+                            }
+                        } else {
+                            tags.append(name)
+                        }
+                    } label: {
+                        Text(tag.name ?? "")
+                    }
+                }
+            }
+            .onDelete(perform: self.removeTag)
+        }
+        .listStyle(InsetListStyle())
+    }
+    
+    private func sectionHeader(text: String) -> some View {
         HStack {
-            Text("Add a new tag")
+            Text(text.uppercased())
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Spacer()
+        }
+    }
+    
+    private func sectionHeaderWithSaveButton(text: String) -> some View {
+        HStack {
+            Text(text.uppercased())
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             
             Spacer()
             
