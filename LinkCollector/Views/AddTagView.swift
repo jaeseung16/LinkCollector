@@ -62,19 +62,13 @@ struct AddTagView: View {
     private func tagsToAttach() -> some View {
         LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
             ForEach(self.tags, id: \.self) { tag in
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20.0)
-                        .foregroundColor(.secondary)
-                    
-                    Button {
-                        if let index = self.tags.firstIndex(of: tag) {
-                            tags.remove(at: index)
-                        }
-                    } label: {
-                        Text(tag)
-                            .font(.title3)
-                            .foregroundColor(.primary)
+                Button {
+                    if let index = self.tags.firstIndex(of: tag) {
+                        tags.remove(at: index)
                     }
+                } label: {
+                    Label(tag, systemImage: "tag")
+                        .foregroundColor(.primary)
                 }
             }
         }
