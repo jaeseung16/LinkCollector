@@ -71,6 +71,7 @@ struct AddLinkView: View {
                             addNewTag.toggle()
                         } label: {
                             Label("Add tags", systemImage: "tag")
+                                .foregroundColor(.blue)
                         }
                         
                         ScrollView {
@@ -99,6 +100,7 @@ struct AddLinkView: View {
                     label: {
                         HStack {
                             Label("Cancel", systemImage: "chevron.backward")
+                                .foregroundColor(.blue)
                         }
                     })
                     
@@ -118,6 +120,7 @@ struct AddLinkView: View {
                     label: {
                         HStack {
                             Label("Save", systemImage: "square.and.arrow.down")
+                                .foregroundColor(.blue)
                         }
                     })
                 }
