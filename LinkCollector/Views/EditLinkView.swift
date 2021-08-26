@@ -28,97 +28,110 @@ struct EditLinkView: View {
     
     @Binding var saveButtonClicked: Bool
     
+    @State var originalTags = [String]()
+    
     var body: some View {
         VStack {
-            Form {
-                Section(header: Text("Title")) {
-                    TextField("Title", text: $title) { isEditing in
-                        if isEditing && titleBeforeEditing == "" {
-                            titleBeforeEditing = title
-                        }
-                    } onCommit: {
-                        saveButtonEnabled = titleBeforeEditing != title
-                    }
-                }
-                
-                Section(header: Text("Note")) {
-                    TextField("Note", text: $note) { isEditing in
-                        if isEditing && noteBeforeEditing == "" {
-                            noteBeforeEditing = note
-                        }
-                    } onCommit: {
-                        saveButtonEnabled = noteBeforeEditing != note
-                    }
-                }
-                
-                Section(header: tagSectionHeaderView()) {
-                    LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-                        ForEach(self.tags, id: \.self) { tag in
-                            Button {
-                                print("\(tag)")
-                            } label: {
-                                Text(tag)
-                            }
-                        }
-                    }
-                    .sheet(isPresented: $editTags) {
-                        AddTagView(tags: $tags)
-                            .environment(\.managedObjectContext, viewContext)
-                            .environmentObject(linkCollectorViewModel)
-                    }
-                }
-            }
-            
-            HStack {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Label("Cancel", systemImage: "chevron.backward")
-                })
-                .foregroundColor(Color.blue)
-                
-                Spacer()
-                
-                Button(action: {
-                    self.save()
-                }, label: {
-                    Label("Save", systemImage: "square.and.arrow.down")
-                })
-                .disabled(!saveButtonEnabled)
-                .foregroundColor(saveButtonEnabled ? Color.blue : Color.gray)
-            }
-            
+            editLinkForm()
+            editLinkButtons()
         }
         .padding()
     }
     
+    private func editLinkForm() -> some View {
+        Form {
+            Section(header: Label("Title", systemImage: "rectangle.and.text.magnifyingglass")) {
+                TextField("Title", text: $title) { isEditing in
+                    if isEditing && titleBeforeEditing == "" {
+                        titleBeforeEditing = title
+                    }
+                } onCommit: {
+                    saveButtonEnabled = titleBeforeEditing != title
+                }
+            }
+            
+            Section(header: Label("Note", systemImage: "note")) {
+                TextField("Note", text: $note) { isEditing in
+                    if isEditing && noteBeforeEditing == "" {
+                        noteBeforeEditing = note
+                    }
+                } onCommit: {
+                    saveButtonEnabled = noteBeforeEditing != note
+                }
+            }
+            
+            Section(header: tagSectionHeaderView()) {
+                LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+                    ForEach(self.tags, id: \.self) { tag in
+                        Label(tag, systemImage: "tag")
+                            .foregroundColor(.primary)
+                    }
+                }
+                .sheet(isPresented: $editTags) {
+                    AddTagView(tags: $tags)
+                        .environment(\.managedObjectContext, viewContext)
+                        .environmentObject(linkCollectorViewModel)
+                }
+            }
+        }
+    }
+    
     private func tagSectionHeaderView() -> some View {
         HStack {
-            Text("Tags")
+            Label("Tags", systemImage: "tag")
             
             Spacer()
             
             Button {
+                originalTags.removeAll()
+                originalTags.append(contentsOf: tags)
                 editTags.toggle()
                 saveButtonEnabled = true
             } label: {
-                Label("Add tags", systemImage: "tag")
+                Label("Edit tags", systemImage: "tag")
                     .foregroundColor(Color.blue)
             }
         }
-        
     }
     
-    private func save() -> Void {
+    private func editLinkButtons() -> some View {
+        HStack {
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Label("Cancel", systemImage: "chevron.backward")
+            })
+            .foregroundColor(Color.blue)
+            
+            Spacer()
+            
+            Button(action: {
+                saveEntities()
+                saveButtonClicked = true
+                presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Label("Save", systemImage: "square.and.arrow.down")
+            })
+            .disabled(!saveButtonEnabled)
+            .foregroundColor(saveButtonEnabled ? Color.blue : Color.gray)
+        }
+    }
+    
+    private func saveEntities() -> Void {
         let linkDTO = LinkDTO(id: id, title: title, note: note)
         linkCollectorViewModel.linkDTO = linkDTO
         
         for tag in tags {
             linkCollectorViewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
+            
+            if let index = originalTags.firstIndex(of: tag) {
+                originalTags.remove(at: index)
+            }
         }
         
-        saveButtonClicked = true
-        presentationMode.wrappedValue.dismiss()
+        for tag in originalTags {
+            linkCollectorViewModel.remove(tag: tag, from: linkDTO)
+        }
     }
 }
 

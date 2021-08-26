@@ -16,6 +16,8 @@ struct LinkDetailView: View {
     @State var showNote = false
     @State var showTags = false
     @State var showEditLinkView = false
+    
+    // When edited, close the current view so the updated view will appear
     @State var saveButtonClicked = false {
         didSet {
             if saveButtonClicked {

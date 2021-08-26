@@ -72,6 +72,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
+    var originalTags = [String]()
+    
     override init() {
         super.init()
         
@@ -85,6 +87,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
           .publisher(for: .NSPersistentStoreRemoteChange)
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
+    }
+    
+    func remove(tag: String, from link: LinkDTO) {
+        if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
+            tagEntity.removeFromLinks(linkEntity)
+        }
     }
     
     private func getLinkEntity(id: UUID) -> LinkEntity? {
