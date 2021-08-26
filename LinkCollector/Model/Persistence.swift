@@ -36,7 +36,6 @@ struct PersistenceController {
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         } else {
-            
             guard let applicationSupportPath = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).last else {
                 PersistenceController.logger.error("Shared file container could not be created")
                 return
@@ -50,8 +49,8 @@ struct PersistenceController {
             cloudStoreDescription.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.resonance.jaeseung.LinkCollector")
             
             container.persistentStoreDescriptions = [cloudStoreDescription]
-            
         }
+        
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 PersistenceController.logger.error("Could not load persistent store: \(storeDescription), \(error), \(error.userInfo)")
@@ -61,7 +60,6 @@ struct PersistenceController {
         container.viewContext.name = "LinkCollector"
 
         purgeHistory()
-        
     }
     
     private func purgeHistory() {

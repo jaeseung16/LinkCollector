@@ -31,6 +31,8 @@
 		90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
+		90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
+		90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
 		90BBCE7526C5CC0700DEA194 /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7C3258C0D2F001B4A3F /* LinkeEntity+Extension.swift */; };
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
@@ -96,6 +98,7 @@
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90A5BB9026C478D10044A0EA /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Extension.swift"; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		90C68DB0259538B200C78C1E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeOEmbed.swift; sourceTree = "<group>"; };
@@ -220,6 +223,7 @@
 			children = (
 				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
 				90A5BB9026C478D10044A0EA /* Persistence.swift */,
+				90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */,
 				9009B7C3258C0D2F001B4A3F /* LinkeEntity+Extension.swift */,
 				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
 				90A290A7258FB663004988D9 /* HTMLParser.swift */,
@@ -349,6 +353,7 @@
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
 				90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */,
 				90FD201D26C95DD4008CC190 /* HTMLParser.swift in Sources */,
+				90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
 				90FD201E26C95DD8008CC190 /* YouTubeOEmbed.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -364,6 +369,7 @@
 				9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */,
 				90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */,
 				9009B7C4258C0D2F001B4A3F /* LinkeEntity+Extension.swift in Sources */,
+				90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,

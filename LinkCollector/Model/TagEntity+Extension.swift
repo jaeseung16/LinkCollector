@@ -28,18 +28,3 @@ extension TagEntity {
     }
     
 }
-
-extension NSManagedObjectContext {
-    func delete(_ tags: [TagEntity]) {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "TagEntity")
-        request.predicate = NSPredicate(format: "id IN %@", tags.map { $0.id?.uuidString })
-        do {
-            let results = (try fetch(request) as? [TagEntity]) ?? []
-            results.forEach { delete($0) }
-        } catch {
-            print("Failed removing provided objects")
-            return
-        }
-        saveContext()
-    }
-}
