@@ -111,48 +111,7 @@ struct ContentView: View {
                       dismissButton: .default(Text("Dismiss")))
             })
             .sheet(isPresented: $showTagListView) {
-                VStack {
-                    Form {
-                        Section(header: Text("Tags")) {
-                            ForEach(tags, id: \.id) { tag in
-                                if tag.name != nil {
-                                    Text(tag.name!)
-                                        .foregroundColor(selectedTags.contains(tag) ? .yellow : .purple)
-                                        .onTapGesture {
-                                            if !selectedTags.contains(tag) {
-                                                selectedTags.insert(tag)
-                                            } else {
-                                                selectedTags.remove(tag)
-                                            }
-                                        }
-                                }
-                                
-                            }
-                        }
-                        
-                        Section(header: Text("Selected Tags")) {
-                            ForEach(Array(selectedTags), id: \.id) { tag in
-                                if tag.name != nil {
-                                    Text(tag.name!)
-                                        .foregroundColor(selectedTags.contains(tag) ? .yellow : .purple)
-                                }
-                                
-                            }
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-                        showTagListView = false
-                        print("selectedTags = \(selectedTags)")
-                    } label: {
-                        Text("Dismiss")
-                    }
-
-                }
-                .padding()
-                
+                selectTags()
             }
         }
     }
@@ -184,7 +143,7 @@ struct ContentView: View {
     
     private func removeLink(indexSet: IndexSet) -> Void {
         for index in indexSet {
-            let link = links[index]
+            let link = filteredLinks[index]
             viewContext.delete(link)
         }
         
@@ -194,6 +153,53 @@ struct ContentView: View {
             message = "Failed to delete the selected link"
             showAlert = true
         }
+    }
+    
+    private func selectTags() -> some View {
+        VStack {
+            Form {
+                Section(header: Text("Selected Tags")) {
+                    ForEach(Array(selectedTags), id: \.id) { tag in
+                        if tag.name != nil {
+                            Button {
+                                if selectedTags.contains(tag) {
+                                    selectedTags.remove(tag)
+                                }
+                            } label: {
+                                Text(tag.name!)
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                    }
+                }
+                
+                Section(header: Text("Tags")) {
+                    ForEach(tags, id: \.id) { tag in
+                        if tag.name != nil {
+                            Text(tag.name!)
+                                .foregroundColor(.primary)
+                                .onTapGesture {
+                                    if !selectedTags.contains(tag) {
+                                        selectedTags.insert(tag)
+                                    } else {
+                                        selectedTags.remove(tag)
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+            
+            Spacer()
+            
+            Button {
+                showTagListView = false
+            } label: {
+                Text("Dismiss")
+                    .foregroundColor(.blue)
+            }
+        }
+        .padding()
     }
 }
 
