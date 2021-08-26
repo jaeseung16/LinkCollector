@@ -57,13 +57,13 @@ struct LinkDetailView: View {
                 
                 entity.created.map {
                     Text("Added: \(dateFormatter.string(from: $0))")
-                        .font(.body)
+                        .font(.callout)
                         .foregroundColor(.secondary)
                 }
                
                 entity.lastupd.map {
                     Text("Last updated: \(dateFormatter.string(from: $0))")
-                        .font(.body)
+                        .font(.callout)
                         .foregroundColor(.secondary)
                 }
                 
@@ -72,7 +72,6 @@ struct LinkDetailView: View {
                 entity.url.map {
                     WebView(url: $0)
                         .shadow(color: Color.gray, radius: 1.0)
-                        //.border(Color.gray, width: 1.0)
                         .padding()
                 }
             }
@@ -86,7 +85,7 @@ struct LinkDetailView: View {
                 EditLinkView(id: entity.id!,
                              title: entity.title ?? "",
                              note: entity.note ?? "",
-                             tags: getTagList(of: entity),
+                             tags: linkCollectorViewModel.getTagList(of: entity),
                              saveButtonClicked: $saveButtonClicked)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(linkCollectorViewModel)
@@ -185,13 +184,11 @@ struct LinkDetailView: View {
                         .font(.body)
                         .foregroundColor(.primary)
                         .frame(width: 0.5 * geometry.size.width)
-                        .padding()
                 } else {
                     Text("No note added")
                         .font(.body)
                         .foregroundColor(.secondary)
                         .frame(width: 0.5 * geometry.size.width)
-                        .padding()
                 }
                 
                 Spacer()
@@ -224,21 +221,19 @@ struct LinkDetailView: View {
                     List {
                         ForEach(self.tags, id: \.id) { tag in
                             if let name = tag.name {
-                                Text(name)
+                                Label(name, systemImage: "tag")
                                     .font(.body)
                                     .foregroundColor(.primary)
                             }
                         }
                     }
                     .frame(width: 0.25 * geometry.size.width, height: bodyTextHeight * CGFloat(self.tags.count))
-                    .padding()
                 } else {
                     VStack {
                         Text("No tags added")
                             .font(.body)
                             .foregroundColor(.secondary)
                             .frame(width: 0.25 * geometry.size.width)
-                            .padding()
                     }
                 }
                 
@@ -253,21 +248,6 @@ struct LinkDetailView: View {
             }
             .padding()
         }
-    }
-    
-    private func getTagList(of link: LinkEntity) -> [String] {
-        var tagList = [String]()
-        
-        if let tags = link.tags {
-            for tag in tags {
-                if let tag = tag as? TagEntity {
-                    if let name = tag.name {
-                        tagList.append(name)
-                    }
-                }
-            }
-        }
-        return tagList
     }
     
     private func editLinkView() -> some View {

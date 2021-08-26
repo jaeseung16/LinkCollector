@@ -72,8 +72,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
-    var originalTags = [String]()
-    
     override init() {
         super.init()
         
@@ -93,6 +91,21 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
             tagEntity.removeFromLinks(linkEntity)
         }
+    }
+    
+    func getTagList(of link: LinkEntity) -> [String] {
+        var tagList = [String]()
+        
+        if let tags = link.tags {
+            for tag in tags {
+                if let tag = tag as? TagEntity {
+                    if let name = tag.name {
+                        tagList.append(name)
+                    }
+                }
+            }
+        }
+        return tagList
     }
     
     private func getLinkEntity(id: UUID) -> LinkEntity? {
