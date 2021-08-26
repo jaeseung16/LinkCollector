@@ -11,18 +11,50 @@ import CoreLocation
 import CoreData
 
 class LinkCollectorViewModel: NSObject, ObservableObject {
+    private let persistenteContainer = PersistenceController.shared.container
+    private let locationManager = CLLocationManager()
+    
+    private var subscriptions: Set<AnyCancellable> = []
+    
     @Published var userLatitude: Double = 0
     @Published var userLongitude: Double = 0
     @Published var userLocality: String = "Unknown"
-    
-    private let locationManager = CLLocationManager()
-    
-    private let persistenteContainer = PersistenceController.shared.container
-    private var subscriptions: Set<AnyCancellable> = []
-    
     @Published var showAlert = false
+    
     var message = ""
     
+    override init() {
+        super.init()
+        
+        self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.startUpdatingLocation()
+        lookUpCurrentLocation()
+        
+        NotificationCenter.default
+          .publisher(for: .NSPersistentStoreRemoteChange)
+          .sink { self.fetchUpdates($0) }
+          .store(in: &subscriptions)
+    }
+    
+    // MARK: - LocationManager
+    func lookUpCurrentLocation() {
+        if let lastLocation = locationManager.location {
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
+                if error == nil {
+                    self.userLocality = placemarks?[0].locality ?? "Unknown"
+                } else {
+                    self.userLocality = "Unknown"
+                }
+            }
+        } else {
+            self.userLocality = "Unknown"
+        }
+    }
+    
+    // MARK: - Persistence
     var linkDTO = LinkDTO(id: UUID(), title: "", note: "") {
         didSet {
             if let existingEntity = getLinkEntity(id: linkDTO.id) {
@@ -70,21 +102,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 showAlert.toggle()
             }
         }
-    }
-    
-    override init() {
-        super.init()
-        
-        self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        self.locationManager.requestWhenInUseAuthorization()
-        self.locationManager.startUpdatingLocation()
-        lookUpCurrentLocation()
-        
-        NotificationCenter.default
-          .publisher(for: .NSPersistentStoreRemoteChange)
-          .sink { self.fetchUpdates($0) }
-          .store(in: &subscriptions)
     }
     
     func remove(tag: String, from link: LinkDTO) {
@@ -146,26 +163,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         persistenteContainer.viewContext.transactionAuthor = nil
     }
     
-    func lookUpCurrentLocation() {
-        if let lastLocation = locationManager.location {
-            let geocoder = CLGeocoder()
-            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
-                if error == nil {
-                    self.userLocality = placemarks?[0].locality ?? "Unknown"
-                } else {
-                    self.userLocality = "Unknown"
-                }
-            }
-        } else {
-            self.userLocality = "Unknown"
-        }
-    }
-    
     // MARK: - Persistence History Request
     private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
         historyRequestQueue.async {
-            print("subscriptions.count = \(self.subscriptions.count)")
             let backgroundContext = self.persistenteContainer.newBackgroundContext()
             backgroundContext.performAndWait {
                 do {
@@ -207,7 +208,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
-    lazy var tokenFile: URL = {
+    private lazy var tokenFile: URL = {
         let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LinkCollector",isDirectory: true)
         if !FileManager.default.fileExists(atPath: url.path) {
             do {
