@@ -50,7 +50,7 @@ struct EditLinkView: View {
                 }
             }
             
-            Section(header: Label("Note", systemImage: "note")) {
+            Section(header: NoteLabel(title: "Note")) {
                 TextField("Note", text: $note) { isEditing in
                     if isEditing && noteBeforeEditing == "" {
                         noteBeforeEditing = note

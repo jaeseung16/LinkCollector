@@ -56,7 +56,7 @@ struct AddLinkView: View {
                 Text("\(linkCollectorViewModel.userLocality)")
             }
             
-            Section(header: Label("Note", systemImage: "note")) {
+            Section(header: NoteLabel(title: "Note")) {
                 TextField("Insert note", text: $note)
             }
             

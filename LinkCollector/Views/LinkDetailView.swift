@@ -172,7 +172,7 @@ struct LinkDetailView: View {
         Button {
             showNote = true
         } label: {
-            Label("note", systemImage: "note")
+            NoteLabel(title: "note")
         }
         .foregroundColor(.secondary)
         .popover(isPresented: $showNote) {

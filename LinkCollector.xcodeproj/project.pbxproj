@@ -11,6 +11,7 @@
 		9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */; };
 		9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7D1258C1715001B4A3F /* AddLinkView.swift */; };
 		900F3FF726D8671900C63590 /* TagLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FF626D8671900C63590 /* TagLabel.swift */; };
+		900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FF826D86A0600C63590 /* NoteLabel.swift */; };
 		9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */; };
 		902C9B8726C063000071CADB /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C9B8626C063000071CADB /* ShareViewController.swift */; };
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
@@ -78,6 +79,7 @@
 		9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDetailView.swift; sourceTree = "<group>"; };
 		9009B7D1258C1715001B4A3F /* AddLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLinkView.swift; sourceTree = "<group>"; };
 		900F3FF626D8671900C63590 /* TagLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagLabel.swift; sourceTree = "<group>"; };
+		900F3FF826D86A0600C63590 /* NoteLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteLabel.swift; sourceTree = "<group>"; };
 		9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorViewModel.swift; sourceTree = "<group>"; };
 		902C9B8426C063000071CADB /* LinkCollectorShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkCollectorShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		902C9B8626C063000071CADB /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				900F3FF626D8671900C63590 /* TagLabel.swift */,
+				900F3FF826D86A0600C63590 /* NoteLabel.swift */,
 			);
 			path = Labels;
 			sourceTree = "<group>";
@@ -381,6 +384,7 @@
 				90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */,
 				9009B7C4258C0D2F001B4A3F /* LinkeEntity+Extension.swift in Sources */,
 				90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
+				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
