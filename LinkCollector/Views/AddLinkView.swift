@@ -52,7 +52,7 @@ struct AddLinkView: View {
                 TextField("Insert title", text: $title)
             }
             
-            Section(header: Label("Location", systemImage: "location")) {
+            Section(header: LocationLabel(title: "Location")) {
                 Text("\(linkCollectorViewModel.userLocality)")
             }
             
