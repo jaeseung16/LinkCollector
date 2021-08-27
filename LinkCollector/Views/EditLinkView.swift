@@ -63,7 +63,7 @@ struct EditLinkView: View {
             Section(header: tagSectionHeaderView()) {
                 LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
                     ForEach(self.tags, id: \.self) { tag in
-                        Label(tag, systemImage: "tag")
+                        TagLabel(title: tag)
                             .foregroundColor(.primary)
                     }
                 }
@@ -78,7 +78,7 @@ struct EditLinkView: View {
     
     private func tagSectionHeaderView() -> some View {
         HStack {
-            Label("Tags", systemImage: "tag")
+            TagLabel(title: "Tags")
             
             Spacer()
             
@@ -88,7 +88,7 @@ struct EditLinkView: View {
                 editTags.toggle()
                 saveButtonEnabled = true
             } label: {
-                Label("Edit tags", systemImage: "tag")
+                TagLabel(title: "Edit tags")
                     .foregroundColor(Color.blue)
             }
         }

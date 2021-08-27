@@ -103,7 +103,7 @@ struct AddLinkView: View {
     
     private func tagSectionHeader() -> some View {
         HStack {
-            Label("Tags", systemImage: "tag")
+            TagLabel(title: "Tags")
             
             Spacer()
             
@@ -120,7 +120,7 @@ struct AddLinkView: View {
         ScrollView {
             LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
                 ForEach(self.tags, id: \.self) { tag in
-                    Label(tag, systemImage: "tag")
+                    TagLabel(title: tag)
                 }
             }
         }

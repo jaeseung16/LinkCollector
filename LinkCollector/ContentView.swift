@@ -143,7 +143,7 @@ struct ContentView: View {
             Button(action: {
                 self.showTagListView = true
             }, label: {
-                Label("Tags", systemImage: "tag")
+                TagLabel(title: "Tags")
             })
             .foregroundColor(Color.blue)
             
@@ -167,7 +167,7 @@ struct ContentView: View {
                                     selectedTags.remove(tag)
                                 }
                             } label: {
-                                Text(tag.name!)
+                                TagLabel(title: tag.name!)
                                     .foregroundColor(.primary)
                             }
                         }
@@ -177,7 +177,7 @@ struct ContentView: View {
                 Section(header: Text("Tags")) {
                     ForEach(tags, id: \.id) { tag in
                         if tag.name != nil {
-                            Text(tag.name!)
+                            TagLabel(title: tag.name!)
                                 .foregroundColor(.primary)
                                 .onTapGesture {
                                     if !selectedTags.contains(tag) {

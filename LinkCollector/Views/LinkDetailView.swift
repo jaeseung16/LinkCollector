@@ -210,7 +210,7 @@ struct LinkDetailView: View {
         Button {
             showTags = true
         } label: {
-            Label("tags", systemImage: "tag")
+            TagLabel(title: "tags")
         }
         .foregroundColor(Color.secondary)
         .popover(isPresented: $showTags) {
@@ -221,7 +221,7 @@ struct LinkDetailView: View {
                     List {
                         ForEach(self.tags, id: \.id) { tag in
                             if let name = tag.name {
-                                Label(name, systemImage: "tag")
+                                TagLabel(title: name)
                                     .font(.body)
                                     .foregroundColor(.primary)
                             }

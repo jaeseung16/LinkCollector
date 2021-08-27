@@ -67,7 +67,7 @@ struct AddTagView: View {
                         tags.remove(at: index)
                     }
                 } label: {
-                    Label(tag, systemImage: "tag")
+                    TagLabel(title: tag)
                         .foregroundColor(.primary)
                 }
             }
@@ -96,7 +96,7 @@ struct AddTagView: View {
                             tags.append(name)
                         }
                     } label: {
-                        Text(tag.name ?? "")
+                        TagLabel(title: tag.name ?? "")
                     }
                 }
             }
