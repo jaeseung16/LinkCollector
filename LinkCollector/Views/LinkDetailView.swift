@@ -164,7 +164,7 @@ struct LinkDetailView: View {
             Link(destination: $0) {
                 Label("Open in Browser", systemImage: "link")
             }
-            .foregroundColor(.secondary)
+            .foregroundColor(.blue)
         }
     }
     
@@ -174,7 +174,7 @@ struct LinkDetailView: View {
         } label: {
             NoteLabel(title: "note")
         }
-        .foregroundColor(.secondary)
+        .foregroundColor(.blue)
         .popover(isPresented: $showNote) {
             VStack {
                 Spacer()
@@ -212,7 +212,7 @@ struct LinkDetailView: View {
         } label: {
             TagLabel(title: "tags")
         }
-        .foregroundColor(Color.secondary)
+        .foregroundColor(Color.blue)
         .popover(isPresented: $showTags) {
             VStack {
                 Spacer()
