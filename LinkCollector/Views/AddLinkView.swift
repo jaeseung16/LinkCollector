@@ -48,7 +48,7 @@ struct AddLinkView: View {
                 .autocapitalization(.none)
             }
             
-            Section(header: Label("Title", systemImage: "rectangle.and.text.magnifyingglass")) {
+            Section(header: TitleLabel(title: "Title")) {
                 TextField("Insert title", text: $title)
             }
             

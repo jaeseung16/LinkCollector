@@ -40,7 +40,7 @@ struct EditLinkView: View {
     
     private func editLinkForm() -> some View {
         Form {
-            Section(header: Label("Title", systemImage: "rectangle.and.text.magnifyingglass")) {
+            Section(header: TitleLabel(title: "Title")) {
                 TextField("Title", text: $title) { isEditing in
                     if isEditing && titleBeforeEditing == "" {
                         titleBeforeEditing = title
