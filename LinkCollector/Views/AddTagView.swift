@@ -97,6 +97,7 @@ struct AddTagView: View {
                         }
                     } label: {
                         TagLabel(title: tag.name ?? "")
+                            .foregroundColor(.primary)
                     }
                 }
             }

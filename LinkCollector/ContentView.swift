@@ -157,50 +157,54 @@ struct ContentView: View {
     }
     
     private func selectTags() -> some View {
-        VStack {
-            Form {
-                Section(header: Text("Selected Tags")) {
-                    ForEach(Array(selectedTags), id: \.id) { tag in
-                        if tag.name != nil {
-                            Button {
-                                if selectedTags.contains(tag) {
-                                    selectedTags.remove(tag)
+        GeometryReader { geometry in
+            VStack {
+                Form {
+                    Section(header: Text("Selected Tags")) {
+                        ForEach(Array(selectedTags), id: \.id) { tag in
+                            if let name = tag.name {
+                                Button {
+                                    if selectedTags.contains(tag) {
+                                        selectedTags.remove(tag)
+                                    }
+                                } label: {
+                                    TagLabel(title: name)
+                                        .foregroundColor(.primary)
                                 }
-                            } label: {
-                                TagLabel(title: tag.name!)
-                                    .foregroundColor(.primary)
                             }
                         }
                     }
-                }
-                
-                Section(header: Text("Tags")) {
-                    ForEach(tags, id: \.id) { tag in
-                        if tag.name != nil {
-                            TagLabel(title: tag.name!)
-                                .foregroundColor(.primary)
-                                .onTapGesture {
+                    
+                    Section(header: Text("Tags")) {
+                        ForEach(tags, id: \.id) { tag in
+                            if let name = tag.name {
+                                Button {
                                     if !selectedTags.contains(tag) {
                                         selectedTags.insert(tag)
                                     } else {
                                         selectedTags.remove(tag)
                                     }
+                                } label: {
+                                    TagLabel(title: name)
+                                        .foregroundColor(.primary)
                                 }
+                            }
                         }
                     }
                 }
+                
+                Spacer()
+                
+                Button {
+                    showTagListView = false
+                } label: {
+                    Text("Dismiss")
+                        .foregroundColor(.blue)
+                }
             }
-            
-            Spacer()
-            
-            Button {
-                showTagListView = false
-            } label: {
-                Text("Dismiss")
-                    .foregroundColor(.blue)
-            }
+            .padding()
         }
-        .padding()
+        
     }
 }
 
