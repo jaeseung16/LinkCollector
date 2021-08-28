@@ -183,12 +183,12 @@ struct LinkDetailView: View {
                     Text(note)
                         .font(.body)
                         .foregroundColor(.primary)
-                        .frame(width: 0.5 * geometry.size.width)
+                        .frame(minWidth: 0.5 * geometry.size.width)
                 } else {
                     Text("No note added")
                         .font(.body)
                         .foregroundColor(.secondary)
-                        .frame(width: 0.5 * geometry.size.width)
+                        .frame(minWidth: 0.5 * geometry.size.width)
                 }
                 
                 Spacer()
@@ -227,7 +227,7 @@ struct LinkDetailView: View {
                             }
                         }
                     }
-                    .frame(width: 0.25 * geometry.size.width, height: bodyTextHeight * CGFloat(self.tags.count))
+                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: bodyTextHeight * CGFloat(self.tags.count))
                 } else {
                     VStack {
                         Text("No tags added")
