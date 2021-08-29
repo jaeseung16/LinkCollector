@@ -82,7 +82,7 @@ struct ContentView: View {
                 }
                 .listStyle(GroupedListStyle())
             }
-            .navigationBarTitle("Link Collector")
+            .navigationBarTitle("Link Piler")
             .navigationBarItems(trailing: navigationBarItems())
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
