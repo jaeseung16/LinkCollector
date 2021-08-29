@@ -38,6 +38,8 @@ struct EditLinkView: View {
         .padding()
     }
     
+    @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
+    
     private func editLinkForm() -> some View {
         Form {
             Section(header: TitleLabel(title: "Title")) {
@@ -61,6 +63,7 @@ struct EditLinkView: View {
             }
             
             Section(header: tagSectionHeaderView()) {
+                #if targetEnvironment(macCatalyst)
                 LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
                     ForEach(self.tags, id: \.self) { tag in
                         TagLabel(title: tag)
@@ -72,6 +75,21 @@ struct EditLinkView: View {
                         .environment(\.managedObjectContext, viewContext)
                         .environmentObject(linkCollectorViewModel)
                 }
+                #else
+                List {
+                    ForEach(self.tags, id: \.self) { tag in
+                        TagLabel(title: tag)
+                            .foregroundColor(.primary)
+                    }
+                }
+                .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
+                .sheet(isPresented: $editTags) {
+                    AddTagView(tags: $tags)
+                        .environment(\.managedObjectContext, viewContext)
+                        .environmentObject(linkCollectorViewModel)
+                }
+                .listStyle(InsetListStyle())
+                #endif
             }
         }
     }

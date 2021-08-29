@@ -46,6 +46,7 @@ struct AddTagView: View {
     
     private func barItems(in geometry: GeometryProxy) -> some View {
         ZStack {
+            #if targetEnvironment(macCatalyst)
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
             }, label: {
@@ -53,13 +54,32 @@ struct AddTagView: View {
                     .foregroundColor(.blue)
             })
             .frame(width: geometry.size.width, alignment: .leading)
+            .onHover(perform: { hovering in
+                if hovering {
+                    NSCursor.pointingHand.push()
+                } else {
+                    NSCursor.pop()
+                }
+            })
+            #else
+            Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Label("Done", systemImage: "chevron.backward")
+                    .foregroundColor(.blue)
+            })
+            .frame(width: geometry.size.width, alignment: .leading)
+            #endif
             
             Text("Add Tags")
                 .frame(width: geometry.size.width, alignment: .center)
         }
     }
     
+    @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
+    
     private func tagsToAttach() -> some View {
+        #if targetEnvironment(macCatalyst)
         LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
             ForEach(self.tags, id: \.self) { tag in
                 Button {
@@ -72,6 +92,22 @@ struct AddTagView: View {
                 }
             }
         }
+        #else
+        List {
+            ForEach(self.tags, id: \.self) { tag in
+                Button {
+                    if let index = self.tags.firstIndex(of: tag) {
+                        tags.remove(at: index)
+                    }
+                } label: {
+                    TagLabel(title: tag)
+                        .foregroundColor(.primary)
+                }
+            }
+        }
+        .listStyle(InsetListStyle())
+        .frame(height: bodyTextHeight * CGFloat(self.tags.count))
+        #endif
     }
     
     private func addNewTag() -> some View {

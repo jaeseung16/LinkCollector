@@ -116,7 +116,10 @@ struct AddLinkView: View {
         }
     }
     
+    @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
+    
     private func tagSection() -> some View {
+        #if targetEnvironment(macCatalyst)
         ScrollView {
             LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
                 ForEach(self.tags, id: \.self) { tag in
@@ -129,6 +132,20 @@ struct AddLinkView: View {
                 .environment(\.managedObjectContext, viewContext)
                 .environmentObject(linkCollectorViewModel)
         }
+        #else
+        List {
+            ForEach(self.tags, id: \.self) { tag in
+                TagLabel(title: tag)
+            }
+        }
+        .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
+        .listStyle(InsetListStyle())
+        .sheet(isPresented: $addNewTag) {
+            AddTagView(tags: $tags)
+                .environment(\.managedObjectContext, viewContext)
+                .environmentObject(linkCollectorViewModel)
+        }
+        #endif
     }
     
     private func saveLinkAndTags() -> Void {
