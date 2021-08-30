@@ -36,8 +36,14 @@ struct LinkDetailView: View {
         return dateFormatter
     }
     
-    private var location: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: entity.latitude, longitude: entity.longitude)
+    private var location: String {
+        let locality = entity.locality
+        
+        if locality == nil || locality == "Unknown" {
+            return "a unknown location"
+        } else {
+            return locality!
+        }
     }
     
     private var tags: [TagEntity] {
@@ -56,13 +62,13 @@ struct LinkDetailView: View {
                     .scaledToFit()
                 
                 entity.created.map {
-                    Text("Added: \(dateFormatter.string(from: $0))")
+                    Text("Added on \(dateFormatter.string(from: $0)) from \(location)")
                         .font(.callout)
                         .foregroundColor(.secondary)
                 }
                
                 entity.lastupd.map {
-                    Text("Last updated: \(dateFormatter.string(from: $0))")
+                    Text("Last updated on \(dateFormatter.string(from: $0))")
                         .font(.callout)
                         .foregroundColor(.secondary)
                 }

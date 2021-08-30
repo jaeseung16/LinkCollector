@@ -223,6 +223,7 @@ class ShareViewController: UIViewController {
                           note: "",
                           latitude: location != nil ? location!.coordinate.latitude : 0.0,
                           longitude: location != nil ? location!.coordinate.latitude : 0.0,
+                          locality: self.locationTextField.text,
                           context: persistenceController.container.viewContext)
      
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)

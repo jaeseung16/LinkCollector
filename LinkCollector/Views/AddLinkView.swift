@@ -165,7 +165,7 @@ struct AddLinkView: View {
     }
     
     private func saveLinkAndTags() -> Void {
-        let linkEntity = LinkEntity.create(title: title, url: url, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, context: viewContext)
+        let linkEntity = LinkEntity.create(title: title, url: url, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, locality: linkCollectorViewModel.userLocality, context: viewContext)
         
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
