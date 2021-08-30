@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import CoreLocation
 import CoreData
+import SwiftSoup
 
 class LinkCollectorViewModel: NSObject, ObservableObject {
     private let persistenteContainer = PersistenceController.shared.container
@@ -51,6 +52,50 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             }
         } else {
             self.userLocality = "Unknown"
+        }
+    }
+    
+    func isValid(urlString: String) -> Bool {
+        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
+            return false
+        }
+        return scheme == "http" || scheme == "https"
+    }
+    
+    private func getURLAndHTML(from urlString: String) -> (URL?, String?) {
+        var url: URL?
+        var html: String?
+        
+        if isValid(urlString: urlString) {
+            (url, html) = tryDownloadHTML(from: urlString)
+        } else {
+            (url, html) = tryDownloadHTML(from: "https://\(urlString)")
+            if html == nil {
+                (url, html) = tryDownloadHTML(from: "http://\(urlString)")
+            }
+        }
+        return (url, html)
+    }
+        
+    private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
+        if let url = URL(string: urlString) {
+            return (url, try? String(contentsOf: url))
+        } else {
+            return (nil, nil)
+        }
+    }
+    
+    func process(urlString: String, completionHandler: @escaping (_ result: String?, _ correctedURL: URL?) -> Void) -> Void {
+        let (url, html) = getURLAndHTML(from: urlString)
+        
+        guard let url = url, let html = html else {
+            completionHandler(nil, nil)
+            return
+        }
+        
+        let htmlParser = HTMLParser()
+        htmlParser.parse(url: url, html: html) { result in
+            completionHandler(result, url)
         }
     }
     

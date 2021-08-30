@@ -127,9 +127,9 @@ class ShareViewController: UIViewController {
             self.activityIndicator.startAnimating()
         }
         
-        htmlParser.parse(url: publicURL) { result in
+        process(urlString: publicURL.absoluteString) { result in
             DispatchQueue.main.async {
-                self.titleTextField.text = result != "" ? result : "Enter title"
+                self.titleTextField.text = result ?? "Enter title"
                 self.activityIndicator.stopAnimating()
             }
         }
@@ -151,16 +151,9 @@ class ShareViewController: UIViewController {
             self.activityIndicator.startAnimating()
         }
         
-        if let htmlURL = URL(string: plainText) {
-            htmlParser.parse(url: htmlURL) { result in
-                DispatchQueue.main.async {
-                    self.titleTextField.text = result
-                    self.activityIndicator.stopAnimating()
-                }
-            }
-        } else {
+        process(urlString: plainText) { result in
             DispatchQueue.main.async {
-                self.titleTextField.text = "Enter title"
+                self.titleTextField.text = result ?? "Enter title"
                 self.activityIndicator.stopAnimating()
             }
         }
@@ -173,6 +166,50 @@ class ShareViewController: UIViewController {
                     self.locationTextField.text = place!.locality
                 }
             }
+        }
+    }
+    
+    private func isValid(urlString: String) -> Bool {
+        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
+            return false
+        }
+        return scheme == "http" || scheme == "https"
+    }
+    
+    private func getURLAndHTML(from urlString: String) -> (URL?, String?) {
+        var url: URL?
+        var html: String?
+        
+        if isValid(urlString: urlString) {
+            (url, html) = tryDownloadHTML(from: urlString)
+        } else {
+            (url, html) = tryDownloadHTML(from: "https://\(urlString)")
+            if html == nil {
+                (url, html) = tryDownloadHTML(from: "http://\(urlString)")
+            }
+        }
+        return (url, html)
+    }
+        
+    private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
+        if let url = URL(string: urlString) {
+            return (url, try? String(contentsOf: url))
+        } else {
+            return (nil, nil)
+        }
+    }
+    
+    private func process(urlString: String, completionHandler: @escaping (_ result: String?) -> Void) -> Void {
+        let (url, html) = getURLAndHTML(from: urlString)
+        
+        guard let url = url, let html = html else {
+            completionHandler(nil)
+            return
+        }
+        
+        let htmlParser = HTMLParser()
+        htmlParser.parse(url: url, html: html) { result in
+            completionHandler(result)
         }
     }
     

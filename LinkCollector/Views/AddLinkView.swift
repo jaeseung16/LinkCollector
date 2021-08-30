@@ -19,6 +19,8 @@ struct AddLinkView: View {
 
     @State private var urlUpdated = false
     @State private var showProgress = false
+    @State private var showAlert = false
+    @State private var message = ""
     @State private var addNewTag = false
     
     private var htmlParser = HTMLParser()
@@ -35,6 +37,11 @@ struct AddLinkView: View {
                 .opacity(self.showProgress ? 1.0 : 0.0)
         }
         .padding()
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Unable to connect"),
+                  message: Text(message),
+                  dismissButton: .default(Text("Dismiss")))
+        }
     }
     
     private func addLinkForm() -> some View {
@@ -91,14 +98,23 @@ struct AddLinkView: View {
     
     private func updateURL() {
         showProgress = true
-        guard let htmlURL = URL(string: url) else {
-            return
-        }
         
-        htmlParser.parse(url: htmlURL) { result in
+        linkCollectorViewModel.process(urlString: url) { result, correctedURL in
+            guard let result = result, !result.isEmpty else {
+                self.showProgress = false
+                self.message = "Cannot open the given url. Please check if a web browser can open it."
+                self.showAlert = true
+                return
+            }
+            
+            if let correctedURL = correctedURL, self.url != correctedURL.absoluteString {
+                self.url = correctedURL.absoluteString
+            }
+            
             self.title = result
             self.showProgress = false
         }
+        
     }
     
     private func tagSectionHeader() -> some View {

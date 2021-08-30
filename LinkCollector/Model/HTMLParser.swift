@@ -23,14 +23,15 @@ class HTMLParser {
         }
     }
     
-    func parse(url: URL, completionHandler: @escaping (_ result: String) -> Void) {
+    func parse(url: URL, html: String, completionHandler: @escaping (_ result: String?) -> Void) {
         do {
-            let html = try String(contentsOf: url)
             self.document = try SwiftSoup.parse(html)
         } catch Exception.Error(let type, let message) {
             print("Caught an error: \(type) - \(message)")
+            completionHandler(nil)
         } catch {
             print("Cannot initialize HTMLParser for url = \(url)")
+            completionHandler(nil)
         }
         
         if self.document != nil {
@@ -67,7 +68,6 @@ class HTMLParser {
                     completionHandler(self.titleToReturn)
                 }
             } else {
-                print("titleToReturn = \(titleToReturn)")
                 completionHandler(titleToReturn)
             }
         } else {
