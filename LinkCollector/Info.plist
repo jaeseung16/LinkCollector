@@ -30,9 +30,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationUsageDescription</key>
-	<string>Please allow to use your location while using the app. While being saved with a link, the information will not be collected.</string>
+	<string>Turning on location services allows us to show locations with links.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Please allow to use your location while using the app. While being saved with a link, the information will not be collected.</string>
+	<string>Turning on location services allows us to show locations with links.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
