@@ -44,6 +44,8 @@
 		<string>com.apple.share-services</string>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need you location while using the app</string>
+	<string>Please allow to use your location while using the app. While being saved with a link, the information will not be collected.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Please allow to use your location while using the app. While being saved with a link, the information will not be collected.</string>
 </dict>
 </plist>
