@@ -15,7 +15,23 @@ class ShareViewController: UIViewController {
     
     private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
-    private var location: CLLocation?
+    private var location: CLLocation? {
+        didSet {
+            locationManager.stopUpdatingLocation()
+            
+            lookUpCurrentLocation() { place in
+                self.locality = place != nil ? place!.locality : "Unknown"
+            }
+        }
+    }
+    
+    private var locality: String? {
+        didSet {
+            DispatchQueue.main.async {
+                self.locationTextField.text = self.locality ?? "Unknown"
+            }
+        }
+    }
     
     @IBOutlet weak var urlLabel: UILabel!
     @IBOutlet weak var titleTextField: UITextField!
@@ -24,6 +40,7 @@ class ShareViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         locationManager.delegate = self
+        locationManager.startUpdatingLocation()
         locationManager.requestLocation()
     }
     
@@ -111,14 +128,6 @@ class ShareViewController: UIViewController {
     private func update(with results: NSDictionary) {
         urlLabel.text = results["URL"] as? String ?? "http://"
         titleTextField.text = results["title"] as? String ?? "Enter title"
-        
-        lookUpCurrentLocation() { place in
-            if place == nil {
-                self.locationTextField.text = "Unknown"
-            } else {
-                self.locationTextField.text = place!.locality
-            }
-        }
     }
     
     private func update(with publicURL: URL) {
@@ -133,16 +142,6 @@ class ShareViewController: UIViewController {
                 self.activityIndicator.stopAnimating()
             }
         }
-        
-        lookUpCurrentLocation() { place in
-            DispatchQueue.main.async {
-                if place == nil {
-                    self.locationTextField.text = "Unknown"
-                } else {
-                    self.locationTextField.text = place!.locality
-                }
-            }
-        }
     }
     
     private func update(with plainText: String) {
@@ -155,16 +154,6 @@ class ShareViewController: UIViewController {
             DispatchQueue.main.async {
                 self.titleTextField.text = result ?? "Enter title"
                 self.activityIndicator.stopAnimating()
-            }
-        }
-        
-        lookUpCurrentLocation() { place in
-            DispatchQueue.main.async {
-                if place == nil {
-                    self.locationTextField.text = "Unknown"
-                } else {
-                    self.locationTextField.text = place!.locality
-                }
             }
         }
     }
@@ -223,14 +212,14 @@ class ShareViewController: UIViewController {
                           note: "",
                           latitude: location != nil ? location!.coordinate.latitude : 0.0,
                           longitude: location != nil ? location!.coordinate.latitude : 0.0,
-                          locality: self.locationTextField.text,
+                          locality: self.locality,
                           context: persistenceController.container.viewContext)
      
         self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
     }
     
     private func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void) {
-        if let lastLocation = locationManager.location {
+        if let lastLocation = location {
             let geocoder = CLGeocoder()
             geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
                 if error == nil {
