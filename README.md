@@ -3,9 +3,9 @@
 The app allows to organize web links.
 
 * The app is written and tested on `Swift 5` and `Xcode 12.5.1`.
-<!-- * The app is available on App Store. --->
+* The app is available on App Store.
 
-<!-- [![App Store Badge](https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg)](https://itunes.apple.com/us/app/search-pubchem/id1369742632?mt=8) --->
+[![App Store Badge](https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg)](https://apps.apple.com/us/app/link-piler/id1583309712)
 
 # Installation
 
