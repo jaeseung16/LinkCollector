@@ -8,10 +8,12 @@
 import UIKit
 import Social
 import CoreLocation
+import CoreData
 
 class ShareViewController: UIViewController {
 
     private let persistenceController = PersistenceController.shared
+    private let contextName = "share extension"
     
     private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
@@ -33,6 +35,9 @@ class ShareViewController: UIViewController {
         }
     }
     
+    private var posted: Date?
+    private var linkEntity: LinkEntity?
+    
     @IBOutlet weak var urlLabel: UILabel!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var locationTextField: UILabel!
@@ -48,10 +53,67 @@ class ShareViewController: UIViewController {
         self.activityIndicator.stopAnimating()
         
         if let extensionContext = extensionContext, !extensionContext.inputItems.isEmpty {
-            print("extensionContext.inputItems.count = \(extensionContext.inputItems.count)")
             for inputItem in extensionContext.inputItems {
                 if let item = inputItem as? NSExtensionItem {
                     accessWebpageProperties(extensionItem: item)
+                }
+            }
+        }
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(processNotification),
+                                               name: .NSPersistentStoreRemoteChange,
+                                               object: persistenceController.container.persistentStoreCoordinator)
+    }
+    
+    private func showAlertAndTerminate() -> Void {
+        self.activityIndicator.stopAnimating()
+        
+        let alert = UIAlertController(title: "Alert", message: "Cannot confirm whether the post is saved. You may want to try it again.", preferredStyle: .alert)
+        alert.addAction(
+            UIAlertAction(title: "Dismiss", style: .default) { _ in
+                if self.extensionContext != nil {
+                    self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+                }
+        })
+        
+        self.present(alert, animated: true)
+    }
+    
+    @objc private func processNotification(_ notification: Notification) -> Void {
+        guard let posted = posted else {
+            return
+        }
+        
+        let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: posted)
+        let context = persistenceController.container.newBackgroundContext()
+        
+        guard let historyResult = try? context.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
+              let history = historyResult.result as? [NSPersistentHistoryTransaction] else {
+            DispatchQueue.main.async {
+                self.showAlertAndTerminate()
+            }
+            return
+        }
+        
+        for transaction in history {
+            if transaction.timestamp > posted && transaction.contextName == contextName {
+                guard let changes = transaction.changes else { continue }
+                
+                for change in changes {
+                    if change.changeType == .insert {
+                        if let link = self.linkEntity, change.changedObjectID == link.objectID {
+                            DispatchQueue.main.async {
+                                self.activityIndicator.stopAnimating()
+                            }
+                            
+                            if self.extensionContext != nil {
+                                self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+                            }
+                            
+                            return
+                        }
+                    }
                 }
             }
         }
@@ -207,15 +269,27 @@ class ShareViewController: UIViewController {
     }
     
     @IBAction func post(_ sender: UIBarButtonItem) {
-        let _ = LinkEntity.create(title: titleTextField.text,
+        DispatchQueue.main.async {
+            self.activityIndicator.startAnimating()
+        }
+        
+        persistenceController.container.viewContext.name = contextName
+        posted = Date()
+        
+        linkEntity = LinkEntity.create(title: titleTextField.text,
                           url: urlLabel.text,
                           note: "",
                           latitude: location != nil ? location!.coordinate.latitude : 0.0,
                           longitude: location != nil ? location!.coordinate.latitude : 0.0,
                           locality: self.locality,
                           context: persistenceController.container.viewContext)
-     
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+        
+        persistenceController.container.viewContext.name = nil
+        
+        // Terminate after 10 sec
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+            self.showAlertAndTerminate()
+        }
     }
     
     private func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void) {
