@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) private var presentationMode
+    
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
@@ -96,6 +98,9 @@ struct ContentView: View {
                       message: Text(message),
                       dismissButton: .default(Text("Dismiss")))
             }
+        }
+        .onReceive(linkCollectorViewModel.$changedPeristentContext) { _ in
+            presentationMode.wrappedValue.dismiss()
         }
     }
     

@@ -17,6 +17,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     private var subscriptions: Set<AnyCancellable> = []
     
+    @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
+    
     @Published var userLatitude: Double = 0
     @Published var userLongitude: Double = 0
     @Published var userLocality: String = "Unknown"
