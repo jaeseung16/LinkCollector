@@ -444,7 +444,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
@@ -453,7 +453,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -468,7 +468,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
@@ -477,7 +477,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -611,7 +611,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -620,7 +620,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -637,7 +637,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -646,7 +646,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
