@@ -28,10 +28,9 @@ struct AddLinkView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .center) {
-                addLinkForm()
                 addLinkButtons()
+                addLinkForm()
             }
-            .navigationBarTitle("Add Link")
             
             ProgressView()
                 .opacity(self.showProgress ? 1.0 : 0.0)
@@ -82,6 +81,10 @@ struct AddLinkView: View {
                 Label("Cancel", systemImage: "chevron.backward")
                     .foregroundColor(.blue)
             })
+            
+            Spacer()
+            
+            Text("Add a new link")
             
             Spacer()
             
