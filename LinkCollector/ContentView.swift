@@ -88,13 +88,13 @@ struct ContentView: View {
                 AddLinkView()
                     .environmentObject(linkCollectorViewModel)
             }
+            .sheet(isPresented: $showTagListView) {
+                selectTags()
+            }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Unable to Save Data"),
                       message: Text(message),
                       dismissButton: .default(Text("Dismiss")))
-            }
-            .sheet(isPresented: $showTagListView) {
-                selectTags()
             }
         }
     }
@@ -159,8 +159,10 @@ struct ContentView: View {
     private func selectTags() -> some View {
         GeometryReader { geometry in
             VStack {
+                header()
+                
                 Form {
-                    Section(header: Text("Selected Tags")) {
+                    Section(header: Text("Selected")) {
                         ForEach(Array(selectedTags), id: \.id) { tag in
                             if let name = tag.name {
                                 Button {
@@ -192,19 +194,33 @@ struct ContentView: View {
                         }
                     }
                 }
-                
-                Spacer()
-                
-                Button {
-                    showTagListView = false
-                } label: {
-                    Text("Dismiss")
-                        .foregroundColor(.blue)
-                }
             }
             .padding()
         }
-        
+    }
+    
+    private func header() -> some View {
+        HStack {
+            Button {
+                selectedTags.removeAll()
+            } label: {
+                Text("Reset")
+                    .foregroundColor(.blue)
+            }
+            
+            Spacer()
+            
+            Text("Select tags")
+            
+            Spacer()
+            
+            Button {
+                showTagListView = false
+            } label: {
+                Text("Done")
+                    .foregroundColor(.blue)
+            }
+        }
     }
 }
 
