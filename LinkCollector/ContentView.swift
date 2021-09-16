@@ -202,9 +202,9 @@ struct ContentView: View {
     private func header() -> some View {
         HStack {
             Button {
-                selectedTags.removeAll()
+                showTagListView = false
             } label: {
-                Text("Reset")
+                Label("Done", systemImage: "chevron.backward")
                     .foregroundColor(.blue)
             }
             
@@ -215,9 +215,9 @@ struct ContentView: View {
             Spacer()
             
             Button {
-                showTagListView = false
+                selectedTags.removeAll()
             } label: {
-                Text("Done")
+                Text("Reset")
                     .foregroundColor(.blue)
             }
         }
