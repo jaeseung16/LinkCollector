@@ -20,6 +20,8 @@ struct AddTagView: View {
     
     @Binding var tags: [String]
     
+    var isUpdate = false
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -71,7 +73,7 @@ struct AddTagView: View {
             .frame(width: geometry.size.width, alignment: .leading)
             #endif
             
-            Text("Add Tags")
+            Text(isUpdate ? "Edit Tags" : "Add Tags")
                 .frame(width: geometry.size.width, alignment: .center)
         }
     }

@@ -32,8 +32,8 @@ struct EditLinkView: View {
     
     var body: some View {
         VStack {
-            editLinkForm()
             editLinkButtons()
+            editLinkForm()
         }
         .padding()
     }
@@ -71,7 +71,7 @@ struct EditLinkView: View {
                     }
                 }
                 .sheet(isPresented: $editTags) {
-                    AddTagView(tags: $tags)
+                    AddTagView(tags: $tags, isUpdate: true)
                         .environment(\.managedObjectContext, viewContext)
                         .environmentObject(linkCollectorViewModel)
                 }
@@ -84,7 +84,7 @@ struct EditLinkView: View {
                 }
                 .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
                 .sheet(isPresented: $editTags) {
-                    AddTagView(tags: $tags)
+                    AddTagView(tags: $tags, isUpdate: true)
                         .environment(\.managedObjectContext, viewContext)
                         .environmentObject(linkCollectorViewModel)
                 }
@@ -120,6 +120,10 @@ struct EditLinkView: View {
                 Label("Cancel", systemImage: "chevron.backward")
             })
             .foregroundColor(Color.blue)
+            
+            Spacer()
+            
+            Text("Edit a link")
             
             Spacer()
             
