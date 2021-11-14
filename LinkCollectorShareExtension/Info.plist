@@ -47,5 +47,9 @@
 	<string>Turning on location services allows us to show locations with links.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Turning on location services allows us to show locations with links.</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+    </array>
 </dict>
 </plist>
