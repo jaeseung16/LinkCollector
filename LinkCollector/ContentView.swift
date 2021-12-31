@@ -124,10 +124,12 @@ struct ContentView: View {
         }
     }
     
+    private func tagList(of link: LinkEntity) -> [TagEntity] {
+        link.tags?.filter { $0 is TagEntity }.map { $0 as! TagEntity } ?? [TagEntity]()
+    }
+    
     private func makeDetailView(from link: LinkEntity) -> some View {
-        return LinkDetailView(entity: link)
-            .environment(\.managedObjectContext, viewContext)
-            .environmentObject(linkCollectorViewModel)
+        return LinkDetailView(entity: link, tags: tagList(of: link))
             .navigationTitle(link.title ?? "")
     }
     

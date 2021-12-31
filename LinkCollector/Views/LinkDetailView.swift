@@ -26,7 +26,7 @@ struct LinkDetailView: View {
         }
     }
     
-    let entity: LinkEntity!
+    var entity: LinkEntity
     
     private var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
@@ -46,13 +46,7 @@ struct LinkDetailView: View {
         }
     }
     
-    private var tags: [TagEntity] {
-        if entity.tags != nil, let tags = entity.tags?.allObjects as? [TagEntity] {
-            return tags.sorted(by: { ($0.name ?? "") < ($1.name ?? "") })
-        } else {
-            return [TagEntity]()
-        }
-    }
+    var tags: [TagEntity]
     
     var body: some View {
         GeometryReader { geometry in
@@ -229,21 +223,5 @@ struct LinkDetailView: View {
             Label("EDIT", systemImage: "pencil.circle")
         }
         .foregroundColor(.blue)
-    }
-}
-
-struct LinkDetailView_Previews: PreviewProvider {
-    static var linkEntity: LinkEntity {
-        let link = LinkEntity()
-        link.id = UUID()
-        link.title = "example"
-        link.url = URL(string: "http://www.google.com")
-        link.latitude = -97.822
-        link.longitude = 37.751
-        return link
-    }
-    
-    static var previews: some View {
-        LinkDetailView(entity: linkEntity)
     }
 }
