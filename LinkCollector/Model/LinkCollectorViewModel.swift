@@ -262,6 +262,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                         }
                         
                         self.lastToken = history.last?.token
+                        
+                        DispatchQueue.main.async {
+                            self.toggle.toggle()
+                        }
                     }
                 } catch {
                     print("Could not convert history result to transactions after lastToken = \(String(describing: self.lastToken)): \(error)")
