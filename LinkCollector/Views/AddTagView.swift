@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddTagView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var existingTags: FetchedResults<TagEntity>
@@ -50,7 +50,7 @@ struct AddTagView: View {
         ZStack {
             #if targetEnvironment(macCatalyst)
             Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Label("Done", systemImage: "chevron.backward")
                     .foregroundColor(.blue)
@@ -65,7 +65,7 @@ struct AddTagView: View {
             })
             #else
             Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Label("Done", systemImage: "chevron.backward")
                     .foregroundColor(.blue)

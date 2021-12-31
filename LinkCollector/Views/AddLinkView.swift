@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddLinkView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @State private var title: String = ""
@@ -75,7 +75,7 @@ struct AddLinkView: View {
     private func addLinkButtons() -> some View {
         HStack {
             Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             },
             label: {
                 Label("Cancel", systemImage: "chevron.backward")
@@ -90,7 +90,7 @@ struct AddLinkView: View {
             
             Button(action: {
                 saveLinkAndTags()
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             },
             label: {
                 Label("Save", systemImage: "square.and.arrow.down")

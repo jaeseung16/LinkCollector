@@ -10,7 +10,7 @@ import MapKit
 
 struct LinkDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @State var showNote = false
@@ -21,7 +21,7 @@ struct LinkDetailView: View {
     @State var saveButtonClicked = false {
         didSet {
             if saveButtonClicked {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }
         }
     }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditLinkView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
     
     @State var titleColor = Color.white
@@ -102,7 +102,7 @@ struct EditLinkView: View {
     private func editLinkButtons() -> some View {
         HStack {
             Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
             })
@@ -117,7 +117,7 @@ struct EditLinkView: View {
             Button(action: {
                 saveEntities()
                 saveButtonClicked = true
-                presentationMode.wrappedValue.dismiss()
+                dismiss.callAsFunction()
             }, label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             })
