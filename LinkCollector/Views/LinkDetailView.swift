@@ -30,8 +30,8 @@ struct LinkDetailView: View {
     
     private var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .full
-        dateFormatter.timeStyle = .long
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
         dateFormatter.locale = Locale(identifier: "en_US")
         return dateFormatter
     }
@@ -60,6 +60,9 @@ struct LinkDetailView: View {
                 headerView(geometry: geometry)
                     .frame(width: geometry.size.width, height: 30, alignment: .center)
                     .scaledToFit()
+                
+                tagsView(geometry: geometry)
+                    .padding()
                 
                 entity.created.map {
                     Text("Added on \(dateFormatter.string(from: $0)) from \(location)")
@@ -134,21 +137,6 @@ struct LinkDetailView: View {
             Spacer()
             
             #if targetEnvironment(macCatalyst)
-            showTagsView(geometry: geometry)
-                .onHover(perform: { hovering in
-                    if hovering {
-                        NSCursor.pointingHand.push()
-                    } else {
-                        NSCursor.pop()
-                    }
-                })
-            #else
-            showTagsView(geometry: geometry)
-            #endif
-            
-            Spacer()
-            
-            #if targetEnvironment(macCatalyst)
             editLinkView()
                 .onHover(perform: { hovering in
                     if hovering {
@@ -212,47 +200,25 @@ struct LinkDetailView: View {
     
     @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
     
-    private func showTagsView(geometry: GeometryProxy) -> some View {
-        Button {
-            showTags = true
-        } label: {
-            TagLabel(title: "tags")
-        }
-        .foregroundColor(Color.blue)
-        .popover(isPresented: $showTags) {
-            VStack {
-                Spacer()
-                
-                if !self.tags.isEmpty {
-                    List {
-                        ForEach(self.tags, id: \.id) { tag in
-                            if let name = tag.name {
-                                TagLabel(title: name)
-                                    .font(.body)
-                                    .foregroundColor(.primary)
-                            }
+    private func tagsView(geometry: GeometryProxy) -> some View {
+        VStack {
+            if !self.tags.isEmpty {
+                List {
+                    ForEach(self.tags, id: \.id) { tag in
+                        if let name = tag.name {
+                            TagLabel(title: name)
+                                .font(.body)
+                                .foregroundColor(.primary)
                         }
                     }
-                    .frame(minWidth: 0.5 * geometry.size.width, minHeight: bodyTextHeight * CGFloat(self.tags.count))
-                } else {
-                    VStack {
-                        Text("No tags added")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                            .frame(width: 0.25 * geometry.size.width)
-                    }
                 }
-                
-                Spacer()
-                
-                Button {
-                    showTags = false
-                } label: {
-                    Text("Dismiss")
-                        .foregroundColor(.blue)
-                }
+                .listStyle(PlainListStyle())
+                .frame(height: bodyTextHeight * CGFloat(self.tags.count))
+            } else {
+                Text("No tags added")
+                    .font(.body)
+                    .foregroundColor(.secondary)
             }
-            .padding()
         }
     }
     
