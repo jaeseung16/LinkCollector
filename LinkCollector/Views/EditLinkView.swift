@@ -26,8 +26,6 @@ struct EditLinkView: View {
     @State var titleBeforeEditing = ""
     @State var noteBeforeEditing = ""
     
-    @Binding var saveButtonClicked: Bool
-    
     @State var originalTags = [String]()
     
     var body: some View {
@@ -116,7 +114,6 @@ struct EditLinkView: View {
             
             Button(action: {
                 saveEntities()
-                saveButtonClicked = true
                 dismiss.callAsFunction()
             }, label: {
                 Label("Save", systemImage: "square.and.arrow.down")
@@ -144,9 +141,3 @@ struct EditLinkView: View {
     }
 }
 
-struct EditLinkView_Previews: PreviewProvider {
-    @State static var saveButtonClicked = false
-    static var previews: some View {
-        EditLinkView(id: UUID(), title: "title", note: "note", tags: [String](), saveButtonClicked: $saveButtonClicked)
-    }
-}

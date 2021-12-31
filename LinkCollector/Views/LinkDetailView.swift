@@ -17,15 +17,6 @@ struct LinkDetailView: View {
     @State var showTags = false
     @State var showEditLinkView = false
     
-    // When edited, close the current view so the updated view will appear
-    @State var saveButtonClicked = false {
-        didSet {
-            if saveButtonClicked {
-                dismiss.callAsFunction()
-            }
-        }
-    }
-    
     var entity: LinkEntity
     
     private var dateFormatter: DateFormatter {
@@ -88,8 +79,7 @@ struct LinkDetailView: View {
                 EditLinkView(id: entity.id!,
                              title: entity.title ?? "",
                              note: entity.note ?? "",
-                             tags: linkCollectorViewModel.getTagList(of: entity),
-                             saveButtonClicked: $saveButtonClicked)
+                             tags: linkCollectorViewModel.getTagList(of: entity))
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(linkCollectorViewModel)
             }
