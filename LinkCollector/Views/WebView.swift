@@ -41,7 +41,7 @@ struct WebView: UIViewRepresentable {
         }
         
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
-            print("navigationAction.request = \(navigationAction.request)")
+            //print("navigationAction.request = \(navigationAction.request)")
             decisionHandler(.allow, preferences)
         }
         
@@ -54,7 +54,7 @@ struct WebView: UIViewRepresentable {
         }
        
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            print("didFinish: title = \(webView.title), url = \(webView.url)")
+            //print("didFinish: title = \(webView.title), url = \(webView.url)")
             webView.evaluateJavaScript("document.getElementsByTagName('title')[0].innerText", completionHandler: { (value: Any!, error: Error!) -> Void in
                 if error != nil {
                     print("didFinish: \(String(describing: error))")
@@ -62,7 +62,7 @@ struct WebView: UIViewRepresentable {
                 }
 
                 if let result = value as? String {
-                    print("didFinish: title = \(result), url = \(webView.url)")
+                    //print("didFinish: title = \(result), url = \(webView.url)")
                     self.title = result
                 }
             })
