@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -20,20 +21,23 @@ struct ContentView: View {
     @State var showTagListView = false
     @State var showAlert = false
     @State var message = ""
+    @State var searchString = ""
     
     @State var selectedTags = Set<TagEntity>()
     var filteredLinks: Array<LinkEntity> {
-        if selectedTags.isEmpty {
-            return links.map { $0 }
-        } else {
-            return links.filter { link in
-                if let tags = link.tags, tags.count > 0 {
-                    for tag in tags {
-                        if selectedTags.contains(tag as! TagEntity) {
-                            return true
-                        }
-                    }
-                }
+        links.filter { link in
+            var filter = true
+            if let tags = link.tags as? Set<TagEntity>, !selectedTags.isEmpty && selectedTags.intersection(tags).isEmpty {
+                filter = false
+            }
+            return filter
+        }
+        .filter { link in
+            if searchString == "" {
+                return true
+            } else if let title = link.title {
+                return title.lowercased().contains(searchString.lowercased())
+            } else {
                 return false
             }
         }
@@ -98,6 +102,7 @@ struct ContentView: View {
                       message: Text(message),
                       dismissButton: .default(Text("Dismiss")))
             }
+            .searchable(text: $searchString)
         }
         .onReceive(linkCollectorViewModel.$changedPeristentContext) { _ in
             presentationMode.wrappedValue.dismiss()
