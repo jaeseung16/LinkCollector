@@ -155,6 +155,15 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
             tagEntity.removeFromLinks(linkEntity)
         }
+        
+        do {
+            try saveContext()
+        } catch {
+            let nsError = error as NSError
+            print("While removing \(tag) from \(link) occured an unresolved error \(nsError), \(nsError.userInfo)")
+            message = "Cannot save link = \(link.title)"
+            showAlert.toggle()
+        }
     }
     
     func getTagList(of link: LinkEntity) -> [String] {
