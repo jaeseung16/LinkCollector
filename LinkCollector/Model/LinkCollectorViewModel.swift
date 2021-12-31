@@ -24,6 +24,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var userLocality: String = "Unknown"
     @Published var showAlert = false
     
+    @Published var toggle = false
+    
     var message = ""
     
     override init() {
@@ -113,8 +115,15 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 } catch {
                     let nsError = error as NSError
                     print("While saving \(linkDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                    message = "Cannot update title = \(linkDTO.title) and note = \(linkDTO.note)"
-                    showAlert.toggle()
+                    
+                    DispatchQueue.main.async {
+                        self.message = "Cannot update title = \(self.linkDTO.title) and note = \(self.linkDTO.note)"
+                        self.showAlert.toggle()
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.toggle.toggle()
                 }
             }
         }
@@ -145,8 +154,15 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             } catch {
                 let nsError = error as NSError
                 print("While saving \(tagDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                message = "Cannot save tag = \(tagDTO.name)"
-                showAlert.toggle()
+                
+                DispatchQueue.main.async {
+                    self.message = "Cannot save tag = \(self.tagDTO.name)"
+                    self.showAlert.toggle()
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.toggle.toggle()
             }
         }
     }
@@ -161,8 +177,14 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         } catch {
             let nsError = error as NSError
             print("While removing \(tag) from \(link) occured an unresolved error \(nsError), \(nsError.userInfo)")
-            message = "Cannot save link = \(link.title)"
-            showAlert.toggle()
+            DispatchQueue.main.async {
+                self.message = "Cannot save link = \(link.title)"
+                self.showAlert.toggle()
+            }
+        }
+        
+        DispatchQueue.main.async {
+            self.toggle.toggle()
         }
     }
     

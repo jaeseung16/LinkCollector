@@ -104,9 +104,6 @@ struct ContentView: View {
             }
             .searchable(text: $searchString)
         }
-        .onReceive(linkCollectorViewModel.$changedPeristentContext) { _ in
-            presentationMode.wrappedValue.dismiss()
-        }
     }
     
     private func makeNavigationLink(from link: LinkEntity) -> some View {
