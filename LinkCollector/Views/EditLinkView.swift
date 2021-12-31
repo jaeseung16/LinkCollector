@@ -52,30 +52,7 @@ struct EditLinkView: View {
                 }
             }
             
-            Section(header: NoteLabel(title: "Note")) {
-                TextField("Note", text: $note) { isEditing in
-                    if isEditing && noteBeforeEditing == "" {
-                        noteBeforeEditing = note
-                    }
-                } onCommit: {
-                    saveButtonEnabled = noteBeforeEditing != note
-                }
-            }
-            
             Section(header: tagSectionHeaderView()) {
-                #if targetEnvironment(macCatalyst)
-                LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-                    ForEach(self.tags, id: \.self) { tag in
-                        TagLabel(title: tag)
-                            .foregroundColor(.primary)
-                    }
-                }
-                .sheet(isPresented: $editTags) {
-                    AddTagView(tags: $tags, isUpdate: true)
-                        .environment(\.managedObjectContext, viewContext)
-                        .environmentObject(linkCollectorViewModel)
-                }
-                #else
                 List {
                     ForEach(self.tags, id: \.self) { tag in
                         TagLabel(title: tag)
@@ -83,13 +60,23 @@ struct EditLinkView: View {
                     }
                 }
                 .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
+                .listStyle(PlainListStyle())
                 .sheet(isPresented: $editTags) {
                     AddTagView(tags: $tags, isUpdate: true)
                         .environment(\.managedObjectContext, viewContext)
                         .environmentObject(linkCollectorViewModel)
                 }
-                .listStyle(InsetListStyle())
-                #endif
+            }
+            
+            Section(header: NoteLabel(title: "Note")) {
+                TextEditor(text: $note)
+                    .onChange(of: note, perform: { _ in
+                        saveButtonEnabled = true
+                    })
+                    .disableAutocorrection(true)
+                    .multilineTextAlignment(.leading)
+                    .border(Color.secondary)
+                    .frame(minHeight: 150)
             }
         }
     }
