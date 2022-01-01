@@ -213,7 +213,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         do {
             fetchedLinks = try persistenteContainer.viewContext.fetch(fetchRequest)
         } catch {
-            fatalError("Failed to fetch link: \(error)")
+            let nsError = error as NSError
+            print("While fetching LinkEntity with id=\(id) occured an unresolved error \(nsError), \(nsError.userInfo)")
+            DispatchQueue.main.async {
+                self.message = "Cannot find a link with id=\(id)"
+                self.showAlert.toggle()
+            }
         }
         
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
@@ -229,7 +234,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         do {
             fetchedTags = try persistenteContainer.viewContext.fetch(fetchRequest)
         } catch {
-            fatalError("Failed to fetch link: \(error)")
+            let nsError = error as NSError
+            print("While fetching TagEntity with name=\(name) occured an unresolved error \(nsError), \(nsError.userInfo)")
+            DispatchQueue.main.async {
+                self.message = "Cannot find a tag with name=\(name)"
+                self.showAlert.toggle()
+            }
         }
         
         return fetchedTags.isEmpty ? nil : fetchedTags[0]

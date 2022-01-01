@@ -58,7 +58,6 @@ struct PersistenceController {
         })
         
         container.viewContext.name = "LinkCollector"
-
         purgeHistory()
     }
     
@@ -75,7 +74,7 @@ struct PersistenceController {
         }
     }
     
-    func saveContext () {
+    func saveContext() {
         let context = container.viewContext
         if context.hasChanges {
             do {
