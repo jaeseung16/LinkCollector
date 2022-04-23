@@ -26,6 +26,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     @Published var toggle = false
     
+    @Published var selected = UUID()
+    
     var message = ""
     
     override init() {
@@ -314,6 +316,49 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
         return url.appendingPathComponent("token.data", isDirectory: false)
     }()
+    
+    func writeWidgetEntries() {
+        let fetchRequest: NSFetchRequest<LinkEntity> = LinkEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created", ascending: false)]
+        
+        let fc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistenteContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        
+        do {
+            try fc.performFetch()
+        } catch {
+            NSLog("Failed fetch LinkEntity")
+        }
+        
+        guard let entities = fc.fetchedObjects else {
+            return
+        }
+        
+        var widgetEntries = [WidgetEntry]()
+        
+        var index = 0
+        while(index < 5 && index < entities.count) {
+            let entity = entities[index]
+            if let id = entity.id, let title = entity.title, let created = entity.created, let url = entity.url {
+                widgetEntries.append(WidgetEntry(id: id, title: title, url: url, created: created))
+            }
+            index += 1
+        }
+        
+        
+        let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.resonance.jaeseung.LinkCollector")!
+        
+        let encoder = JSONEncoder()
+        
+        if let dataToSave = try? encoder.encode(widgetEntries) {
+            do {
+                try dataToSave.write(to: archiveURL.appendingPathComponent("contents.json"))
+                print("Saved \(widgetEntries.count) widgetEntries")
+            } catch {
+                print("Error: Can't write contents")
+                return
+            }
+        }
+    }
     
 }
 

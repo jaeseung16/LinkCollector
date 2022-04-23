@@ -13,11 +13,18 @@
 		900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FF826D86A0600C63590 /* NoteLabel.swift */; };
 		900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FFA26D86AA500C63590 /* TitleLabel.swift */; };
 		900F3FFD26D86B6300C63590 /* LocationLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FFC26D86B6300C63590 /* LocationLabel.swift */; };
+		9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023C38A280E16010055E322 /* WidgetEntry.swift */; };
+		9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023C38A280E16010055E322 /* WidgetEntry.swift */; };
 		9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */; };
 		902C9B8726C063000071CADB /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C9B8626C063000071CADB /* ShareViewController.swift */; };
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
 		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
+		903C7292280CC8A500FD7F71 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7291280CC8A500FD7F71 /* WidgetKit.framework */; };
+		903C7294280CC8A500FD7F71 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7293280CC8A500FD7F71 /* SwiftUI.framework */; };
+		903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */; };
+		903C7299280CC8A800FD7F71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 903C7298280CC8A800FD7F71 /* Assets.xcassets */; };
+		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
 		905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4A25897B870090BFC6 /* SceneDelegate.swift */; };
@@ -60,6 +67,13 @@
 			remoteGlobalIDString = 902C9B8326C063000071CADB;
 			remoteInfo = LinkCollectorShareExtension;
 		};
+		903C729B280CC8A800FD7F71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 905E9C3D25897B870090BFC6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 903C728F280CC8A500FD7F71;
+			remoteInfo = LinkPilerWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,6 +84,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */,
+				903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,6 +98,7 @@
 		900F3FF826D86A0600C63590 /* NoteLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteLabel.swift; sourceTree = "<group>"; };
 		900F3FFA26D86AA500C63590 /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
 		900F3FFC26D86B6300C63590 /* LocationLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLabel.swift; sourceTree = "<group>"; };
+		9023C38A280E16010055E322 /* WidgetEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntry.swift; sourceTree = "<group>"; };
 		9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorViewModel.swift; sourceTree = "<group>"; };
 		902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		902C9B8626C063000071CADB /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
@@ -90,6 +106,13 @@
 		902C9B8B26C063000071CADB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		902C9B8F26C063000071CADB /* LinkCollectorShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollectorShareExtension.entitlements; sourceTree = "<group>"; };
 		902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = LinkCollectorShareExtension.js; sourceTree = "<group>"; };
+		903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		903C7291280CC8A500FD7F71 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		903C7293280CC8A500FD7F71 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPilerWidget.swift; sourceTree = "<group>"; };
+		903C7298280CC8A800FD7F71 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		903C729A280CC8A800FD7F71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		903C729E280CC8A800FD7F71 /* LinkPilerWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkPilerWidgetExtension.entitlements; sourceTree = "<group>"; };
 		905E9C4525897B870090BFC6 /* LinkPiler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkPiler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		905E9C4825897B870090BFC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		905E9C4A25897B870090BFC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -124,6 +147,15 @@
 			files = (
 				90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */,
 				90FD202026C95F94008CC190 /* SwiftSoup in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903C728D280CC8A500FD7F71 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				903C7294280CC8A500FD7F71 /* SwiftUI.framework in Frameworks */,
+				903C7292280CC8A500FD7F71 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,11 +217,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		903C7295280CC8A500FD7F71 /* LinkPilerWidget */ = {
+			isa = PBXGroup;
+			children = (
+				903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */,
+				903C7298280CC8A800FD7F71 /* Assets.xcassets */,
+				903C729A280CC8A800FD7F71 /* Info.plist */,
+			);
+			path = LinkPilerWidget;
+			sourceTree = "<group>";
+		};
 		905E9C3C25897B870090BFC6 = {
 			isa = PBXGroup;
 			children = (
+				903C729E280CC8A800FD7F71 /* LinkPilerWidgetExtension.entitlements */,
 				905E9C4725897B870090BFC6 /* LinkCollector */,
 				902C9B8526C063000071CADB /* LinkCollectorShareExtension */,
+				903C7295280CC8A500FD7F71 /* LinkPilerWidget */,
 				905E9C4625897B870090BFC6 /* Products */,
 				905E9C6125897DE00090BFC6 /* Frameworks */,
 			);
@@ -200,6 +244,7 @@
 			children = (
 				905E9C4525897B870090BFC6 /* LinkPiler.app */,
 				902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */,
+				903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -234,6 +279,8 @@
 			isa = PBXGroup;
 			children = (
 				905E9C6225897DE00090BFC6 /* CloudKit.framework */,
+				903C7291280CC8A500FD7F71 /* WidgetKit.framework */,
+				903C7293280CC8A500FD7F71 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -251,6 +298,7 @@
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
 				90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */,
 				90D25DC126CEF2BB007F7819 /* TagDTO.swift */,
+				9023C38A280E16010055E322 /* WidgetEntry.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -278,6 +326,23 @@
 			productReference = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		903C728F280CC8A500FD7F71 /* LinkPilerWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 903C72A1280CC8A800FD7F71 /* Build configuration list for PBXNativeTarget "LinkPilerWidgetExtension" */;
+			buildPhases = (
+				903C728C280CC8A500FD7F71 /* Sources */,
+				903C728D280CC8A500FD7F71 /* Frameworks */,
+				903C728E280CC8A500FD7F71 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LinkPilerWidgetExtension;
+			productName = LinkPilerWidgetExtension;
+			productReference = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		905E9C4425897B870090BFC6 /* LinkPiler */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 905E9C5C25897B890090BFC6 /* Build configuration list for PBXNativeTarget "LinkPiler" */;
@@ -291,6 +356,7 @@
 			);
 			dependencies = (
 				902C9B8D26C063000071CADB /* PBXTargetDependency */,
+				903C729C280CC8A800FD7F71 /* PBXTargetDependency */,
 			);
 			name = LinkPiler;
 			packageProductDependencies = (
@@ -306,11 +372,14 @@
 		905E9C3D25897B870090BFC6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1250;
+				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1230;
 				TargetAttributes = {
 					902C9B8326C063000071CADB = {
 						CreatedOnToolsVersion = 12.5.1;
+					};
+					903C728F280CC8A500FD7F71 = {
+						CreatedOnToolsVersion = 13.3.1;
 					};
 					905E9C4425897B870090BFC6 = {
 						CreatedOnToolsVersion = 12.3;
@@ -335,6 +404,7 @@
 			targets = (
 				905E9C4425897B870090BFC6 /* LinkPiler */,
 				902C9B8326C063000071CADB /* LinkPilerShareExtension */,
+				903C728F280CC8A500FD7F71 /* LinkPilerWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -346,6 +416,14 @@
 			files = (
 				902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */,
 				902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903C728E280CC8A500FD7F71 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				903C7299280CC8A800FD7F71 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +456,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		903C728C280CC8A500FD7F71 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */,
+				9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		905E9C4125897B870090BFC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -389,6 +476,7 @@
 				9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */,
 				90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */,
 				900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */,
+				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
 				90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
@@ -417,6 +505,11 @@
 			target = 902C9B8326C063000071CADB /* LinkPilerShareExtension */;
 			targetProxy = 902C9B8C26C063000071CADB /* PBXContainerItemProxy */;
 		};
+		903C729C280CC8A800FD7F71 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 903C728F280CC8A500FD7F71 /* LinkPilerWidgetExtension */;
+			targetProxy = 903C729B280CC8A800FD7F71 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -444,7 +537,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
@@ -453,7 +546,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -468,7 +561,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
@@ -477,11 +570,73 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		903C729F280CC8A800FD7F71 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		903C72A0280CC8A800FD7F71 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -613,7 +768,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -622,7 +777,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -639,7 +794,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -648,7 +803,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -665,6 +820,15 @@
 			buildConfigurations = (
 				902C9B9126C063000071CADB /* Debug */,
 				902C9B9226C063000071CADB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		903C72A1280CC8A800FD7F71 /* Build configuration list for PBXNativeTarget "LinkPilerWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				903C729F280CC8A800FD7F71 /* Debug */,
+				903C72A0280CC8A800FD7F71 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -20,6 +20,7 @@ struct ContentView: View {
     @State var showAlert = false
     @State var message = ""
     @State var searchString = ""
+    @State private var selected: UUID?
     
     @State var selectedTags = Set<TagEntity>()
     var filteredLinks: Array<LinkEntity> {
@@ -102,10 +103,15 @@ struct ContentView: View {
             }
             .searchable(text: $searchString)
         }
+        .onChange(of: linkCollectorViewModel.selected) { newValue in
+            selected = newValue
+        }
     }
     
     private func makeNavigationLink(from link: LinkEntity) -> some View {
-        NavigationLink(destination: makeDetailView(from: link)) {
+        NavigationLink(tag: link.id!, selection: $selected) {
+            makeDetailView(from: link)
+        } label: {
             VStack(alignment: .leading) {
                 Text(link.title ?? "No title")
                     .font(.body)
