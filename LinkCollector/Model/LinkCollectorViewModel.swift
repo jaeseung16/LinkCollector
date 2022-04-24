@@ -10,6 +10,7 @@ import Combine
 import CoreLocation
 import CoreData
 import SwiftSoup
+import UserNotifications
 
 class LinkCollectorViewModel: NSObject, ObservableObject {
     private let persistenteContainer = PersistenceController.shared.container
@@ -39,7 +40,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         NotificationCenter.default
           .publisher(for: .NSPersistentStoreRemoteChange)
-          .sink { self.fetchUpdates($0) }
+          .sink {
+              self.fetchUpdates($0)
+              //self.sendUserNotification()
+          }
           .store(in: &subscriptions)
     }
     
@@ -315,6 +319,45 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         return url.appendingPathComponent("token.data", isDirectory: false)
     }()
     
+    private func sendUserNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "New update"
+        content.sound = UNNotificationSound.default
+
+        // show this notification five seconds from now
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
+        // choose a random identifier
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        // add our notification request
+        UNUserNotificationCenter.current().add(request)
+        
+        print("request=\(request)")
+    }
+    
+    func sendUserNotification(linkEntityId id: UUID) {
+        guard let entity = getLinkEntity(id: id) else {
+            return
+        }
+        
+        let content = UNMutableNotificationContent()
+        content.title = entity.title ?? ""
+        content.sound = UNNotificationSound.default
+
+        print("content=\(content)")
+        
+        // show this notification five seconds from now
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
+        // choose a random identifier
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        // add our notification request
+        UNUserNotificationCenter.current().add(request)
+        
+        print("request=\(request)")
+    }
 }
 
 extension LinkCollectorViewModel: CLLocationManagerDelegate {
