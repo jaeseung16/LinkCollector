@@ -18,6 +18,7 @@
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
 		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
+		90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90337C1E281C9BCB00D82D97 /* NotificationToken.swift */; };
 		90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
 		905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4A25897B870090BFC6 /* SceneDelegate.swift */; };
@@ -90,6 +91,7 @@
 		902C9B8B26C063000071CADB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		902C9B8F26C063000071CADB /* LinkCollectorShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollectorShareExtension.entitlements; sourceTree = "<group>"; };
 		902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = LinkCollectorShareExtension.js; sourceTree = "<group>"; };
+		90337C1E281C9BCB00D82D97 /* NotificationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationToken.swift; sourceTree = "<group>"; };
 		905E9C4525897B870090BFC6 /* LinkPiler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkPiler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		905E9C4825897B870090BFC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		905E9C4A25897B870090BFC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				905E9C6025897D960090BFC6 /* LinkCollector.entitlements */,
 				905E9C4825897B870090BFC6 /* AppDelegate.swift */,
 				905E9C4A25897B870090BFC6 /* SceneDelegate.swift */,
+				90337C1E281C9BCB00D82D97 /* NotificationToken.swift */,
 				905E9C5125897B890090BFC6 /* Assets.xcassets */,
 				905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */,
 				905E9C5925897B890090BFC6 /* Info.plist */,
@@ -393,6 +396,7 @@
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
+				90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
 				905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */,
 				9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */,

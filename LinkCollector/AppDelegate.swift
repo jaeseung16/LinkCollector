@@ -12,26 +12,80 @@ import CloudKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    private let subscriptionID = "link-updated"
+    private let didCreateLinkSubscription = "didCreateLinkSubscription"
     
-    let notificationIDCache = NSCache<CKNotification.ID, CKNotification>()
-
+    private var tokenCache = [NotificationToken: CKServerChangeToken]()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        
+       
         UNUserNotificationCenter.current().delegate = self
         
         registerForPushNotifications()
         
-        let notificationOption = launchOptions?[.remoteNotification]
-        if let notification = notificationOption as? [String: AnyObject], let aps = notification["aps"] as? [String: AnyObject] {
-            print("Notification aps=\(aps)")
-        }
+        // TODO: - Remove or comment out after testing
+        UserDefaults.standard.setValue(false, forKey: didCreateLinkSubscription)
+        
+        subscribe()
 
         return true
     }
+    
+    private func registerForPushNotifications() {
+        UNUserNotificationCenter.current()
+            .requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
+                guard granted else {
+                    return
+                }
+                self?.getNotificationSettings()
+            }
+    }
 
-    // MARK: UISceneSession Lifecycle
+    private func getNotificationSettings() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized else {
+                return
+            }
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+    }
+    
+    private func subscribe() {
+        guard !UserDefaults.standard.bool(forKey: didCreateLinkSubscription) else {
+            return
+        }
+                
+        let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
+        subscription.recordType = "CD_LinkEntity"
+        subscription.notificationInfo = CKSubscription.NotificationInfo()
+                
+        let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
+        operation.qualityOfService = .utility
+        operation.modifySubscriptionsResultBlock = { result in
+            switch result {
+            case .success():
+                UserDefaults.standard.setValue(true, forKey: self.didCreateLinkSubscription)
+            case .failure(let error):
+                print("Failed to modify subscription: \(error)")
+                UserDefaults.standard.setValue(false, forKey: self.didCreateLinkSubscription)
+            }
+        }
+        
+        CKContainer.default().privateCloudDatabase.add(operation)
+    }
 
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenParts = deviceToken.map { String(format: "%02.2hhx", $0) }
+        let token = tokenParts.joined()
+        print("Device Token: \(token)")
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register: \(error)")
+    }
+    
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
@@ -45,93 +99,114 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("Notification userInfo=\(userInfo)")
         guard let notification = CKNotification(fromRemoteNotificationDictionary: userInfo) else {
             completionHandler(.failed)
             return
         }
         
-        print("notification=\(notification)\n")
-        
         if !notification.isPruned && notification.notificationType == .database {
-            if let databaseNotification = notification as? CKDatabaseNotification {
-                if let id = databaseNotification.notificationID {
-                    if notificationIDCache.object(forKey: id) == nil {
-                        notificationIDCache.setObject(databaseNotification, forKey: id)
-                        sendUserNotification()
+            if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
+                print("databaseNotification=\(databaseNotification)")
+                
+                let serverToken = try? NotificationToken.server.readToken()
+                if serverToken != nil {
+                    tokenCache[.zone] = serverToken
+                }
+                
+                let dbChangesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: serverToken)
+                
+                dbChangesOperation.recordZoneWithIDChangedBlock = { zoneId in
+                    let zoneToken = try? NotificationToken.zone.readToken()
+                    if zoneToken != nil {
+                        self.tokenCache[.zone] = zoneToken
+                    }
+                    
+                    var configurations = [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneConfiguration]()
+                    let config = CKFetchRecordZoneChangesOperation.ZoneConfiguration()
+                    config.previousServerChangeToken = zoneToken
+                    configurations[zoneId] = config
+                    
+                    let zoneChangesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [zoneId], configurationsByRecordZoneID: configurations)
+                    
+                    zoneChangesOperation.recordWasChangedBlock = { recordID, result in
+                        switch(result) {
+                        case .success(let record):
+                            self.processRecord(record)
+                        case .failure(let error):
+                            print("Failed to check if record was changed: recordID=\(recordID), error=\(error)")
+                        }
+                    }
+                    
+                    zoneChangesOperation.recordZoneChangeTokensUpdatedBlock = { recordZoneID, token, _ in
+                        self.tokenCache[.zone] = token
+                    }
+                    
+                    zoneChangesOperation.recordZoneFetchResultBlock = { recordZoneID, result in
+                        switch(result) {
+                        case .success((let serverToken, _, _)):
+                            try? NotificationToken.zone.write(serverToken)
+                        case .failure(let error):
+                            print("Failed to fetch record zone: recordZoneID=\(recordZoneID), error=\(error)")
+                            if let lastToken = self.tokenCache[.zone] {
+                                try? NotificationToken.zone.write(lastToken)
+                                //try? self.write(token: lastToken, to: self.zoneTokenFile)
+                            }
+                        }
+                    }
+                    
+                    zoneChangesOperation.qualityOfService = .utility
+                    CKContainer.default().privateCloudDatabase.add(zoneChangesOperation)
+                }
+                
+                dbChangesOperation.changeTokenUpdatedBlock = { token in
+                    self.tokenCache[.server] = token
+                }
+
+                dbChangesOperation.fetchDatabaseChangesResultBlock = { result in
+                    switch result {
+                    case .success((let token, _)):
+                        try? NotificationToken.server.write(token)
+                    case .failure(let error):
+                        print("Failed to fetch database changes: \(error)")
+                        if let lastToken = self.tokenCache[.server] {
+                            try? NotificationToken.server.write(lastToken)
+                        }
                     }
                 }
+                
+                dbChangesOperation.qualityOfService = .utility
+                CKContainer.default().privateCloudDatabase.add(dbChangesOperation)
             }
         }
         
         completionHandler(.newData)
-        
     }
     
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenParts = deviceToken.map { String(format: "%02.2hhx", $0) }
-        let token = tokenParts.joined()
-        print("Device Token: \(token)")
-    }
-    
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register: \(error)")
-    }
-    
-    func registerForPushNotifications() {
-        UNUserNotificationCenter.current()
-            .requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
-                guard granted else {
-                    return
-                }
-                self?.getNotificationSettings()
-            }
-    }
-
-    func getNotificationSettings() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            print("Notification settings: \(settings)")
-            guard settings.authorizationStatus == .authorized else {
-                return
-            }
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-            
+    private func processRecord(_ record: CKRecord) {
+        guard record.recordType == "CD_LinkEntity" else {
+            return
         }
-    }
-    
-    private func sendUserNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "There is an update"
-        content.sound = UNNotificationSound.default
-
-        // show this notification five seconds from now
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-
-        // choose a random identifier
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-        // add our notification request
-        UNUserNotificationCenter.current().add(request)
         
-        print("request=\(request)")
+        guard let title = record.value(forKey: "CD_title") as? String else {
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.sound = UNNotificationSound.default
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
     }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    // This function will be called when the app receive notification
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        
         print("userNotificationCenter: notification=\(notification)")
-        // show the notification alert (banner), and with sound
         completionHandler([.banner, .sound])
     }
     
-    // This function will be called right after user tap on the notification
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
-        // tell the app that we have finished processing the user’s action (eg: tap on notification banner) / response
         completionHandler()
     }
 }
