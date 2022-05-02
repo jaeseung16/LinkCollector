@@ -14,5 +14,6 @@ struct WidgetEntry: TimelineEntry, Codable {
     let url: URL
     let created: Date
     var date: Date = Date()
+    var favicon: Data?
 }
 

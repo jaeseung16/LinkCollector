@@ -342,7 +342,18 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         while(index < 5 && index < entities.count) {
             let entity = entities[index]
             if let id = entity.id, let title = entity.title, let created = entity.created, let url = entity.url {
-                widgetEntries.append(WidgetEntry(id: id, title: title, url: url, created: created))
+                
+                var urlComponents = URLComponents()
+                urlComponents.scheme = url.scheme
+                urlComponents.host = url.host
+                urlComponents.path = "/favicon.ico"
+                
+                var favicon: Data?
+                if let faviconURL = urlComponents.url {
+                    favicon = try? Data(contentsOf: faviconURL)
+                }
+                
+                widgetEntries.append(WidgetEntry(id: id, title: title, url: url, created: created, favicon: favicon))
             }
             index += 1
         }

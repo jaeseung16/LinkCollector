@@ -1,16 +1,14 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "SwiftSoup",
-        "repositoryURL": "https://github.com/scinfu/SwiftSoup",
-        "state": {
-          "branch": null,
-          "revision": "ea76bfd075ccc1c52c0fefd2105f67964542f246",
-          "version": "2.3.5"
-        }
+  "pins" : [
+    {
+      "identity" : "swiftsoup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scinfu/SwiftSoup",
+      "state" : {
+        "revision" : "ea76bfd075ccc1c52c0fefd2105f67964542f246",
+        "version" : "2.3.5"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 2
 }

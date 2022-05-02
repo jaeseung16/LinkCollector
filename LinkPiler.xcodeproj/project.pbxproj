@@ -9,10 +9,14 @@
 /* Begin PBXBuildFile section */
 		9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */; };
 		9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7D1258C1715001B4A3F /* AddLinkView.swift */; };
+		900BF904281F42930046839D /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
+		900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		900F3FF726D8671900C63590 /* TagLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FF626D8671900C63590 /* TagLabel.swift */; };
 		900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FF826D86A0600C63590 /* NoteLabel.swift */; };
 		900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FFA26D86AA500C63590 /* TitleLabel.swift */; };
 		900F3FFD26D86B6300C63590 /* LocationLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900F3FFC26D86B6300C63590 /* LocationLabel.swift */; };
+		90208720281DEE1D005A5264 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9020871E281DEE19005A5264 /* Provider.swift */; };
+		90208721281DEE38005A5264 /* WidgetEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9020871C281DEDD1005A5264 /* WidgetEntryView.swift */; };
 		9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023C38A280E16010055E322 /* WidgetEntry.swift */; };
 		9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023C38A280E16010055E322 /* WidgetEntry.swift */; };
 		9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */; };
@@ -99,6 +103,8 @@
 		900F3FF826D86A0600C63590 /* NoteLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteLabel.swift; sourceTree = "<group>"; };
 		900F3FFA26D86AA500C63590 /* TitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabel.swift; sourceTree = "<group>"; };
 		900F3FFC26D86B6300C63590 /* LocationLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLabel.swift; sourceTree = "<group>"; };
+		9020871C281DEDD1005A5264 /* WidgetEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntryView.swift; sourceTree = "<group>"; };
+		9020871E281DEE19005A5264 /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		9023C38A280E16010055E322 /* WidgetEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntry.swift; sourceTree = "<group>"; };
 		9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorViewModel.swift; sourceTree = "<group>"; };
 		902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -223,6 +229,8 @@
 			isa = PBXGroup;
 			children = (
 				903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */,
+				9020871C281DEDD1005A5264 /* WidgetEntryView.swift */,
+				9020871E281DEE19005A5264 /* Provider.swift */,
 				903C7298280CC8A800FD7F71 /* Assets.xcassets */,
 				903C729A280CC8A800FD7F71 /* Info.plist */,
 			);
@@ -464,7 +472,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */,
+				90208721281DEE38005A5264 /* WidgetEntryView.swift in Sources */,
+				90208720281DEE1D005A5264 /* Provider.swift in Sources */,
+				900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */,
 				9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */,
+				900BF904281F42930046839D /* Persistence.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
