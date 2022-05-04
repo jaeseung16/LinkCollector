@@ -48,6 +48,8 @@
 		90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
 		90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
+		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
+		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
 		90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
 		90C68DB1259538B200C78C1E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB0259538B200C78C1E /* WebView.swift */; };
@@ -154,6 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */,
 				90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */,
 				90FD202026C95F94008CC190 /* SwiftSoup in Frameworks */,
 			);
@@ -172,6 +175,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */,
 				905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */,
 				90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */,
 			);
@@ -333,6 +337,7 @@
 			name = LinkPilerShareExtension;
 			packageProductDependencies = (
 				90FD201F26C95F94008CC190 /* SwiftSoup */,
+				90B3CDB72823336800BF6354 /* FaviconFinder */,
 			);
 			productName = LinkCollectorShareExtension;
 			productReference = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */;
@@ -373,6 +378,7 @@
 			name = LinkPiler;
 			packageProductDependencies = (
 				90A290A4258FA519004988D9 /* SwiftSoup */,
+				90B3CDB528232F9000BF6354 /* FaviconFinder */,
 			);
 			productName = LinkCollector;
 			productReference = 905E9C4525897B870090BFC6 /* LinkPiler.app */;
@@ -409,6 +415,7 @@
 			mainGroup = 905E9C3C25897B870090BFC6;
 			packageReferences = (
 				90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+				90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */,
 			);
 			productRefGroup = 905E9C4625897B870090BFC6 /* Products */;
 			projectDirPath = "";
@@ -879,6 +886,14 @@
 				minimumVersion = 2.3.5;
 			};
 		};
+		90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/will-lumley/FaviconFinder";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 3.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -886,6 +901,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
+		};
+		90B3CDB528232F9000BF6354 /* FaviconFinder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */;
+			productName = FaviconFinder;
+		};
+		90B3CDB72823336800BF6354 /* FaviconFinder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */;
+			productName = FaviconFinder;
 		};
 		90FD201F26C95F94008CC190 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;

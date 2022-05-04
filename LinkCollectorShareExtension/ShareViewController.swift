@@ -9,6 +9,7 @@ import UIKit
 import Social
 import CoreLocation
 import CoreData
+import FaviconFinder
 
 class ShareViewController: UIViewController {
 
@@ -37,6 +38,7 @@ class ShareViewController: UIViewController {
     
     private var posted: Date?
     private var linkEntity: LinkEntity?
+    private var favicon: Data?
     
     @IBOutlet weak var urlLabel: UILabel!
     @IBOutlet weak var titleTextField: UITextField!
@@ -198,10 +200,20 @@ class ShareViewController: UIViewController {
             self.activityIndicator.startAnimating()
         }
         
-        process(urlString: publicURL.absoluteString) { result in
+        process(urlString: publicURL.absoluteString) { url, result in
             DispatchQueue.main.async {
                 self.titleTextField.text = result ?? "Enter title"
                 self.activityIndicator.stopAnimating()
+                
+                if let url = url {
+                    self.findFavicon(url: url) { data, error in
+                        guard let data = data else {
+                            print("Can't download favicon from \(url): \(String(describing: error))")
+                            return
+                        }
+                        self.favicon = data
+                    }
+                }
             }
         }
     }
@@ -212,10 +224,20 @@ class ShareViewController: UIViewController {
             self.activityIndicator.startAnimating()
         }
         
-        process(urlString: plainText) { result in
+        process(urlString: plainText) { url, result in
             DispatchQueue.main.async {
                 self.titleTextField.text = result ?? "Enter title"
                 self.activityIndicator.stopAnimating()
+                
+                if let url = url {
+                    self.findFavicon(url: url) { data, error in
+                        guard let data = data else {
+                            print("Can't download favicon from \(url): \(String(describing: error))")
+                            return
+                        }
+                        self.favicon = data
+                    }
+                }
             }
         }
     }
@@ -250,17 +272,28 @@ class ShareViewController: UIViewController {
         }
     }
     
-    private func process(urlString: String, completionHandler: @escaping (_ result: String?) -> Void) -> Void {
+    private func process(urlString: String, completionHandler: @escaping (_ url: URL?, _ result: String?) -> Void) -> Void {
         let (url, html) = getURLAndHTML(from: urlString)
         
         guard let url = url, let html = html else {
-            completionHandler(nil)
+            completionHandler(nil, nil)
             return
         }
         
         let htmlParser = HTMLParser()
         htmlParser.parse(url: url, html: html) { result in
-            completionHandler(result)
+            completionHandler(url, result)
+        }
+    }
+    
+    private func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
+        FaviconFinder(url: url).downloadFavicon { result in
+            switch result {
+            case .success(let favicon):
+                completionHandler(favicon.data, nil)
+            case .failure(let error):
+                completionHandler(nil, error)
+            }
         }
     }
     

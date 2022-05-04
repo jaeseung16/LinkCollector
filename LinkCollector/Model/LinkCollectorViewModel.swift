@@ -11,6 +11,7 @@ import CoreLocation
 import CoreData
 import SwiftSoup
 import UserNotifications
+import FaviconFinder
 
 class LinkCollectorViewModel: NSObject, ObservableObject {
     private let persistenteContainer = PersistenceController.shared.container
@@ -105,6 +106,17 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         let htmlParser = HTMLParser()
         htmlParser.parse(url: url, html: html) { result in
             completionHandler(result, url)
+        }
+    }
+    
+    func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
+        FaviconFinder(url: url).downloadFavicon { result in
+            switch result {
+            case .success(let favicon):
+                completionHandler(favicon.data, nil)
+            case .failure(let error):
+                completionHandler(nil, error)
+            }
         }
     }
     

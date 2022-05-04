@@ -14,6 +14,7 @@ struct AddLinkView: View {
     
     @State private var title: String = ""
     @State private var url: String = ""
+    @State private var favicon: Data?
     @State private var note: String = ""
     @State private var tags = [String]()
 
@@ -116,8 +117,19 @@ struct AddLinkView: View {
             
             self.title = result
             self.showProgress = false
+            
+            if let url = URL(string: self.url) {
+                linkCollectorViewModel.findFavicon(url: url) { data, error in
+                    guard let data = data else {
+                        self.showProgress = false
+                        self.message = "Cannot open the given url. Please check if a web browser can open it."
+                        self.showAlert = true
+                        return
+                    }
+                    self.favicon = data
+                }
+            }
         }
-        
     }
     
     private func tagSectionHeader() -> some View {
@@ -168,19 +180,6 @@ struct AddLinkView: View {
     }
     
     private func saveLinkAndTags() -> Void {
-        var favicon: Data?
-        
-        if let siteURL = URL(string: url) {
-            var urlComponents = URLComponents()
-            urlComponents.scheme = siteURL.scheme
-            urlComponents.host = siteURL.host
-            urlComponents.path = "/favicon.ico"
-            
-            if let faviconURL = urlComponents.url {
-                favicon = try? Data(contentsOf: faviconURL)
-            }
-        }
-        
         let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, locality: linkCollectorViewModel.userLocality, context: viewContext)
         
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")

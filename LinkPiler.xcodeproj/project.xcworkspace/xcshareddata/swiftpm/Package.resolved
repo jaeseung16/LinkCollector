@@ -1,12 +1,21 @@
 {
   "pins" : [
     {
+      "identity" : "faviconfinder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/will-lumley/FaviconFinder",
+      "state" : {
+        "revision" : "1f74844f77f79b95c0bb0130b3a87d4f340e6d3a",
+        "version" : "3.3.0"
+      }
+    },
+    {
       "identity" : "swiftsoup",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup",
       "state" : {
-        "revision" : "ea76bfd075ccc1c52c0fefd2105f67964542f246",
-        "version" : "2.3.5"
+        "revision" : "41e7c263fb8c277e980ebcb9b0b5f6031d3d4886",
+        "version" : "2.4.2"
       }
     }
   ],
