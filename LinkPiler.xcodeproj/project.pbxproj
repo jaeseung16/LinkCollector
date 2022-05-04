@@ -107,6 +107,7 @@
 		9020871E281DEE19005A5264 /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		9023C38A280E16010055E322 /* WidgetEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEntry.swift; sourceTree = "<group>"; };
 		9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorViewModel.swift; sourceTree = "<group>"; };
+		9026D8CE2820893F00D16BAA /* LinkCollector 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "LinkCollector 2.xcdatamodel"; sourceTree = "<group>"; };
 		902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		902C9B8626C063000071CADB /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		902C9B8926C063000071CADB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
@@ -897,9 +898,10 @@
 		905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				9026D8CE2820893F00D16BAA /* LinkCollector 2.xcdatamodel */,
 				905E9C4F25897B870090BFC6 /* LinkCollector.xcdatamodel */,
 			);
-			currentVersion = 905E9C4F25897B870090BFC6 /* LinkCollector.xcdatamodel */;
+			currentVersion = 9026D8CE2820893F00D16BAA /* LinkCollector 2.xcdatamodel */;
 			path = LinkCollector.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

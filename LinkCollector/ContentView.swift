@@ -112,12 +112,19 @@ struct ContentView: View {
         NavigationLink(tag: link.id!, selection: $selected) {
             makeDetailView(from: link)
         } label: {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10.0) {
                 Text(link.title ?? "No title")
                     .font(.body)
                     .foregroundColor(.primary)
                 
                 HStack {
+                    if let favicon = link.favicon, let uiImage = UIImage(data: favicon) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: 16, maxHeight: 16)
+                    }
+                    
                     Spacer()
                     
                     Text(dateFormatter.string(from: link.created!))

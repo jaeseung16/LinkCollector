@@ -273,16 +273,29 @@ class ShareViewController: UIViewController {
             self.activityIndicator.startAnimating()
         }
         
+        var favicon: Data?
+        if let urlString = urlLabel.text, let url = URL(string: urlString) {
+            var urlComponents = URLComponents()
+            urlComponents.scheme = url.scheme
+            urlComponents.host = url.host
+            urlComponents.path = "/favicon.ico"
+            
+            if let faviconURL = urlComponents.url {
+                favicon = try? Data(contentsOf: faviconURL)
+            }
+        }
+        
         persistenceController.container.viewContext.name = contextName
         posted = Date()
         
         linkEntity = LinkEntity.create(title: titleTextField.text,
-                          url: urlLabel.text,
-                          note: "",
-                          latitude: location != nil ? location!.coordinate.latitude : 0.0,
-                          longitude: location != nil ? location!.coordinate.latitude : 0.0,
-                          locality: self.locality,
-                          context: persistenceController.container.viewContext)
+                                       url: urlLabel.text,
+                                       favicon: favicon,
+                                       note: "",
+                                       latitude: location != nil ? location!.coordinate.latitude : 0.0,
+                                       longitude: location != nil ? location!.coordinate.latitude : 0.0,
+                                       locality: self.locality,
+                                       context: persistenceController.container.viewContext)
         
         persistenceController.container.viewContext.name = nil
         

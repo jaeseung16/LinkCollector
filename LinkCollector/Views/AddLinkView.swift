@@ -168,7 +168,20 @@ struct AddLinkView: View {
     }
     
     private func saveLinkAndTags() -> Void {
-        let linkEntity = LinkEntity.create(title: title, url: url, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, locality: linkCollectorViewModel.userLocality, context: viewContext)
+        var favicon: Data?
+        
+        if let siteURL = URL(string: url) {
+            var urlComponents = URLComponents()
+            urlComponents.scheme = siteURL.scheme
+            urlComponents.host = siteURL.host
+            urlComponents.path = "/favicon.ico"
+            
+            if let faviconURL = urlComponents.url {
+                favicon = try? Data(contentsOf: faviconURL)
+            }
+        }
+        
+        let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, locality: linkCollectorViewModel.userLocality, context: viewContext)
         
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
