@@ -112,17 +112,21 @@ struct ContentView: View {
         NavigationLink(tag: link.id!, selection: $selected) {
             makeDetailView(from: link)
         } label: {
-            VStack(alignment: .leading, spacing: 10.0) {
+            HStack {
                 Text(link.title ?? "No title")
                     .font(.body)
                     .foregroundColor(.primary)
                 
-                HStack {
+                Spacer()
+                
+                VStack {
                     if let favicon = link.favicon, let uiImage = UIImage(data: favicon) {
+                        Spacer()
+                        
                         Image(uiImage: uiImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 16, maxHeight: 16)
+                            .frame(maxWidth: 24, maxHeight: 24)
                     }
                     
                     Spacer()

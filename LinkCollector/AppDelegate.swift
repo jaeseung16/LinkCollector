@@ -192,7 +192,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         let content = UNMutableNotificationContent()
-        content.title = title
+        content.title = "LinkPiler"
+        content.body = title
         content.sound = UNNotificationSound.default
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
