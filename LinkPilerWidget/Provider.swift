@@ -7,18 +7,26 @@
 
 import WidgetKit
 import SwiftUI
-import CoreData
+import OSLog
 
 struct Provider: TimelineProvider {
-    private let persistenceController = PersistenceController.shared
+    private let logger = Logger()
+    
+    private var exampleEntry: WidgetEntry {
+        WidgetEntry(id: UUID(),
+                    title: "Link Piler",
+                    url: URL(fileURLWithPath: ""),
+                    created: Date(),
+                    date: Date(),
+                    favicon: UIImage(named: "LinkPiler")?.pngData())
+    }
     
     func placeholder(in context: Context) -> WidgetEntry {
-        WidgetEntry(id: UUID(), title: "title", url: URL(fileURLWithPath: ""), created: Date(), date: Date())
+        exampleEntry
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WidgetEntry) -> ()) {
-        let entry = WidgetEntry(id: UUID(), title: "title", url: URL(fileURLWithPath: ""), created: Date(), date: Date())
-        completion(entry)
+        completion(exampleEntry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<WidgetEntry>) -> ()) {
@@ -36,7 +44,7 @@ struct Provider: TimelineProvider {
         }
          
         let currentDate = Date()
-        let interval = 15
+        let interval = 10
         for index in 0 ..< widgetEntries.count {
             widgetEntries[index].date = Calendar.current.date(byAdding: .second, value: index * interval, to: currentDate)!
         }
