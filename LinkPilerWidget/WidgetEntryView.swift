@@ -11,8 +11,13 @@ import WidgetKit
 struct WidgetEntryView : View {
     var entry: WidgetEntry
     
-    private var widgetURL: URL {
-        URL(string: "widget-linkpiler:///\(entry.id)")!
+    private var widgetURL: URL? {
+        var urlComponents = URLComponents()
+        urlComponents.scheme="widget-linkpiler"
+        urlComponents.path="/\(entry.id)"
+        urlComponents.query="\(entry.title)"
+        
+        return urlComponents.url
     }
 
     private var futureDate: Date {
@@ -23,7 +28,7 @@ struct WidgetEntryView : View {
     
     var body: some View {
         ZStack {
-            Image("LinkCollector")
+            Image("LinkPilerWidgetBackground")
                 .resizable()
             
             VStack {
@@ -44,7 +49,11 @@ struct WidgetEntryView : View {
                         .foregroundColor(.white)
                 }
                 
-                Spacer(minLength: 8)
+                Spacer(minLength: 4)
+
+                Text(entry.created, style: .date)
+                    .font(.caption)
+                    .foregroundColor(.mint)
             }
             .widgetURL(widgetURL)
             .padding()
