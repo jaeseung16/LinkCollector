@@ -78,11 +78,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let context = URLContexts.first else {
             return
         }
-        
-        print("url: \(context.url)")
-        print("uuid=\(context.url.lastPathComponent)")
-        
         locationViewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
+        locationViewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
     }
 
 }

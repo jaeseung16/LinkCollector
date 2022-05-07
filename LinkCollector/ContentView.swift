@@ -32,10 +32,10 @@ struct ContentView: View {
             return filter
         }
         .filter { link in
-            if searchString == "" {
+            if linkCollectorViewModel.searchString == "" {
                 return true
             } else if let title = link.title {
-                return title.lowercased().contains(searchString.lowercased())
+                return title.lowercased().contains(linkCollectorViewModel.searchString.lowercased())
             } else {
                 return false
             }
@@ -101,7 +101,7 @@ struct ContentView: View {
                       message: Text(message),
                       dismissButton: .default(Text("Dismiss")))
             }
-            .searchable(text: $searchString)
+            .searchable(text: $linkCollectorViewModel.searchString)
         }
         .onChange(of: linkCollectorViewModel.selected) { newValue in
             selected = newValue

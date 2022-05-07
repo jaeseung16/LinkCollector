@@ -29,6 +29,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var toggle = false
     
     @Published var selected = UUID()
+    @Published var searchString = ""
     
     var message = ""
     
@@ -350,26 +351,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         var widgetEntries = [WidgetEntry]()
         
-        var index = 0
-        while(index < 5 && index < entities.count) {
-            let entity = entities[index]
+        // Randomly select 24 records to provide widgets per hour
+        for _ in 0..<24 {
+            let entity = entities[Int.random(in: 0..<entities.count)]
             if let id = entity.id, let title = entity.title, let created = entity.created, let url = entity.url {
-                
-                var urlComponents = URLComponents()
-                urlComponents.scheme = url.scheme
-                urlComponents.host = url.host
-                urlComponents.path = "/favicon.ico"
-                
-                var favicon: Data?
-                if let faviconURL = urlComponents.url {
-                    favicon = try? Data(contentsOf: faviconURL)
-                }
-                
-                widgetEntries.append(WidgetEntry(id: id, title: title, url: url, created: created, favicon: favicon))
+                widgetEntries.append(WidgetEntry(id: id, title: title, url: url, created: created, favicon: entity.favicon))
             }
-            index += 1
         }
-        
         
         let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.resonance.jaeseung.LinkCollector")!
         
