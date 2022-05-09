@@ -53,6 +53,7 @@
 		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
 		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
 		90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
+		90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
 		90C68DB1259538B200C78C1E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB0259538B200C78C1E /* WebView.swift */; };
 		90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
@@ -62,8 +63,6 @@
 		90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90F4833E278116DE0085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90F9CCBB26CC619300B875FE /* EditLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F9CCBA26CC619300B875FE /* EditLinkView.swift */; };
-		90FD201D26C95DD4008CC190 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
-		90FD201E26C95DD8008CC190 /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 		90FD202026C95F94008CC190 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 90FD201F26C95F94008CC190 /* SwiftSoup */; };
 		90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FD202126C9A78E008CC190 /* TypeIdentifier.swift */; };
 /* End PBXBuildFile section */
@@ -207,10 +206,10 @@
 				90D25DBF26CEE1D5007F7819 /* AddTagView.swift */,
 				90F9CCBA26CC619300B875FE /* EditLinkView.swift */,
 				9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */,
-				90C68DAD2595334600C78C1E /* MapView.swift */,
-				90C68DB0259538B200C78C1E /* WebView.swift */,
 				903A4072282862F70080E46A /* LinkListView.swift */,
 				903A4074282864380080E46A /* SelectTagsView.swift */,
+				90C68DAD2595334600C78C1E /* MapView.swift */,
+				90C68DB0259538B200C78C1E /* WebView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -273,6 +272,8 @@
 		905E9C4725897B870090BFC6 /* LinkCollector */ = {
 			isa = PBXGroup;
 			children = (
+				90C30D302829C3B800061A5F /* Persistence */,
+				90C30D2F2829C39800061A5F /* ViewModel */,
 				9023F54C258EBFC100192D42 /* Views */,
 				90C56AC0258ACD1300D716BC /* Model */,
 				905E9C6025897D960090BFC6 /* LinkCollector.entitlements */,
@@ -307,17 +308,31 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		90C30D2F2829C39800061A5F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
+				90A290A7258FB663004988D9 /* HTMLParser.swift */,
+				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		90C30D302829C3B800061A5F /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				90A5BB9026C478D10044A0EA /* Persistence.swift */,
+				90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */,
+				90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */,
+				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
 		90C56AC0258ACD1300D716BC /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */,
-				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
-				90A5BB9026C478D10044A0EA /* Persistence.swift */,
-				90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */,
-				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
-				90A290A7258FB663004988D9 /* HTMLParser.swift */,
 				90A290AA258FB695004988D9 /* Title.swift */,
-				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
 				90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */,
 				90D25DC126CEF2BB007F7819 /* TagDTO.swift */,
 				9023C38A280E16010055E322 /* WidgetEntry.swift */,
@@ -474,9 +489,7 @@
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
 				90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */,
-				90FD201D26C95DD4008CC190 /* HTMLParser.swift in Sources */,
 				90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
-				90FD201E26C95DD8008CC190 /* YouTubeOEmbed.swift in Sources */,
 				90F4833E278116DE0085E26B /* LinkeEntity+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -485,6 +498,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */,
 				903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */,
 				90208721281DEE38005A5264 /* WidgetEntryView.swift in Sources */,
 				90208720281DEE1D005A5264 /* Provider.swift in Sources */,
