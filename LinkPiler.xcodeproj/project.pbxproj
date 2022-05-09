@@ -54,6 +54,9 @@
 		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
 		90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
 		90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
+		90C30D322829C4CC00061A5F /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
+		90C30D352829C50100061A5F /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
+		90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
 		90C68DB1259538B200C78C1E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB0259538B200C78C1E /* WebView.swift */; };
 		90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
@@ -486,9 +489,11 @@
 			files = (
 				90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */,
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
+				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
 				90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */,
+				90C30D352829C50100061A5F /* HTMLParser.swift in Sources */,
 				90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
 				90F4833E278116DE0085E26B /* LinkeEntity+Extension.swift in Sources */,
 			);
@@ -501,6 +506,7 @@
 				90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */,
 				903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */,
 				90208721281DEE38005A5264 /* WidgetEntryView.swift in Sources */,
+				90C30D322829C4CC00061A5F /* NSManagedObjectContext+Extension.swift in Sources */,
 				90208720281DEE1D005A5264 /* Provider.swift in Sources */,
 				900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */,
 				9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */,
