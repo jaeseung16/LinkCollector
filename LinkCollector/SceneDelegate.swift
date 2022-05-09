@@ -11,7 +11,7 @@ import SwiftUI
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
-    lazy var locationViewModel = LinkCollectorViewModel()
+    lazy var viewModel = LinkCollectorViewModel()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let urlContext = connectionOptions.urlContexts.first {
             if urlContext.url.scheme == "widget-linkpiler" {
-                locationViewModel.selected = UUID(uuidString: urlContext.url.lastPathComponent)!
+                viewModel.selected = UUID(uuidString: urlContext.url.lastPathComponent)!
             }
         }
         
@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
         let contentView = ContentView()
             .environment(\.managedObjectContext, context)
-            .environmentObject(locationViewModel)
+            .environmentObject(viewModel)
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
@@ -71,15 +71,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
         PersistenceController.shared.saveContext()
-        locationViewModel.writeWidgetEntries()
+        viewModel.writeWidgetEntries()
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let context = URLContexts.first else {
             return
         }
-        locationViewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
-        locationViewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
+        viewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
+        viewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
     }
 
 }

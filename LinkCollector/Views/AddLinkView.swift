@@ -10,7 +10,7 @@ import SwiftUI
 struct AddLinkView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
+    @EnvironmentObject var viewModel: LinkCollectorViewModel
     
     @State private var title: String = ""
     @State private var url: String = ""
@@ -50,7 +50,7 @@ struct AddLinkView: View {
                 TextField("Insert url", text: $url, onCommit: {
                     updateURL()
                     urlUpdated = true
-                    linkCollectorViewModel.lookUpCurrentLocation()
+                    viewModel.lookUpCurrentLocation()
                 })
                 .autocapitalization(.none)
             }
@@ -60,7 +60,7 @@ struct AddLinkView: View {
             }
             
             Section(header: LocationLabel(title: "Location")) {
-                Text("\(linkCollectorViewModel.userLocality)")
+                Text("\(viewModel.userLocality)")
             }
             
             Section(header: NoteLabel(title: "Note")) {
@@ -103,7 +103,7 @@ struct AddLinkView: View {
     private func updateURL() {
         showProgress = true
         
-        linkCollectorViewModel.process(urlString: url) { result, correctedURL in
+        viewModel.process(urlString: url) { result, correctedURL in
             guard let result = result, !result.isEmpty else {
                 self.showProgress = false
                 self.message = "Cannot open the given url. Please check if a web browser can open it."
@@ -119,7 +119,7 @@ struct AddLinkView: View {
             self.showProgress = false
             
             if let url = URL(string: self.url) {
-                linkCollectorViewModel.findFavicon(url: url) { data, error in
+                viewModel.findFavicon(url: url) { data, error in
                     guard let data = data else {
                         self.showProgress = false
                         self.message = "Cannot open the given url. Please check if a web browser can open it."
@@ -161,7 +161,7 @@ struct AddLinkView: View {
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
                 .environment(\.managedObjectContext, viewContext)
-                .environmentObject(linkCollectorViewModel)
+                .environmentObject(viewModel)
         }
         #else
         List {
@@ -180,12 +180,12 @@ struct AddLinkView: View {
     }
     
     private func saveLinkAndTags() -> Void {
-        let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: linkCollectorViewModel.userLatitude, longitude: linkCollectorViewModel.userLongitude, locality: linkCollectorViewModel.userLocality, context: viewContext)
+        let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: viewModel.userLatitude, longitude: viewModel.userLongitude, locality: viewModel.userLocality, context: viewContext)
         
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
         for tag in tags {
-            linkCollectorViewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
+            viewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
         }
     }
     

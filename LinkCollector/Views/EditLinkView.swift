@@ -10,7 +10,7 @@ import SwiftUI
 struct EditLinkView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
+    @EnvironmentObject var viewModel: LinkCollectorViewModel
     
     @State var titleColor = Color.white
     @State var noteColor = Color.white
@@ -62,7 +62,7 @@ struct EditLinkView: View {
                 .sheet(isPresented: $editTags) {
                     AddTagView(tags: $tags, isUpdate: true)
                         .environment(\.managedObjectContext, viewContext)
-                        .environmentObject(linkCollectorViewModel)
+                        .environmentObject(viewModel)
                 }
             }
             
@@ -125,10 +125,10 @@ struct EditLinkView: View {
     
     private func saveEntities() -> Void {
         let linkDTO = LinkDTO(id: id, title: title, note: note)
-        linkCollectorViewModel.linkDTO = linkDTO
+        viewModel.linkDTO = linkDTO
         
         for tag in tags {
-            linkCollectorViewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
+            viewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
             
             if let index = originalTags.firstIndex(of: tag) {
                 originalTags.remove(at: index)
@@ -136,7 +136,7 @@ struct EditLinkView: View {
         }
         
         for tag in originalTags {
-            linkCollectorViewModel.remove(tag: tag, from: linkDTO)
+            viewModel.remove(tag: tag, from: linkDTO)
         }
     }
 }

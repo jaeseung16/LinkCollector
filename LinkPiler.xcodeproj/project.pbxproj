@@ -25,6 +25,8 @@
 		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
 		90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90337C1E281C9BCB00D82D97 /* NotificationToken.swift */; };
+		903A4073282862F70080E46A /* LinkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4072282862F70080E46A /* LinkListView.swift */; };
+		903A4075282864380080E46A /* SelectTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4074282864380080E46A /* SelectTagsView.swift */; };
 		903C7292280CC8A500FD7F71 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7291280CC8A500FD7F71 /* WidgetKit.framework */; };
 		903C7294280CC8A500FD7F71 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7293280CC8A500FD7F71 /* SwiftUI.framework */; };
 		903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */; };
@@ -117,6 +119,8 @@
 		902C9B8F26C063000071CADB /* LinkCollectorShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollectorShareExtension.entitlements; sourceTree = "<group>"; };
 		902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = LinkCollectorShareExtension.js; sourceTree = "<group>"; };
 		90337C1E281C9BCB00D82D97 /* NotificationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationToken.swift; sourceTree = "<group>"; };
+		903A4072282862F70080E46A /* LinkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkListView.swift; sourceTree = "<group>"; };
+		903A4074282864380080E46A /* SelectTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTagsView.swift; sourceTree = "<group>"; };
 		903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		903C7291280CC8A500FD7F71 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		903C7293280CC8A500FD7F71 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -205,6 +209,8 @@
 				9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */,
 				90C68DAD2595334600C78C1E /* MapView.swift */,
 				90C68DB0259538B200C78C1E /* WebView.swift */,
+				903A4072282862F70080E46A /* LinkListView.swift */,
+				903A4074282864380080E46A /* SelectTagsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -271,13 +277,13 @@
 				90C56AC0258ACD1300D716BC /* Model */,
 				905E9C6025897D960090BFC6 /* LinkCollector.entitlements */,
 				905E9C4825897B870090BFC6 /* AppDelegate.swift */,
+				905E9C4C25897B870090BFC6 /* ContentView.swift */,
 				905E9C4A25897B870090BFC6 /* SceneDelegate.swift */,
 				90337C1E281C9BCB00D82D97 /* NotificationToken.swift */,
 				905E9C5125897B890090BFC6 /* Assets.xcassets */,
 				905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */,
 				905E9C5925897B890090BFC6 /* Info.plist */,
 				905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */,
-				905E9C4C25897B870090BFC6 /* ContentView.swift */,
 				905E9C5325897B890090BFC6 /* Preview Content */,
 			);
 			path = LinkCollector;
@@ -493,6 +499,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90A290AB258FB695004988D9 /* Title.swift in Sources */,
+				903A4075282864380080E46A /* SelectTagsView.swift in Sources */,
 				90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */,
 				90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */,
 				90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */,
@@ -516,6 +523,7 @@
 				90C68DB1259538B200C78C1E /* WebView.swift in Sources */,
 				905E9C5025897B870090BFC6 /* LinkCollector.xcdatamodeld in Sources */,
 				900F3FF726D8671900C63590 /* TagLabel.swift in Sources */,
+				903A4073282862F70080E46A /* LinkListView.swift in Sources */,
 				9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */,
 				90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */,
 			);

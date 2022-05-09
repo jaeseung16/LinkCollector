@@ -11,7 +11,7 @@ import MapKit
 struct LinkDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
+    @EnvironmentObject var viewModel: LinkCollectorViewModel
     
     @State var showNote = false
     @State var showTags = false
@@ -70,18 +70,18 @@ struct LinkDetailView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $linkCollectorViewModel.showAlert, content: {
+            .alert(isPresented: $viewModel.showAlert, content: {
                 Alert(title: Text("Unable to Save Data"),
-                      message: Text(linkCollectorViewModel.message),
+                      message: Text(viewModel.message),
                       dismissButton: .default(Text("Dismiss")))
             })
             .sheet(isPresented: $showEditLinkView) {
                 EditLinkView(id: entity.id!,
                              title: entity.title ?? "",
                              note: entity.note ?? "",
-                             tags: linkCollectorViewModel.getTagList(of: entity))
+                             tags: viewModel.getTagList(of: entity))
                     .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(linkCollectorViewModel)
+                    .environmentObject(viewModel)
             }
         }
     }

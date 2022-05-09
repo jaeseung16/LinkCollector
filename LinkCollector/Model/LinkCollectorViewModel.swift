@@ -30,6 +30,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     @Published var selected = UUID()
     @Published var searchString = ""
+    @Published var selectedTags = Set<TagEntity>()
     
     var message = ""
     

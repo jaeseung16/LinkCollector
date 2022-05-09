@@ -10,7 +10,7 @@ import SwiftUI
 struct AddTagView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var linkCollectorViewModel: LinkCollectorViewModel
+    @EnvironmentObject var viewModel: LinkCollectorViewModel
     
     @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var existingTags: FetchedResults<TagEntity>
     
@@ -172,7 +172,7 @@ struct AddTagView: View {
     }
     
     private func save() -> Void {
-        linkCollectorViewModel.tagDTO = TagDTO(name: tagName)
+        viewModel.tagDTO = TagDTO(name: tagName)
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
@@ -189,9 +189,3 @@ struct AddTagView: View {
     }
 }
 
-struct AddTagView_Previews: PreviewProvider {
-    @State private static var tags = [String]()
-    static var previews: some View {
-        AddTagView(tags: $tags)
-    }
-}
