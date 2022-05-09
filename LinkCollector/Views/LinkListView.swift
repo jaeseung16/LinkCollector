@@ -76,8 +76,10 @@ struct LinkListView: View {
                 Button {
                     showAlert.toggle()
                 } label: {
-                    Text(message)
+                    Text("Dismiss")
                 }
+            } message: {
+                Text(message)
             }
             .searchable(text: $viewModel.searchString)
         }
