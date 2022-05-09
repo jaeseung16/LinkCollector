@@ -174,7 +174,7 @@ struct AddLinkView: View {
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
                 .environment(\.managedObjectContext, viewContext)
-                .environmentObject(linkCollectorViewModel)
+                .environmentObject(viewModel)
         }
         #endif
     }
