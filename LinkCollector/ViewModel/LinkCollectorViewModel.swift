@@ -186,6 +186,39 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
+    func update(link: LinkDTO, with tags: [String]) -> Void {
+        if let linkEntity = getLinkEntity(id: link.id) {
+            if let tagEntites = linkEntity.tags {
+                for entity in tagEntites {
+                    if let tag = entity as? TagEntity {
+                        tag.removeFromLinks(linkEntity)
+                    }
+                }
+            }
+            
+            tags.forEach {
+                if let entity = getTagEntity(with: $0) {
+                    linkEntity.addToTags(entity)
+                }
+            }
+        }
+        
+        do {
+            try saveContext()
+        } catch {
+            let nsError = error as NSError
+            print("While removing tags from \(link) occured an unresolved error \(nsError), \(nsError.userInfo)")
+            DispatchQueue.main.async {
+                self.message = "Cannot save link = \(link.title)"
+                self.showAlert.toggle()
+            }
+        }
+        
+        DispatchQueue.main.async {
+            self.toggle.toggle()
+        }
+    }
+    
     func remove(tag: String, from link: LinkDTO) {
         if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
             tagEntity.removeFromLinks(linkEntity)

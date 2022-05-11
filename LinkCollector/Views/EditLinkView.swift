@@ -126,18 +126,7 @@ struct EditLinkView: View {
     private func saveEntities() -> Void {
         let linkDTO = LinkDTO(id: id, title: title, note: note)
         viewModel.linkDTO = linkDTO
-        
-        for tag in tags {
-            viewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
-            
-            if let index = originalTags.firstIndex(of: tag) {
-                originalTags.remove(at: index)
-            }
-        }
-        
-        for tag in originalTags {
-            viewModel.remove(tag: tag, from: linkDTO)
-        }
+        viewModel.update(link: linkDTO, with: tags)
     }
 }
 
