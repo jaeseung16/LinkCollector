@@ -20,14 +20,6 @@ struct LinkListView: View {
     @State var searchString = ""
     @State private var selected: UUID?
     
-    private var dateFormatter: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .none
-        dateFormatter.locale = Locale(identifier: "en_US")
-        return dateFormatter
-    }
-    
     var filteredLinks: Array<LinkEntity> {
         links.filter { link in
             var filter = true
@@ -53,7 +45,12 @@ struct LinkListView: View {
                 List {
                     ForEach(filteredLinks, id: \.id) { link in
                         if link.created != nil {
-                            makeNavigationLink(from: link)
+                            NavigationLink(tag: link.id!, selection: $selected) {
+                                LinkDetailView(entity: link, tags: link.getTagList())
+                                    .navigationTitle(link.title ?? "")
+                            } label: {
+                                LinkLabel(link: link)
+                            }
                         }
                     }
                     .onDelete(perform: self.removeLink)
@@ -86,42 +83,6 @@ struct LinkListView: View {
         .onChange(of: viewModel.selected) { newValue in
             selected = newValue
         }
-    }
-    
-    private func makeNavigationLink(from link: LinkEntity) -> some View {
-        NavigationLink(tag: link.id!, selection: $selected) {
-            LinkDetailView(entity: link, tags: tagList(of: link))
-                .navigationTitle(link.title ?? "")
-        } label: {
-            HStack {
-                Text(link.title ?? "No title")
-                    .font(.body)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-                
-                VStack {
-                    if let favicon = link.favicon, let uiImage = UIImage(data: favicon) {
-                        Spacer()
-                        
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 24, maxHeight: 24)
-                    }
-                    
-                    Spacer()
-                    
-                    Text(dateFormatter.string(from: link.created!))
-                        .font(.callout)
-                        .foregroundColor(.secondary)
-                }
-            }
-        }
-    }
-    
-    private func tagList(of link: LinkEntity) -> [TagEntity] {
-        link.tags?.filter { $0 is TagEntity }.map { $0 as! TagEntity } ?? [TagEntity]()
     }
     
     private func removeLink(indexSet: IndexSet) -> Void {
