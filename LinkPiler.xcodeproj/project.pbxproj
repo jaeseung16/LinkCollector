@@ -57,6 +57,7 @@
 		90C30D322829C4CC00061A5F /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90C30D352829C50100061A5F /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
+		90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C30D372829CC9500061A5F /* LinkLabel.swift */; };
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
 		90C68DB1259538B200C78C1E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB0259538B200C78C1E /* WebView.swift */; };
 		90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
@@ -146,6 +147,7 @@
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90A5BB9026C478D10044A0EA /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Extension.swift"; sourceTree = "<group>"; };
+		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		90C68DB0259538B200C78C1E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeOEmbed.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				900F3FF826D86A0600C63590 /* NoteLabel.swift */,
 				900F3FFA26D86AA500C63590 /* TitleLabel.swift */,
 				900F3FFC26D86B6300C63590 /* LocationLabel.swift */,
+				90C30D372829CC9500061A5F /* LinkLabel.swift */,
 			);
 			path = Labels;
 			sourceTree = "<group>";
@@ -525,6 +528,7 @@
 				90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */,
 				9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */,
 				90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */,
+				90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */,
 				900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */,
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
 				90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
