@@ -9,22 +9,30 @@ import SwiftUI
 
 struct LinkListView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var viewModel: LinkCollectorViewModel
+    @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
     @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     
-    @State var showAddLinkView = false
-    @State var showTagListView = false
-    @State var showAlert = false
-    @State var message = ""
-    @State var searchString = ""
+    @State private var showAddLinkView = false
+    @State private var showTagListView = false
+    @State private var showAlert = false
+    @State private var message = ""
+    @State private var searchString = ""
     @State private var selected: UUID?
+    @State private var showDateRangePickerView = false
     
     var filteredLinks: Array<LinkEntity> {
         links.filter { link in
             var filter = true
             if let tags = link.tags as? Set<TagEntity>, !viewModel.selectedTags.isEmpty && viewModel.selectedTags.intersection(tags).isEmpty {
                 filter = false
+            }
+            return filter
+        }
+        .filter { link in
+            var filter = true
+            if let created = link.created {
+                filter = viewModel.dateInterval?.contains(created) ?? true
             }
             return filter
         }
@@ -69,6 +77,10 @@ struct LinkListView: View {
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
+            .sheet(isPresented: $showDateRangePickerView) {
+                DateRangePickerView(start: viewModel.dateInterval?.start ?? Date(), end: viewModel.dateInterval?.end ?? Date())
+                    .environmentObject(viewModel)
+            }
             .alert("Unable to Save Data", isPresented: $showAlert) {
                 Button {
                     showAlert.toggle()
@@ -101,6 +113,13 @@ struct LinkListView: View {
     
     private func navigationBarItems() -> some View {
         HStack {
+            Button(action: {
+                self.showDateRangePickerView = true
+            }, label: {
+                Label("Filter", systemImage: "calendar")
+            })
+            .foregroundColor(Color.blue)
+            
             Button(action: {
                 self.showTagListView = true
             }, label: {

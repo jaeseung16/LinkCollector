@@ -24,6 +24,7 @@
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
 		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
+		9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030552D282C70610081E026 /* DateRangePickerView.swift */; };
 		90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90337C1E281C9BCB00D82D97 /* NotificationToken.swift */; };
 		903A4073282862F70080E46A /* LinkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4072282862F70080E46A /* LinkListView.swift */; };
 		903A4075282864380080E46A /* SelectTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4074282864380080E46A /* SelectTagsView.swift */; };
@@ -121,6 +122,7 @@
 		902C9B8B26C063000071CADB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		902C9B8F26C063000071CADB /* LinkCollectorShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollectorShareExtension.entitlements; sourceTree = "<group>"; };
 		902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = LinkCollectorShareExtension.js; sourceTree = "<group>"; };
+		9030552D282C70610081E026 /* DateRangePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangePickerView.swift; sourceTree = "<group>"; };
 		90337C1E281C9BCB00D82D97 /* NotificationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationToken.swift; sourceTree = "<group>"; };
 		903A4072282862F70080E46A /* LinkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkListView.swift; sourceTree = "<group>"; };
 		903A4074282864380080E46A /* SelectTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTagsView.swift; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				903A4074282864380080E46A /* SelectTagsView.swift */,
 				90C68DAD2595334600C78C1E /* MapView.swift */,
 				90C68DB0259538B200C78C1E /* WebView.swift */,
+				9030552D282C70610081E026 /* DateRangePickerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -539,6 +542,7 @@
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
 				905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */,
 				9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */,
+				9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */,
 				90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */,
 				900F3FFD26D86B6300C63590 /* LocationLabel.swift in Sources */,
 				90CF0F4026CD710400D1CBF4 /* LinkDTO.swift in Sources */,
