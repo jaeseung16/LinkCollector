@@ -312,7 +312,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             let backgroundContext = self.persistenteContainer.newBackgroundContext()
             backgroundContext.performAndWait {
                 do {
-                    let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: self.lastToken)
+                    let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: HistoryToken.shared.last)
                     
                     if let historyResult = try backgroundContext.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
                        let history = historyResult.result as? [NSPersistentHistoryTransaction] {
@@ -325,49 +325,18 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                             }
                         }
                         
-                        self.lastToken = history.last?.token
+                        HistoryToken.shared.last = history.last?.token
                         
                         DispatchQueue.main.async {
                             self.toggle.toggle()
                         }
                     }
                 } catch {
-                    print("Could not convert history result to transactions after lastToken = \(String(describing: self.lastToken)): \(error)")
+                    print("Could not convert history result to transactions after lastToken = \(String(describing: HistoryToken.shared.last)): \(error)")
                 }
             }
         }
     }
-    
-    private var lastToken: NSPersistentHistoryToken? = nil {
-        didSet {
-            guard let token = lastToken,
-                  let data = try? NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true) else {
-                return
-            }
-            
-            do {
-                try data.write(to: tokenFile)
-            } catch {
-                let message = "Could not write token data"
-                print("###\(#function): \(message): \(error)")
-            }
-        }
-    }
-    
-    private lazy var tokenFile: URL = {
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LinkCollector",isDirectory: true)
-        if !FileManager.default.fileExists(atPath: url.path) {
-            do {
-                try FileManager.default.createDirectory(at: url,
-                                                        withIntermediateDirectories: true,
-                                                        attributes: nil)
-            } catch {
-                let message = "Could not create persistent container URL"
-                print("###\(#function): \(message): \(error)")
-            }
-        }
-        return url.appendingPathComponent("token.data", isDirectory: false)
-    }()
     
     func writeWidgetEntries() {
         let fetchRequest: NSFetchRequest<LinkEntity> = LinkEntity.fetchRequest()

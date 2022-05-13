@@ -49,6 +49,9 @@
 		90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
+		90B15373282F185900B4DA2A /* HistoryToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B15372282F185900B4DA2A /* HistoryToken.swift */; };
+		90B15374282F19A500B4DA2A /* HistoryToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B15372282F185900B4DA2A /* HistoryToken.swift */; };
+		90B15375282F19A600B4DA2A /* HistoryToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B15372282F185900B4DA2A /* HistoryToken.swift */; };
 		90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
@@ -148,6 +151,7 @@
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90A5BB9026C478D10044A0EA /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		90B15372282F185900B4DA2A /* HistoryToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryToken.swift; sourceTree = "<group>"; };
 		90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Extension.swift"; sourceTree = "<group>"; };
 		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -334,6 +338,7 @@
 				90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */,
 				90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */,
 				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
+				90B15372282F185900B4DA2A /* HistoryToken.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -497,6 +502,7 @@
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
+				90B15374282F19A500B4DA2A /* HistoryToken.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
 				90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */,
 				90C30D352829C50100061A5F /* HTMLParser.swift in Sources */,
@@ -510,6 +516,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */,
+				90B15375282F19A600B4DA2A /* HistoryToken.swift in Sources */,
 				903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */,
 				90208721281DEE38005A5264 /* WidgetEntryView.swift in Sources */,
 				90C30D322829C4CC00061A5F /* NSManagedObjectContext+Extension.swift in Sources */,
@@ -551,6 +558,7 @@
 				90C68DB1259538B200C78C1E /* WebView.swift in Sources */,
 				905E9C5025897B870090BFC6 /* LinkCollector.xcdatamodeld in Sources */,
 				900F3FF726D8671900C63590 /* TagLabel.swift in Sources */,
+				90B15373282F185900B4DA2A /* HistoryToken.swift in Sources */,
 				903A4073282862F70080E46A /* LinkListView.swift in Sources */,
 				9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */,
 				90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */,
