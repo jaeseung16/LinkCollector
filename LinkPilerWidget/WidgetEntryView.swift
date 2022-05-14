@@ -9,14 +9,15 @@ import SwiftUI
 import WidgetKit
 
 struct WidgetEntryView : View {
+    private let backgroudImageName = "LinkPilerWidgetBackground"
+    
     var entry: WidgetEntry
     
     private var widgetURL: URL? {
         var urlComponents = URLComponents()
-        urlComponents.scheme="widget-linkpiler"
-        urlComponents.path="/\(entry.id)"
-        urlComponents.query="\(entry.title)"
-        
+        urlComponents.scheme = LinkPilerConstants.widgetURLScheme.rawValue
+        urlComponents.path = "/\(entry.id)"
+        urlComponents.query = "\(entry.title)"
         return urlComponents.url
     }
 
@@ -28,7 +29,7 @@ struct WidgetEntryView : View {
     
     var body: some View {
         ZStack {
-            Image("LinkPilerWidgetBackground")
+            Image(backgroudImageName)
                 .resizable()
             
             VStack {

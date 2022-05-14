@@ -16,6 +16,7 @@ import FaviconFinder
 class LinkCollectorViewModel: NSObject, ObservableObject {
     private let persistenteContainer = PersistenceController.shared.container
     private let locationManager = CLLocationManager()
+    private let contentsJson = "contents.json"
     
     private var subscriptions: Set<AnyCancellable> = []
     
@@ -338,6 +339,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
+    // MARK: - Widget
     func writeWidgetEntries() {
         let fetchRequest: NSFetchRequest<LinkEntity> = LinkEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created", ascending: false)]
@@ -364,13 +366,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             }
         }
         
-        let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.resonance.jaeseung.LinkCollector")!
+        let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: LinkPilerConstants.groupIdentifier.rawValue)!
         
         let encoder = JSONEncoder()
         
         if let dataToSave = try? encoder.encode(widgetEntries) {
             do {
-                try dataToSave.write(to: archiveURL.appendingPathComponent("contents.json"))
+                try dataToSave.write(to: archiveURL.appendingPathComponent(contentsJson))
                 print("Saved \(widgetEntries.count) widgetEntries")
             } catch {
                 print("Error: Can't write contents")

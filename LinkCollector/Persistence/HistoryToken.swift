@@ -11,6 +11,8 @@ import CoreData
 class HistoryToken {
     static let shared = HistoryToken()
     
+    static private let pathComponent = "token.data"
+    
     var last: NSPersistentHistoryToken? = nil {
         didSet {
             guard let token = last,
@@ -28,7 +30,7 @@ class HistoryToken {
     }
     
     private lazy var tokenFile: URL = {
-        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("LinkCollector",isDirectory: true)
+        let url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent(LinkPilerConstants.appPathComponent.rawValue, isDirectory: true)
         if !FileManager.default.fileExists(atPath: url.path) {
             do {
                 try FileManager.default.createDirectory(at: url,
@@ -39,6 +41,6 @@ class HistoryToken {
                 print("###\(#function): \(message): \(error)")
             }
         }
-        return url.appendingPathComponent("token.data", isDirectory: false)
+        return url.appendingPathComponent(HistoryToken.pathComponent, isDirectory: false)
     }()
 }

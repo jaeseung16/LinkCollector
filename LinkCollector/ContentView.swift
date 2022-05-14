@@ -41,21 +41,3 @@ struct ContentView: View {
     }
     
 }
-
-struct ListHeader: View {
-    let text: String
-    
-    var body: some View {
-        HStack {
-            Text(text)
-        }
-    }
-}
-
-struct ListFooter: View {
-    var body: some View {
-        HStack {
-            Text("Footer")
-        }
-    }
-}

@@ -46,11 +46,11 @@ struct WebView: UIViewRepresentable {
         }
         
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            print("didStartProvisionalNavigation: title = \(webView.title), url = \(webView.url), navigation = \(navigation)")
+            print("didStartProvisionalNavigation: title = \(String(describing: webView.title)), url = \(String(describing: webView.url)), navigation = \(String(describing: navigation))")
         }
         
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-            print("didCommit: title = \(webView.title), url = \(webView.url)")
+            print("didCommit: title = \(String(describing: webView.title)), url = \(String(describing: webView.url))")
         }
        
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

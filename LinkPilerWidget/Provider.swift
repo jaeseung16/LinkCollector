@@ -12,13 +12,17 @@ import OSLog
 struct Provider: TimelineProvider {
     private let logger = Logger()
     
+    private let title = "Link Piler"
+    private let imageName = "LinkPiler"
+    private let contentsJson = "contents.json"
+    
     private var exampleEntry: WidgetEntry {
         WidgetEntry(id: UUID(),
-                    title: "Link Piler",
+                    title: title,
                     url: URL(fileURLWithPath: ""),
                     created: Date(),
                     date: Date(),
-                    favicon: UIImage(named: "LinkPiler")?.pngData())
+                    favicon: UIImage(named: imageName)?.pngData())
     }
     
     func placeholder(in context: Context) -> WidgetEntry {
@@ -32,21 +36,21 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<WidgetEntry>) -> ()) {
         var widgetEntries = [WidgetEntry]()
         
-        let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.resonance.jaeseung.LinkCollector")!
+        let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: LinkPilerConstants.groupIdentifier.rawValue)!
         
         let decoder = JSONDecoder()
-        if let codeData = try? Data(contentsOf: archiveURL.appendingPathComponent("contents.json")) {
+        if let data = try? Data(contentsOf: archiveURL.appendingPathComponent(contentsJson)) {
             do {
-                widgetEntries = try decoder.decode([WidgetEntry].self, from: codeData)
+                widgetEntries = try decoder.decode([WidgetEntry].self, from: data)
             } catch {
-                print("Error: Can't decode contents")
+                logger.error("Can't decode contents: data=\(data)")
             }
         }
          
         let currentDate = Date()
-        let interval = 10
+        let interval = 1
         for index in 0 ..< widgetEntries.count {
-            widgetEntries[index].date = Calendar.current.date(byAdding: .second, value: index * interval, to: currentDate)!
+            widgetEntries[index].date = Calendar.current.date(byAdding: .hour, value: index * interval, to: currentDate)!
         }
 
         let timeline = Timeline(entries: widgetEntries, policy: .atEnd)

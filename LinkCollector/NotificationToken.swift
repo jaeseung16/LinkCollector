@@ -10,11 +10,13 @@ import CoreData
 import CloudKit
 
 enum NotificationToken: String {
+    static private let key = "token"
+    
     case server, zone
     
     var url: URL {
         let url = NSPersistentContainer.defaultDirectoryURL()
-            .appendingPathComponent("LinkCollector", isDirectory: true)
+            .appendingPathComponent(LinkPilerConstants.appPathComponent.rawValue, isDirectory: true)
         
         if !FileManager.default.fileExists(atPath: url.path) {
             do {
@@ -31,7 +33,7 @@ enum NotificationToken: String {
     
     func write(_ token: CKServerChangeToken) throws {
         let coder = NSKeyedArchiver(requiringSecureCoding: true)
-        coder.encode(token, forKey: "token")
+        coder.encode(token, forKey: NotificationToken.key)
         let data = coder.encodedData
         try data.write(to: url)
     }
@@ -39,7 +41,7 @@ enum NotificationToken: String {
     func readToken() throws -> CKServerChangeToken? {
         let data = try Data(contentsOf: url)
         let coder = try NSKeyedUnarchiver(forReadingFrom: data)
-        return coder.decodeObject(of: CKServerChangeToken.self, forKey: "token")
+        return coder.decodeObject(of: CKServerChangeToken.self, forKey: NotificationToken.key)
     }
     
 }

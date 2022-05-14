@@ -46,7 +46,7 @@ struct PersistenceController {
             
             cloudStoreDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
             cloudStoreDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-            cloudStoreDescription.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.resonance.jaeseung.LinkCollector")
+            cloudStoreDescription.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: LinkPilerConstants.containerIdentifier.rawValue)
             
             container.persistentStoreDescriptions = [cloudStoreDescription]
         }

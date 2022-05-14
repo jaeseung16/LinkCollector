@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let context = PersistenceController.shared.container.viewContext
 
         if let urlContext = connectionOptions.urlContexts.first {
-            if urlContext.url.scheme == "widget-linkpiler" {
+            if urlContext.url.scheme == LinkPilerConstants.widgetURLScheme.rawValue {
                 viewModel.selected = UUID(uuidString: urlContext.url.lastPathComponent)!
             }
         }
