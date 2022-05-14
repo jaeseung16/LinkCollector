@@ -65,7 +65,7 @@ struct LinkListView: View {
                 }
                 .listStyle(GroupedListStyle())
             }
-            .navigationBarTitle("Link Piler")
+            .navigationBarTitle("Links")
             .navigationBarItems(trailing: navigationBarItems())
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
@@ -116,7 +116,7 @@ struct LinkListView: View {
             Button(action: {
                 self.showDateRangePickerView = true
             }, label: {
-                Label("Filter", systemImage: "calendar")
+                Label("Date Range", systemImage: "calendar")
             })
             .foregroundColor(Color.blue)
             
