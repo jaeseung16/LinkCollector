@@ -59,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func subscribe() {
         guard !UserDefaults.standard.bool(forKey: didCreateLinkSubscription) else {
+            logger.info("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
             return
         }
                 
@@ -71,9 +72,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         operation.modifySubscriptionsResultBlock = { result in
             switch result {
             case .success():
+                self.logger.info("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
                 UserDefaults.standard.setValue(true, forKey: self.didCreateLinkSubscription)
+                self.logger.info("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
             case .failure(let error):
-                print("Failed to modify subscription: \(error)")
+                self.logger.error("Failed to modify subscription: \(String(describing: error))")
                 UserDefaults.standard.setValue(false, forKey: self.didCreateLinkSubscription)
             }
         }
