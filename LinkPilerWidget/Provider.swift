@@ -26,10 +26,12 @@ struct Provider: TimelineProvider {
     }
     
     func placeholder(in context: Context) -> WidgetEntry {
-        exampleEntry
+        logger.info("placeholder")
+        return exampleEntry
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WidgetEntry) -> ()) {
+        logger.info("snapshot")
         completion(exampleEntry)
     }
 
@@ -37,7 +39,7 @@ struct Provider: TimelineProvider {
         var widgetEntries = [WidgetEntry]()
         
         let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: LinkPilerConstants.groupIdentifier.rawValue)!
-        
+        logger.info("timeline: archiveURL=\(archiveURL)")
         let decoder = JSONDecoder()
         if let data = try? Data(contentsOf: archiveURL.appendingPathComponent(contentsJson)) {
             do {
@@ -46,7 +48,7 @@ struct Provider: TimelineProvider {
                 logger.error("Can't decode contents: data=\(data)")
             }
         }
-         
+        logger.info("timeline: widgetEntries.count=\(widgetEntries.count)")
         let currentDate = Date()
         let interval = 1
         for index in 0 ..< widgetEntries.count {

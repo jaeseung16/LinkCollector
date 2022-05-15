@@ -9,9 +9,12 @@ import UIKit
 import CoreData
 import UserNotifications
 import CloudKit
+import OSLog
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    private let logger = Logger()
+    
     private let subscriptionID = "link-updated"
     private let didCreateLinkSubscription = "didCreateLinkSubscription"
     private let recordType = "CD_LinkEntity"
@@ -108,7 +111,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if !notification.isPruned && notification.notificationType == .database {
             if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
-                print("databaseNotification=\(databaseNotification)")
+                logger.info("databaseNotification=\(databaseNotification)")
                 
                 let serverToken = try? NotificationToken.server.readToken()
                 if serverToken != nil {
@@ -138,6 +141,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
+        
+        logger.info("Processed \(record)")
     }
     
     private func addDatabaseChangesOperation(serverToken: CKServerChangeToken?) -> Void {
@@ -154,7 +159,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .success((let token, _)):
                 try? NotificationToken.server.write(token)
             case .failure(let error):
-                print("Failed to fetch database changes: \(error)")
+                self.logger.info("Failed to fetch database changes: \(String(describing: error))")
                 if let lastToken = self.tokenCache[.server] {
                     try? NotificationToken.server.write(lastToken)
                 }
@@ -183,7 +188,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .success(let record):
                 self.processRecord(record)
             case .failure(let error):
-                print("Failed to check if record was changed: recordID=\(recordID), error=\(error)")
+                self.logger.info("Failed to check if record was changed: recordID=\(recordID), error=\(String(describing: error))")
             }
         }
         
@@ -196,7 +201,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .success((let serverToken, _, _)):
                 try? NotificationToken.zone.write(serverToken)
             case .failure(let error):
-                print("Failed to fetch record zone: recordZoneID=\(recordZoneID), error=\(error)")
+                self.logger.info("Failed to fetch record zone: recordZoneID=\(recordZoneID), error=\(String(describing: error))")
                 if let lastToken = self.tokenCache[.zone] {
                     try? NotificationToken.zone.write(lastToken)
                 }
@@ -210,7 +215,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("userNotificationCenter: notification=\(notification)")
+        logger.info("userNotificationCenter: notification=\(notification)")
         completionHandler([.banner, .sound])
     }
     
