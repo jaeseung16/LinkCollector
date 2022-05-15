@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
         let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
         subscription.recordType = recordType
-        subscription.notificationInfo = CKSubscription.NotificationInfo(alertBody: nil, soundName: "")
+        subscription.notificationInfo = CKSubscription.NotificationInfo()
                 
         let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
         operation.qualityOfService = .utility
@@ -113,8 +113,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         logger.log("notification=\(String(describing: notification))")
-        logger.log("notification.isPruned=\(String(describing: notification.isPruned))")
-        logger.log("notification.notificationType=\(String(describing: notification.notificationType))")
         if !notification.isPruned && notification.notificationType == .database {
             if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
                 logger.log("databaseNotification=\(String(describing: databaseNotification.subscriptionID))")
