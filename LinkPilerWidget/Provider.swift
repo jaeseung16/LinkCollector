@@ -7,7 +7,7 @@
 
 import WidgetKit
 import SwiftUI
-import OSLog
+import os
 
 struct Provider: TimelineProvider {
     private let logger = Logger()
@@ -26,12 +26,12 @@ struct Provider: TimelineProvider {
     }
     
     func placeholder(in context: Context) -> WidgetEntry {
-        logger.info("placeholder")
+        logger.log("placeholder")
         return exampleEntry
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WidgetEntry) -> ()) {
-        logger.info("snapshot")
+        logger.log("snapshot")
         completion(exampleEntry)
     }
 
@@ -39,7 +39,7 @@ struct Provider: TimelineProvider {
         var widgetEntries = [WidgetEntry]()
         
         let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: LinkPilerConstants.groupIdentifier.rawValue)!
-        logger.info("timeline: archiveURL=\(archiveURL)")
+        logger.log("timeline: archiveURL=\(archiveURL)")
         let decoder = JSONDecoder()
         if let data = try? Data(contentsOf: archiveURL.appendingPathComponent(contentsJson)) {
             do {
@@ -48,7 +48,7 @@ struct Provider: TimelineProvider {
                 logger.error("Can't decode contents: data=\(data)")
             }
         }
-        logger.info("timeline: widgetEntries.count=\(widgetEntries.count)")
+        logger.log("timeline: widgetEntries.count=\(widgetEntries.count)")
         let currentDate = Date()
         let interval = 1
         for index in 0 ..< widgetEntries.count {

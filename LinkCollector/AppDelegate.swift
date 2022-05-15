@@ -9,7 +9,7 @@ import UIKit
 import CoreData
 import UserNotifications
 import CloudKit
-import OSLog
+import os
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -59,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func subscribe() {
         guard !UserDefaults.standard.bool(forKey: didCreateLinkSubscription) else {
-            logger.info("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
+            logger.log("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
             return
         }
                 
@@ -72,11 +72,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         operation.modifySubscriptionsResultBlock = { result in
             switch result {
             case .success():
-                self.logger.info("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
+                self.logger.log("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
                 UserDefaults.standard.setValue(true, forKey: self.didCreateLinkSubscription)
-                self.logger.info("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
+                self.logger.log("didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
             case .failure(let error):
-                self.logger.error("Failed to modify subscription: \(String(describing: error))")
+                self.logger.log("Failed to modify subscription: \(String(describing: error))")
                 UserDefaults.standard.setValue(false, forKey: self.didCreateLinkSubscription)
             }
         }
@@ -87,11 +87,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let tokenParts = deviceToken.map { String(format: "%02.2hhx", $0) }
         let token = tokenParts.joined()
-        print("Device Token: \(token)")
+        logger.log("Device Token: \(token)")
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register: \(error)")
+        logger.log("Failed to register: \(String(describing: error))")
     }
     
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
@@ -108,13 +108,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         guard let notification = CKNotification(fromRemoteNotificationDictionary: userInfo) else {
+            logger.log("notification=failed")
             completionHandler(.failed)
             return
         }
-        
+        logger.log("notification=\(String(describing: notification))")
         if !notification.isPruned && notification.notificationType == .database {
             if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
-                logger.info("databaseNotification=\(databaseNotification)")
+                logger.log("databaseNotification=\(String(describing: databaseNotification.subscriptionID))")
                 
                 let serverToken = try? NotificationToken.server.readToken()
                 if serverToken != nil {
@@ -145,7 +146,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
         
-        logger.info("Processed \(record)")
+        logger.log("Processed \(record)")
     }
     
     private func addDatabaseChangesOperation(serverToken: CKServerChangeToken?) -> Void {
@@ -162,7 +163,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .success((let token, _)):
                 try? NotificationToken.server.write(token)
             case .failure(let error):
-                self.logger.info("Failed to fetch database changes: \(String(describing: error))")
+                self.logger.log("Failed to fetch database changes: \(String(describing: error))")
                 if let lastToken = self.tokenCache[.server] {
                     try? NotificationToken.server.write(lastToken)
                 }
@@ -191,7 +192,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .success(let record):
                 self.processRecord(record)
             case .failure(let error):
-                self.logger.info("Failed to check if record was changed: recordID=\(recordID), error=\(String(describing: error))")
+                self.logger.log("Failed to check if record was changed: recordID=\(recordID), error=\(String(describing: error))")
             }
         }
         
@@ -204,7 +205,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .success((let serverToken, _, _)):
                 try? NotificationToken.zone.write(serverToken)
             case .failure(let error):
-                self.logger.info("Failed to fetch record zone: recordZoneID=\(recordZoneID), error=\(String(describing: error))")
+                self.logger.log("Failed to fetch record zone: recordZoneID=\(recordZoneID), error=\(String(describing: error))")
                 if let lastToken = self.tokenCache[.zone] {
                     try? NotificationToken.zone.write(lastToken)
                 }
