@@ -12,10 +12,12 @@ import CoreData
 import SwiftSoup
 import UserNotifications
 import FaviconFinder
+import OSLog
 
 class LinkCollectorViewModel: NSObject, ObservableObject {
     private let persistenteContainer = PersistenceController.shared.container
     private let locationManager = CLLocationManager()
+    private let logger = Logger()
     private let contentsJson = "contents.json"
     
     private var subscriptions: Set<AnyCancellable> = []
@@ -367,13 +369,14 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
         
         let archiveURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: LinkPilerConstants.groupIdentifier.rawValue)!
+        logger.info("archiveURL=\(archiveURL)")
         
         let encoder = JSONEncoder()
         
         if let dataToSave = try? encoder.encode(widgetEntries) {
             do {
                 try dataToSave.write(to: archiveURL.appendingPathComponent(contentsJson))
-                print("Saved \(widgetEntries.count) widgetEntries")
+                logger.info("Saved \(widgetEntries.count) widgetEntries")
             } catch {
                 print("Error: Can't write contents")
                 return
