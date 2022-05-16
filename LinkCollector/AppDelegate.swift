@@ -62,7 +62,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             logger.log("alredy true: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
             return
         }
-                
+        
+        let fetchSubscriptionsOperation = CKFetchSubscriptionsOperation(subscriptionIDs: [subscriptionID])
+        fetchSubscriptionsOperation.fetchSubscriptionsResultBlock = { result in
+            switch result {
+            case .success():
+                self.logger.log("subscribe success to fetch subscriptions")
+            case .failure(let error):
+                self.logger.log("subscribe failed to find subscriptions: \(String(describing: error))")
+            }
+        }
+        
+        fetchSubscriptionsOperation.perSubscriptionResultBlock = { (subscriptionID, result) in
+            if subscriptionID == self.subscriptionID {
+                switch result {
+                case .success(let subscription):
+                    self.logger.log("subscribe found: \(String(describing: subscription))")
+                    UserDefaults.standard.setValue(true, forKey: self.didCreateLinkSubscription)
+                    self.logger.log("set: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
+                case .failure(let error):
+                    self.logger.log("subscribe can't find: \(String(describing: error))")
+                    self.addSubscription()
+                }
+            }
+        }
+        
+        CKContainer.default().privateCloudDatabase.add(fetchSubscriptionsOperation)
+        
+    }
+    
+    private func addSubscription() {
         let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
         subscription.recordType = recordType
         subscription.notificationInfo = CKSubscription.NotificationInfo()
