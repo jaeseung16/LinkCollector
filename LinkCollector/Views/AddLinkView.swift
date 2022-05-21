@@ -166,7 +166,7 @@ struct AddLinkView: View {
         #else
         List {
             ForEach(self.tags, id: \.self) { tag in
-                TagLabel(title: tag)
+                TagLabel(title: tag.name ?? "")
             }
         }
         .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
