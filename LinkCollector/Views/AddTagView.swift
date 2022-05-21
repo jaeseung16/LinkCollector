@@ -10,7 +10,7 @@ import SwiftUI
 struct AddTagView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: LinkCollectorViewModel
+    @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
     @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var existingTags: FetchedResults<TagEntity>
     
@@ -18,9 +18,13 @@ struct AddTagView: View {
     @State var isEditing = false
     @State var saveButtonEnabled = false
     
-    @Binding var tags: [String]
+    @Binding var tags: [TagEntity]
     
     var isUpdate = false
+    
+    private var filteredTags: [TagEntity] {
+        existingTags.filter { !tags.contains($0) }
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -89,7 +93,7 @@ struct AddTagView: View {
                         tags.remove(at: index)
                     }
                 } label: {
-                    TagLabel(title: tag)
+                    TagLabel(title: tag.name ?? "")
                         .foregroundColor(.primary)
                 }
             }
@@ -102,7 +106,7 @@ struct AddTagView: View {
                         tags.remove(at: index)
                     }
                 } label: {
-                    TagLabel(title: tag)
+                    TagLabel(title: tag.name ?? "")
                         .foregroundColor(.primary)
                 }
             }
@@ -123,20 +127,12 @@ struct AddTagView: View {
     
     private func existingTagsListView() -> some View {
         List {
-            ForEach(self.existingTags, id: \.id) { tag in
-                if let name = tag.name {
-                    Button {
-                        if tags.contains(name) {
-                            if let index = tags.firstIndex(of: name) {
-                                tags.remove(at: index)
-                            }
-                        } else {
-                            tags.append(name)
-                        }
-                    } label: {
-                        TagLabel(title: tag.name ?? "")
-                            .foregroundColor(.primary)
-                    }
+            ForEach(filteredTags, id: \.id) { tag in
+                Button {
+                    tags.append(tag)
+                } label: {
+                    TagLabel(title: tag.name ?? "")
+                        .foregroundColor(.primary)
                 }
             }
             .onDelete(perform: self.removeTag)
@@ -177,7 +173,7 @@ struct AddTagView: View {
     
     private func removeTag(indexSet: IndexSet) -> Void {
         for index in indexSet {
-            let tag = existingTags[index]
+            let tag = filteredTags[index]
             viewContext.delete(tag)
         }
         

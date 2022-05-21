@@ -191,21 +191,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
-    func update(link: LinkDTO, with tags: [String]) -> Void {
+    func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
         if let linkEntity = getLinkEntity(id: link.id) {
             if let tagEntites = linkEntity.tags {
-                for entity in tagEntites {
-                    if let tag = entity as? TagEntity {
-                        tag.removeFromLinks(linkEntity)
-                    }
-                }
+                linkEntity.removeFromTags(tagEntites)
             }
             
-            tags.forEach {
-                if let entity = getTagEntity(with: $0) {
-                    linkEntity.addToTags(entity)
-                }
-            }
+            linkEntity.addToTags(NSSet(array: tags))
         }
         
         do {

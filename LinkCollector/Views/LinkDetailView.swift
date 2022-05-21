@@ -79,7 +79,7 @@ struct LinkDetailView: View {
                 EditLinkView(id: entity.id!,
                              title: entity.title ?? "",
                              note: entity.note ?? "",
-                             tags: viewModel.getTagList(of: entity))
+                             tags: tags)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }

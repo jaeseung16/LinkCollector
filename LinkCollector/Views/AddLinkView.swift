@@ -10,13 +10,13 @@ import SwiftUI
 struct AddLinkView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel: LinkCollectorViewModel
+    @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
     @State private var title: String = ""
     @State private var url: String = ""
     @State private var favicon: Data?
     @State private var note: String = ""
-    @State private var tags = [String]()
+    @State private var tags = [TagEntity]()
 
     @State private var urlUpdated = false
     @State private var showProgress = false
@@ -154,7 +154,7 @@ struct AddLinkView: View {
         ScrollView {
             LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
                 ForEach(self.tags, id: \.self) { tag in
-                    TagLabel(title: tag)
+                    TagLabel(title: tag.name ?? "")
                 }
             }
         }
@@ -185,7 +185,7 @@ struct AddLinkView: View {
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
         for tag in tags {
-            viewModel.tagDTO = TagDTO(name: tag, link: linkDTO)
+            viewModel.tagDTO = TagDTO(name: tag.name ?? "", link: linkDTO)
         }
     }
     

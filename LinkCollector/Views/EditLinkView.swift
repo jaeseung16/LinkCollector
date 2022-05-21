@@ -20,13 +20,11 @@ struct EditLinkView: View {
     @State var id: UUID
     @State var title: String
     @State var note: String
-    @State var tags: [String]
+    @State var tags: [TagEntity]
     @State var editTags = false
     
     @State var titleBeforeEditing = ""
     @State var noteBeforeEditing = ""
-    
-    @State var originalTags = [String]()
     
     var body: some View {
         VStack {
@@ -53,8 +51,14 @@ struct EditLinkView: View {
             Section(header: tagSectionHeaderView()) {
                 List {
                     ForEach(self.tags, id: \.self) { tag in
-                        TagLabel(title: tag)
-                            .foregroundColor(.primary)
+                        Button {
+                            if let index = tags.firstIndex(of: tag) {
+                                tags.remove(at: index)
+                            }
+                        } label: {
+                            TagLabel(title: tag.name ?? "")
+                                .foregroundColor(.primary)
+                        }
                     }
                 }
                 .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
@@ -86,8 +90,6 @@ struct EditLinkView: View {
             Spacer()
             
             Button {
-                originalTags.removeAll()
-                originalTags.append(contentsOf: tags)
                 editTags.toggle()
                 saveButtonEnabled = true
             } label: {

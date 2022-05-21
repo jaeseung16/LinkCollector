@@ -16,7 +16,7 @@ struct SelectTagsView: View {
     
     @State var selectedTags: Set<TagEntity>
     
-    private var filteredTags: Array<TagEntity> {
+    private var filteredTags: [TagEntity] {
         tags.filter { !selectedTags.contains($0) }
     }
     
