@@ -343,17 +343,23 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         do {
             try fc.performFetch()
         } catch {
-            NSLog("Failed fetch LinkEntity")
+            logger.log("Failed fetch LinkEntity")
         }
         
         guard let entities = fc.fetchedObjects else {
             return
         }
         
+        guard entities.count > 0 else {
+            return
+        }
+        
         var widgetEntries = [WidgetEntry]()
+    
+        let numberOfWidgetEntries = 6
         
         // Randomly select 6 records to provide widgets per hour
-        for _ in 0..<6 {
+        for _ in 0..<numberOfWidgetEntries {
             let entity = entities[Int.random(in: 0..<entities.count)]
             if let id = entity.id, let title = entity.title, let created = entity.created, let url = entity.url {
                 widgetEntries.append(WidgetEntry(id: id, title: title, url: url, created: created, favicon: entity.favicon))
@@ -370,7 +376,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 try dataToSave.write(to: archiveURL.appendingPathComponent(contentsJson))
                 logger.log("Saved \(widgetEntries.count) widgetEntries")
             } catch {
-                print("Error: Can't write contents")
+                logger.log("Error: Can't write contents")
                 return
             }
         }
