@@ -20,8 +20,9 @@ struct DateRangePickerView: View {
             Divider()
             DatePicker("From", selection: $start, displayedComponents: [.date])
                 .datePickerStyle(.compact)
-            DatePicker("To", selection: $end, displayedComponents: [.date])
-                .datePickerStyle(.compact)
+            DatePicker(selection: $end, in: start..., displayedComponents: [.date]) {
+                Text("To")
+            }
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .padding()
