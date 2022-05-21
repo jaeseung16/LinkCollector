@@ -10,11 +10,15 @@ import SwiftUI
 struct SelectTagsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var viewModel: LinkCollectorViewModel
+    @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
     @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var tags: FetchedResults<TagEntity>
     
-    @State var selectedTags = Set<TagEntity>()
+    @State var selectedTags: Set<TagEntity>
+    
+    private var filteredTags: Array<TagEntity> {
+        tags.filter { !selectedTags.contains($0) }
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -25,9 +29,7 @@ struct SelectTagsView: View {
                     Section(header: Text("Selected")) {
                         ForEach(Array(selectedTags), id: \.id) { tag in
                             Button {
-                                if selectedTags.contains(tag) {
-                                    selectedTags.remove(tag)
-                                }
+                               selectedTags.remove(tag)
                             } label: {
                                 tagView(for: tag)
                                     .foregroundColor(.primary)
@@ -36,13 +38,9 @@ struct SelectTagsView: View {
                     }
                     
                     Section(header: Text("Tags")) {
-                        ForEach(tags, id: \.id) { tag in
+                        ForEach(filteredTags, id: \.id) { tag in
                             Button {
-                                if !selectedTags.contains(tag) {
-                                    selectedTags.insert(tag)
-                                } else {
-                                    selectedTags.remove(tag)
-                                }
+                                selectedTags.insert(tag)
                             } label: {
                                 tagView(for: tag)
                                     .foregroundColor(.primary)
@@ -72,7 +70,7 @@ struct SelectTagsView: View {
             Spacer()
             
             Button {
-                viewModel.selectedTags.removeAll()
+                selectedTags.removeAll()
             } label: {
                 Text("Reset")
                     .foregroundColor(.blue)

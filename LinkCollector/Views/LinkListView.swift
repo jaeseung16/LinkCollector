@@ -73,7 +73,7 @@ struct LinkListView: View {
                     .environmentObject(viewModel)
             }
             .sheet(isPresented: $showTagListView) {
-                SelectTagsView()
+                SelectTagsView(selectedTags: viewModel.selectedTags)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
