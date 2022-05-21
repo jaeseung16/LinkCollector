@@ -20,6 +20,6 @@ struct LinkPilerWidget: Widget {
         }
         .configurationDisplayName("Recents")
         .description("Recently added links")
-        .supportedFamilies([.systemSmall, .systemLarge])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

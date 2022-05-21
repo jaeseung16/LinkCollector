@@ -9,7 +9,10 @@ import SwiftUI
 import WidgetKit
 
 struct WidgetEntryView : View {
+    @Environment(\.widgetFamily) private var widgetFamily
+    
     private let backgroudImageName = "LinkPilerWidgetBackground"
+    private let wideBackgroudImageName = "LinkPilerWidgetBackgroundWide"
     
     var entry: WidgetEntry
     
@@ -29,8 +32,17 @@ struct WidgetEntryView : View {
     
     var body: some View {
         ZStack {
-            Image(backgroudImageName)
-                .resizable()
+            switch widgetFamily {
+            case .systemSmall, .systemLarge:
+                Image(backgroudImageName)
+                    .resizable()
+            case .systemMedium, .systemExtraLarge:
+                Image(wideBackgroudImageName)
+                    .resizable()
+            @unknown default:
+                Image(backgroudImageName)
+                    .resizable()
+            }
             
             VStack {
                 Spacer(minLength: 16)
