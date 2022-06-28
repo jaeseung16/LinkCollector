@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7CE258C0F45001B4A3F /* LinkDetailView.swift */; };
 		9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9009B7D1258C1715001B4A3F /* AddLinkView.swift */; };
-		900BF904281F42930046839D /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
 		900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		900EA7BB28305A380055CBC4 /* LinkPilerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900EA7BA28305A380055CBC4 /* LinkPilerConstants.swift */; };
 		900EA7BE28305AD80055CBC4 /* LinkPilerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900EA7BA28305A380055CBC4 /* LinkPilerConstants.swift */; };
@@ -29,6 +28,7 @@
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
 		9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030552D282C70610081E026 /* DateRangePickerView.swift */; };
 		90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90337C1E281C9BCB00D82D97 /* NotificationToken.swift */; };
+		9037CEFF2857D34100B5C7C9 /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 9037CEFE2857D34100B5C7C9 /* Persistence */; };
 		903A4073282862F70080E46A /* LinkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4072282862F70080E46A /* LinkListView.swift */; };
 		903A4075282864380080E46A /* SelectTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4074282864380080E46A /* SelectTagsView.swift */; };
 		903C7292280CC8A500FD7F71 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7291280CC8A500FD7F71 /* WidgetKit.framework */; };
@@ -36,6 +36,7 @@
 		903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */; };
 		903C7299280CC8A800FD7F71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 903C7298280CC8A800FD7F71 /* Assets.xcassets */; };
 		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9042938B286B81AE00DAAC6C /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 9042938A286B81AE00DAAC6C /* Persistence */; };
 		90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
 		905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4A25897B870090BFC6 /* SceneDelegate.swift */; };
@@ -51,7 +52,6 @@
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
 		90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
-		90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
 		90B15373282F185900B4DA2A /* HistoryToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B15372282F185900B4DA2A /* HistoryToken.swift */; };
 		90B15374282F19A500B4DA2A /* HistoryToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B15372282F185900B4DA2A /* HistoryToken.swift */; };
 		90B15375282F19A600B4DA2A /* HistoryToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B15372282F185900B4DA2A /* HistoryToken.swift */; };
@@ -59,7 +59,6 @@
 		90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
 		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
-		90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A5BB9026C478D10044A0EA /* Persistence.swift */; };
 		90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90C30D322829C4CC00061A5F /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90C30D352829C50100061A5F /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
@@ -154,7 +153,6 @@
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
-		90A5BB9026C478D10044A0EA /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		90B15372282F185900B4DA2A /* HistoryToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryToken.swift; sourceTree = "<group>"; };
 		90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Extension.swift"; sourceTree = "<group>"; };
 		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
@@ -174,6 +172,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9042938B286B81AE00DAAC6C /* Persistence in Frameworks */,
 				90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */,
 				90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */,
 				90FD202026C95F94008CC190 /* SwiftSoup in Frameworks */,
@@ -193,6 +192,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9037CEFF2857D34100B5C7C9 /* Persistence in Frameworks */,
 				90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */,
 				905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */,
 				90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */,
@@ -339,7 +339,6 @@
 		90C30D302829C3B800061A5F /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
-				90A5BB9026C478D10044A0EA /* Persistence.swift */,
 				90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */,
 				90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */,
 				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
@@ -378,6 +377,7 @@
 			packageProductDependencies = (
 				90FD201F26C95F94008CC190 /* SwiftSoup */,
 				90B3CDB72823336800BF6354 /* FaviconFinder */,
+				9042938A286B81AE00DAAC6C /* Persistence */,
 			);
 			productName = LinkCollectorShareExtension;
 			productReference = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */;
@@ -419,6 +419,7 @@
 			packageProductDependencies = (
 				90A290A4258FA519004988D9 /* SwiftSoup */,
 				90B3CDB528232F9000BF6354 /* FaviconFinder */,
+				9037CEFE2857D34100B5C7C9 /* Persistence */,
 			);
 			productName = LinkCollector;
 			productReference = 905E9C4525897B870090BFC6 /* LinkPiler.app */;
@@ -456,6 +457,7 @@
 			packageReferences = (
 				90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */,
+				9037CEFD2857D34100B5C7C9 /* XCRemoteSwiftPackageReference "PersistenceSwift" */,
 			);
 			productRefGroup = 905E9C4625897B870090BFC6 /* Products */;
 			projectDirPath = "";
@@ -503,7 +505,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90BBCE7426C5CBDB00DEA194 /* Persistence.swift in Sources */,
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
@@ -530,7 +531,6 @@
 				900EA7BF28305AD80055CBC4 /* LinkPilerConstants.swift in Sources */,
 				900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */,
 				9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */,
-				900BF904281F42930046839D /* Persistence.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,7 +544,6 @@
 				90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */,
 				90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */,
 				9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */,
-				90A5BB9126C478D10044A0EA /* Persistence.swift in Sources */,
 				90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */,
 				900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */,
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
@@ -934,6 +933,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		9037CEFD2857D34100B5C7C9 /* XCRemoteSwiftPackageReference "PersistenceSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jaeseung16/PersistenceSwift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/scinfu/SwiftSoup";
@@ -953,6 +960,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		9037CEFE2857D34100B5C7C9 /* Persistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9037CEFD2857D34100B5C7C9 /* XCRemoteSwiftPackageReference "PersistenceSwift" */;
+			productName = Persistence;
+		};
+		9042938A286B81AE00DAAC6C /* Persistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9037CEFD2857D34100B5C7C9 /* XCRemoteSwiftPackageReference "PersistenceSwift" */;
+			productName = Persistence;
+		};
 		90A290A4258FA519004988D9 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */;

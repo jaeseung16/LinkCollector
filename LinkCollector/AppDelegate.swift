@@ -10,6 +10,7 @@ import CoreData
 import UserNotifications
 import CloudKit
 import os
+import Persistence
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let recordValueKey = "CD_title"
     
     private var tokenCache = [NotificationToken: CKServerChangeToken]()
+    
+    private let databaseOperationHelper = DatabaseOperationHelper(appName: LinkPilerConstants.appPathComponent.rawValue)
+    
+    private var database: CKDatabase {
+        CKContainer(identifier: LinkPilerConstants.containerIdentifier.rawValue).privateCloudDatabase
+    }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
        
@@ -63,54 +70,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        let fetchSubscriptionsOperation = CKFetchSubscriptionsOperation(subscriptionIDs: [subscriptionID])
-        fetchSubscriptionsOperation.fetchSubscriptionsResultBlock = { result in
+        let subscriber = Subscriber(database: database, subscriptionID: subscriptionID, recordType: recordType)
+        subscriber.subscribe { result in
             switch result {
-            case .success():
-                self.logger.log("subscribe success to fetch subscriptions")
-            case .failure(let error):
-                self.logger.log("subscribe failed to find subscriptions: \(String(describing: error))")
-            }
-        }
-        
-        fetchSubscriptionsOperation.perSubscriptionResultBlock = { (subscriptionID, result) in
-            if subscriptionID == self.subscriptionID {
-                switch result {
-                case .success(let subscription):
-                    self.logger.log("subscribe found: \(String(describing: subscription))")
-                    UserDefaults.standard.setValue(true, forKey: self.didCreateLinkSubscription)
-                    self.logger.log("set: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
-                case .failure(let error):
-                    self.logger.log("subscribe can't find: \(String(describing: error))")
-                    self.addSubscription()
-                }
-            }
-        }
-        
-        CKContainer.default().privateCloudDatabase.add(fetchSubscriptionsOperation)
-        
-    }
-    
-    private func addSubscription() {
-        let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
-        subscription.recordType = recordType
-        subscription.notificationInfo = CKSubscription.NotificationInfo()
-                
-        let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
-        operation.qualityOfService = .utility
-        operation.modifySubscriptionsResultBlock = { result in
-            switch result {
-            case .success():
-                self.logger.log("setting: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
+            case .success(let subscription):
+                self.logger.log("Subscribed to \(subscription, privacy: .public)")
                 UserDefaults.standard.setValue(true, forKey: self.didCreateLinkSubscription)
                 self.logger.log("set: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
             case .failure(let error):
-                self.logger.log("Failed to modify subscription: \(String(describing: error))")
+                self.logger.log("Failed to modify subscription: \(error.localizedDescription, privacy: .public)")
                 UserDefaults.standard.setValue(false, forKey: self.didCreateLinkSubscription)
             }
         }
         
-        CKContainer.default().privateCloudDatabase.add(operation)
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -145,17 +117,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if !notification.isPruned && notification.notificationType == .database {
             if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
                 logger.log("databaseNotification=\(String(describing: databaseNotification.subscriptionID))")
-                
-                let serverToken = try? NotificationToken.server.readToken()
-                if serverToken != nil {
-                    tokenCache[.zone] = serverToken
-                }
-                
-                addDatabaseChangesOperation(serverToken: serverToken)
+                processRemoteNotification()
             }
         }
         
         completionHandler(.newData)
+    }
+    
+    private func processRemoteNotification() {
+        databaseOperationHelper.addDatabaseChangesOperation(database: database) { result in
+            switch result {
+            case .success(let record):
+                self.processRecord(record)
+            case .failure(let error):
+                self.logger.log("Failed to process remote notification: error=\(error.localizedDescription, privacy: .public)")
+            }
+        }
     }
     
     private func processRecord(_ record: CKRecord) {

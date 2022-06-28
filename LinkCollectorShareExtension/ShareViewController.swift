@@ -10,10 +10,11 @@ import Social
 import CoreLocation
 import CoreData
 import FaviconFinder
+import Persistence
 
 class ShareViewController: UIViewController {
 
-    private let persistenceController = PersistenceController.shared
+    private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
     private let contextName = "share extension"
     
     private let htmlParser = HTMLParser()

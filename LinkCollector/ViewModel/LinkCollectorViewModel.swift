@@ -13,12 +13,17 @@ import SwiftSoup
 import UserNotifications
 import FaviconFinder
 import os
+import Persistence
 
 class LinkCollectorViewModel: NSObject, ObservableObject {
-    private let persistenteContainer = PersistenceController.shared.container
     private let locationManager = CLLocationManager()
     private let logger = Logger()
     private let contentsJson = "contents.json"
+    
+    private let persistence: Persistence
+    private var persistenceContainer: NSPersistentCloudKitContainer {
+        persistence.container
+    }
     
     private var subscriptions: Set<AnyCancellable> = []
     
@@ -39,7 +44,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     var message = ""
     
-    override init() {
+    init(persistence: Persistence) {
+        self.persistence = persistence
         super.init()
         
         self.locationManager.delegate = self
@@ -50,9 +56,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         NotificationCenter.default
           .publisher(for: .NSPersistentStoreRemoteChange)
-          .sink {
-              self.fetchUpdates($0)
-          }
+          .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
     }
     
@@ -167,7 +171,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     showAlert.toggle()
                 }
             } else {
-                let entity = TagEntity(context: persistenteContainer.viewContext)
+                let entity = TagEntity(context: persistenceContainer.viewContext)
                 entity.id = UUID()
                 entity.name = tagDTO.name
                 entity.created = Date()
@@ -260,7 +264,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         var fetchedLinks = [LinkEntity]()
         do {
-            fetchedLinks = try persistenteContainer.viewContext.fetch(fetchRequest)
+            fetchedLinks = try persistenceContainer.viewContext.fetch(fetchRequest)
         } catch {
             let nsError = error as NSError
             print("While fetching LinkEntity with id=\(id) occured an unresolved error \(nsError), \(nsError.userInfo)")
@@ -281,7 +285,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         var fetchedTags = [TagEntity]()
         do {
-            fetchedTags = try persistenteContainer.viewContext.fetch(fetchRequest)
+            fetchedTags = try persistenceContainer.viewContext.fetch(fetchRequest)
         } catch {
             let nsError = error as NSError
             print("While fetching TagEntity with name=\(name) occured an unresolved error \(nsError), \(nsError.userInfo)")
@@ -294,41 +298,22 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         return fetchedTags.isEmpty ? nil : fetchedTags[0]
     }
     
-    private func saveContext() throws -> Void {
-        persistenteContainer.viewContext.transactionAuthor = "App"
-        try persistenteContainer.viewContext.save()
-        persistenteContainer.viewContext.transactionAuthor = nil
+    func saveContext() throws -> Void {
+        persistenceContainer.viewContext.transactionAuthor = "App"
+        try persistenceContainer.viewContext.save()
+        persistenceContainer.viewContext.transactionAuthor = nil
     }
     
     // MARK: - Persistence History Request
-    private lazy var historyRequestQueue = DispatchQueue(label: "history")
     private func fetchUpdates(_ notification: Notification) -> Void {
-        historyRequestQueue.async {
-            let backgroundContext = self.persistenteContainer.newBackgroundContext()
-            backgroundContext.performAndWait {
-                do {
-                    let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: HistoryToken.shared.last)
-                    
-                    if let historyResult = try backgroundContext.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
-                       let history = historyResult.result as? [NSPersistentHistoryTransaction] {
-                        for transaction in history.reversed() {
-                            self.persistenteContainer.viewContext.perform {
-                                if let userInfo = transaction.objectIDNotification().userInfo {
-                                    NSManagedObjectContext.mergeChanges(fromRemoteContextSave: userInfo,
-                                                                        into: [self.persistenteContainer.viewContext])
-                                }
-                            }
-                        }
-                        
-                        HistoryToken.shared.last = history.last?.token
-                        
-                        DispatchQueue.main.async {
-                            self.toggle.toggle()
-                        }
-                    }
-                } catch {
-                    print("Could not convert history result to transactions after lastToken = \(String(describing: HistoryToken.shared.last)): \(error)")
+        persistence.fetchUpdates(notification) { result in
+            switch result {
+            case .success(()):
+                DispatchQueue.main.async {
+                    self.toggle.toggle()
                 }
+            case .failure(let error):
+                self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
         }
     }
@@ -338,7 +323,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         let fetchRequest: NSFetchRequest<LinkEntity> = LinkEntity.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "created", ascending: false)]
         
-        let fc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistenteContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        let fc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistenceContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         
         do {
             try fc.performFetch()
