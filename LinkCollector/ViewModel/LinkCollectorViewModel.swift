@@ -314,6 +314,14 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 }
             case .failure(let error):
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
+                
+                if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+                    self.logger.log("version=\(version, privacy: .public)")
+                    if version == "1.4.1" {
+                        self.logger.log("try to invalidate token")
+                        self.persistence.invalidateHistoryToken()
+                    }
+                }
             }
         }
     }
