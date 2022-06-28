@@ -604,7 +604,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -628,7 +628,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -655,7 +655,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -687,7 +687,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -839,7 +839,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -865,7 +865,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
