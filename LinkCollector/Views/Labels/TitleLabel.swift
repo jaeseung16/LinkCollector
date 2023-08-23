@@ -14,9 +14,3 @@ struct TitleLabel: View {
         Label(title, systemImage: "rectangle.and.text.magnifyingglass")
     }
 }
-
-struct TitleLabel_Previews: PreviewProvider {
-    static var previews: some View {
-        TitleLabel(title: "Title")
-    }
-}

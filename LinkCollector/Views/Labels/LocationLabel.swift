@@ -14,9 +14,3 @@ struct LocationLabel: View {
         Label(title, systemImage: "location")
     }
 }
-
-struct LocationLabel_Previews: PreviewProvider {
-    static var previews: some View {
-        LocationLabel(title: "Location")
-    }
-}

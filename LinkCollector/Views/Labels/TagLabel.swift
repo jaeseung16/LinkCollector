@@ -14,9 +14,3 @@ struct TagLabel: View {
         Label(title, systemImage: "tag")
     }
 }
-
-struct TagLabel_Previews: PreviewProvider {
-    static var previews: some View {
-        TagLabel(title: "tag")
-    }
-}

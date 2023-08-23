@@ -14,9 +14,3 @@ struct NoteLabel: View {
         Label(title, systemImage: "note")
     }
 }
-
-struct NoteLabel_Previews: PreviewProvider {
-    static var previews: some View {
-        NoteLabel(title: "note")
-    }
-}
