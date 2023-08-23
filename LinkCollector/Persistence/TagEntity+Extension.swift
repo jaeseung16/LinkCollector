@@ -15,8 +15,8 @@ extension TagEntity {
         newTag.name = name
         newTag.created = Date()
         
-        if link != nil {
-            newTag.addToLinks(link!)
+        if let link = link {
+            newTag.addToLinks(link)
         }
         
         context.saveContext()
