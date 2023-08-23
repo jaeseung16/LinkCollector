@@ -32,7 +32,7 @@ extension LinkEntity {
     }
     
     public func getTagList() -> [TagEntity] {
-        self.tags?.filter { $0 is TagEntity }.map { $0 as! TagEntity } ?? [TagEntity]()
+        self.tags?.compactMap { $0 as? TagEntity } ?? [TagEntity]()
     }
     
 }
