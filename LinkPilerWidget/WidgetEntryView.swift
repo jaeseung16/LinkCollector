@@ -39,6 +39,9 @@ struct WidgetEntryView : View {
             case .systemMedium, .systemExtraLarge:
                 Image(wideBackgroudImageName)
                     .resizable()
+            case .accessoryCircular, .accessoryRectangular, .accessoryInline:
+                Image(backgroudImageName)
+                    .resizable()
             @unknown default:
                 Image(backgroudImageName)
                     .resizable()
