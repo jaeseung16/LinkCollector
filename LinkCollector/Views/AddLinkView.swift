@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddLinkView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
@@ -160,7 +159,6 @@ struct AddLinkView: View {
         }
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
-                .environment(\.managedObjectContext, viewContext)
                 .environmentObject(viewModel)
         }
         #else
@@ -173,20 +171,13 @@ struct AddLinkView: View {
         .listStyle(InsetListStyle())
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
-                .environment(\.managedObjectContext, viewContext)
                 .environmentObject(viewModel)
         }
         #endif
     }
     
     private func saveLinkAndTags() -> Void {
-        let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: viewModel.userLatitude, longitude: viewModel.userLongitude, locality: viewModel.userLocality, context: viewContext)
-        
-        let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
-        
-        for tag in tags {
-            viewModel.tagDTO = TagDTO(name: tag.name ?? "", link: linkDTO)
-        }
+        viewModel.saveLinkAndTags(title: title, url: url, favicon: favicon, note: note, latitude: viewModel.userLatitude, longitude: viewModel.userLongitude, locality: viewModel.userLocality, tags: tags)
     }
     
 }

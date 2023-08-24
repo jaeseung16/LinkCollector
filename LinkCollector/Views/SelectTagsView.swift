@@ -9,15 +9,12 @@ import SwiftUI
 
 struct SelectTagsView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
-    
-    @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var tags: FetchedResults<TagEntity>
     
     @State var selectedTags: Set<TagEntity>
     
     private var filteredTags: [TagEntity] {
-        tags.filter { !selectedTags.contains($0) }
+        viewModel.tags.filter { !selectedTags.contains($0) }
     }
     
     var body: some View {

@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct LinkListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
-    
-    @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     
     @State private var showAddLinkView = false
     @State private var showTagListView = false
@@ -22,7 +19,7 @@ struct LinkListView: View {
     @State private var showDateRangePickerView = false
     
     var filteredLinks: Array<LinkEntity> {
-        links.filter { link in
+        viewModel.links.filter { link in
             var filter = true
             if let tags = link.tags as? Set<TagEntity>, !viewModel.selectedTags.isEmpty && viewModel.selectedTags.intersection(tags).isEmpty {
                 filter = false
@@ -69,12 +66,10 @@ struct LinkListView: View {
             .navigationBarItems(trailing: navigationBarItems())
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
             .sheet(isPresented: $showTagListView) {
                 SelectTagsView(selectedTags: viewModel.selectedTags)
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
             .sheet(isPresented: $showDateRangePickerView) {
@@ -100,14 +95,14 @@ struct LinkListView: View {
     private func removeLink(indexSet: IndexSet) -> Void {
         for index in indexSet {
             let link = filteredLinks[index]
-            viewContext.delete(link)
+            viewModel.delete(link: link)
         }
         
-        do {
-            try viewContext.save()
-        } catch {
-            message = "Failed to delete the selected link"
-            showAlert = true
+        viewModel.saveContext { _ in
+            DispatchQueue.main.async {
+                message = "Failed to delete the selected link"
+                showAlert = true
+            }
         }
     }
     

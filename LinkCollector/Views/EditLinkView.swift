@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EditLinkView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
@@ -65,7 +64,6 @@ struct EditLinkView: View {
                 .listStyle(PlainListStyle())
                 .sheet(isPresented: $editTags) {
                     AddTagView(tags: $tags, isUpdate: true)
-                        .environment(\.managedObjectContext, viewContext)
                         .environmentObject(viewModel)
                 }
             }

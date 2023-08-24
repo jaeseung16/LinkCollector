@@ -9,7 +9,6 @@ import SwiftUI
 import MapKit
 
 struct LinkDetailView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
@@ -80,7 +79,6 @@ struct LinkDetailView: View {
                              title: entity.title ?? "",
                              note: entity.note ?? "",
                              tags: tags)
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
         }

@@ -44,8 +44,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     var message = ""
     
+    private let persistenceHelper: PersistenceHelper
+    
     init(persistence: Persistence) {
         self.persistence = persistence
+        self.persistenceHelper = PersistenceHelper(persistence: persistence)
+        
         super.init()
         
         self.locationManager.delegate = self
@@ -58,6 +62,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
           .publisher(for: .NSPersistentStoreRemoteChange)
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
+        
+        fetchAll()
     }
     
     // MARK: - LocationManager
@@ -138,20 +144,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 existingEntity.title = linkDTO.title
                 existingEntity.note = linkDTO.note
 
-                do {
-                    try saveContext()
-                } catch {
-                    let nsError = error as NSError
-                    print("While saving \(linkDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
+                saveContext { error in
+                    self.logger.log("While saving \(self.linkDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     
                     DispatchQueue.main.async {
                         self.message = "Cannot update title = \(self.linkDTO.title) and note = \(self.linkDTO.note)"
                         self.showAlert.toggle()
                     }
-                }
-                
-                DispatchQueue.main.async {
-                    self.toggle.toggle()
                 }
             }
         }
@@ -177,22 +176,48 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 entity.created = Date()
             }
             
-            do {
-                try saveContext()
-            } catch {
-                let nsError = error as NSError
-                print("While saving \(tagDTO) occured an unresolved error \(nsError), \(nsError.userInfo)")
-                
+            saveContext { error in
+                self.logger.log("While saving \(String(describing: self.tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 DispatchQueue.main.async {
                     self.message = "Cannot save tag = \(self.tagDTO.name)"
                     self.showAlert.toggle()
                 }
             }
             
-            DispatchQueue.main.async {
-                self.toggle.toggle()
-            }
+            fetchTags()
         }
+    }
+
+    @Published var links = [LinkEntity]()
+    @Published var tags = [TagEntity]()
+    
+    private func fetchAll() {
+        fetchLinks()
+        fetchTags()
+    }
+    
+    private func fetchLinks() -> Void {
+        let sortDescriptors = [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: LinkEntity.self, entityName: "LinkEntity", sortDescriptors: sortDescriptors)
+        links = persistenceHelper.fetch(fetchRequest)
+    }
+    
+    private func fetchTags() -> Void {
+        let sortDescriptors = [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]
+        let fetchRequest = persistenceHelper.getFetchRequest(for: TagEntity.self, entityName: "TagEntity", sortDescriptors: sortDescriptors)
+        tags = persistenceHelper.fetch(fetchRequest)
+    }
+    
+    func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) -> Void {
+        let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
+        
+        let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
+        
+        for tag in tags {
+            self.tagDTO = TagDTO(name: tag.name ?? "", link: linkDTO)
+        }
+        
+        fetchAll()
     }
     
     func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
@@ -204,19 +229,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             linkEntity.addToTags(NSSet(array: tags))
         }
         
-        do {
-            try saveContext()
-        } catch {
-            let nsError = error as NSError
-            print("While removing tags from \(link) occured an unresolved error \(nsError), \(nsError.userInfo)")
+        saveContext { error in
+            self.logger.log("While removing tags from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot save link = \(link.title)"
                 self.showAlert.toggle()
             }
-        }
-        
-        DispatchQueue.main.async {
-            self.toggle.toggle()
         }
     }
     
@@ -225,19 +243,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             tagEntity.removeFromLinks(linkEntity)
         }
         
-        do {
-            try saveContext()
-        } catch {
-            let nsError = error as NSError
-            print("While removing \(tag) from \(link) occured an unresolved error \(nsError), \(nsError.userInfo)")
+        saveContext { error in
+            self.logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot save link = \(link.title)"
                 self.showAlert.toggle()
             }
-        }
-        
-        DispatchQueue.main.async {
-            self.toggle.toggle()
         }
     }
     
@@ -257,17 +268,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     private func getLinkEntity(id: UUID) -> LinkEntity? {
-        let predicate = NSPredicate(format: "id == %@", argumentArray: [id])
+        let fetchRequest = persistenceHelper.getFetchRequest(for: LinkEntity.self,
+                                                             entityName: "LinkEntity",
+                                                             predicate: NSPredicate(format: "id == %@", argumentArray: [id]))
         
-        let fetchRequest = NSFetchRequest<LinkEntity>(entityName: "LinkEntity")
-        fetchRequest.predicate = predicate
-        
-        var fetchedLinks = [LinkEntity]()
-        do {
-            fetchedLinks = try persistenceContainer.viewContext.fetch(fetchRequest)
-        } catch {
-            let nsError = error as NSError
-            print("While fetching LinkEntity with id=\(id) occured an unresolved error \(nsError), \(nsError.userInfo)")
+        let fetchedLinks = persistenceHelper.fetch(fetchRequest)
+        if fetchedLinks.isEmpty {
             DispatchQueue.main.async {
                 self.message = "Cannot find a link with id=\(id)"
                 self.showAlert.toggle()
@@ -298,10 +304,25 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         return fetchedTags.isEmpty ? nil : fetchedTags[0]
     }
     
-    func saveContext() throws -> Void {
-        persistenceContainer.viewContext.transactionAuthor = "App"
-        try persistenceContainer.viewContext.save()
-        persistenceContainer.viewContext.transactionAuthor = nil
+    func delete(link: LinkEntity) -> Void {
+        persistenceHelper.delete(link)
+    }
+    
+    func delete(tag: TagEntity) -> Void {
+        persistenceHelper.delete(tag)
+    }
+    
+    func saveContext(completionHandler: @escaping (Error) -> Void) -> Void {
+        do {
+            try persistenceHelper.saveContext()
+        } catch {
+            self.logger.log("saveContext: \(error.localizedDescription)")
+            completionHandler(error)
+        }
+        
+        DispatchQueue.main.async {
+            self.toggle.toggle()
+        }
     }
     
     // MARK: - Persistence History Request

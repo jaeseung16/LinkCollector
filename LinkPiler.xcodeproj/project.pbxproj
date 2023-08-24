@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -24,7 +24,7 @@
 		9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */; };
 		902C9B8726C063000071CADB /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C9B8626C063000071CADB /* ShareViewController.swift */; };
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
-		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
 		9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030552D282C70610081E026 /* DateRangePickerView.swift */; };
 		90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90337C1E281C9BCB00D82D97 /* NotificationToken.swift */; };
@@ -35,7 +35,7 @@
 		903C7294280CC8A500FD7F71 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7293280CC8A500FD7F71 /* SwiftUI.framework */; };
 		903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */; };
 		903C7299280CC8A800FD7F71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 903C7298280CC8A800FD7F71 /* Assets.xcassets */; };
-		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9042938B286B81AE00DAAC6C /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 9042938A286B81AE00DAAC6C /* Persistence */; };
 		90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
@@ -47,6 +47,8 @@
 		905E9C5825897B890090BFC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */; };
 		905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
+		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
+		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 90A290A4258FA519004988D9 /* SwiftSoup */; };
 		90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
@@ -92,16 +94,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		902C9B9326C063000071CADB /* Embed App Extensions */ = {
+		902C9B9326C063000071CADB /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */,
-				903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed App Extensions */,
+				902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed Foundation Extensions */,
+				903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -148,6 +150,7 @@
 		905E9C6025897D960090BFC6 /* LinkCollector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollector.entitlements; sourceTree = "<group>"; };
 		905E9C6225897DE00090BFC6 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
+		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Extension.swift"; sourceTree = "<group>"; };
@@ -328,6 +331,7 @@
 				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
 				90A290A7258FB663004988D9 /* HTMLParser.swift */,
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
+				9092A1E12A957EE600020880 /* PersistenceHelper.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -402,7 +406,7 @@
 				905E9C4125897B870090BFC6 /* Sources */,
 				905E9C4225897B870090BFC6 /* Frameworks */,
 				905E9C4325897B870090BFC6 /* Resources */,
-				902C9B9326C063000071CADB /* Embed App Extensions */,
+				902C9B9326C063000071CADB /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -426,8 +430,9 @@
 		905E9C3D25897B870090BFC6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					902C9B8326C063000071CADB = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -503,6 +508,7 @@
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
+				9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
 				90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */,
 				90C30D352829C50100061A5F /* HTMLParser.swift in Sources */,
@@ -532,6 +538,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90A290AB258FB695004988D9 /* Title.swift in Sources */,
+				9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */,
 				903A4075282864380080E46A /* SelectTagsView.swift in Sources */,
 				90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */,
 				90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */,
