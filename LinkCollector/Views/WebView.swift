@@ -7,12 +7,15 @@
 
 import SwiftUI
 import WebKit
+import os
 
 struct WebView: UIViewRepresentable {
+    private let logger = Logger()
+    
     let url: URL
     
     func makeUIView(context: UIViewRepresentableContext<WebView>) -> WKWebView {
-        print("url = \(url)")
+        logger.log("url = \(url, privacy: .public)")
         let webView = WKWebView(frame: CGRect.zero, configuration: WKWebViewConfiguration())
         webView.load(URLRequest(url: url))
         webView.uiDelegate = context.coordinator
@@ -29,6 +32,8 @@ struct WebView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, WKUIDelegate, WKNavigationDelegate {
+        private let logger = Logger()
+        
         var parent: WebView
         
         var title: String?
@@ -41,41 +46,41 @@ struct WebView: UIViewRepresentable {
         }
         
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
-            //print("navigationAction.request = \(navigationAction.request)")
+            //logger.log("navigationAction.request = \(navigationAction.request, privacy: .public)")
             decisionHandler(.allow, preferences)
         }
         
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            print("didStartProvisionalNavigation: title = \(String(describing: webView.title)), url = \(String(describing: webView.url)), navigation = \(String(describing: navigation))")
+            logger.log("didStartProvisionalNavigation: title = \(String(describing: webView.title), privacy: .public), url = \(String(describing: webView.url), privacy: .public), navigation = \(String(describing: navigation),privacy: .public)")
         }
         
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-            print("didCommit: title = \(String(describing: webView.title)), url = \(String(describing: webView.url))")
+            logger.log("didCommit: title = \(String(describing: webView.title), privacy: .public), url = \(String(describing: webView.url), privacy: .public)")
         }
        
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            //print("didFinish: title = \(webView.title), url = \(webView.url)")
+            //logger.log("didFinish: title = \(webView.title), url = \(webView.url, privacy: .public)")
             webView.evaluateJavaScript("document.getElementsByTagName('title')[0].innerText", completionHandler: { (value: Any!, error: Error!) -> Void in
-                if error != nil {
-                    print("didFinish: \(String(describing: error))")
+                if let error = error {
+                    self.logger.log("didFinish: \(error.localizedDescription, privacy: .public)")
                     return
                 }
 
                 if let result = value as? String {
-                    //print("didFinish: title = \(result), url = \(webView.url)")
+                    //logger.log("didFinish: title = \(result, privacy: .public), url = \(webView.url, privacy: .public)")
                     self.title = result
                 }
             })
             
             /*
             webView.evaluateJavaScript("document.getElementsByTagName('meta')[0].innerText", completionHandler: { (value: Any!, error: Error!) -> Void in
-                if error != nil {
-                    print("didFinish: \(String(describing: error))")
+                if let error = error {
+                    logger.log("didFinish: \(error.localizedDescription, privacy: .public))")
                     return
                 }
 
                 if let result = value as? String {
-                    print("didFinish: ogTitle = \(result)")
+                    logger.log("didFinish: ogTitle = \(result, privacy: .public)")
                     self.ogTitle = result
                 }
             })

@@ -11,8 +11,10 @@ import CoreLocation
 import CoreData
 import FaviconFinder
 import Persistence
+import os
 
 class ShareViewController: UIViewController {
+    private let logger = Logger()
 
     private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
     private let contextName = "share extension"
@@ -125,7 +127,7 @@ class ShareViewController: UIViewController {
     private func accessWebpageProperties(extensionItem: NSExtensionItem) {
         if let userInfo = extensionItem.userInfo, let attachments = userInfo[NSExtensionItemAttachmentsKey] as? [NSItemProvider] {
             for attachment in attachments {
-                print("registeredTypeIdentifiers = \(attachment.registeredTypeIdentifiers)")
+                self.logger.log("registeredTypeIdentifiers = \(attachment.registeredTypeIdentifiers, privacy: .public)")
                 
                 for typeIdentifier in attachment.registeredTypeIdentifiers {
                     switch TypeIdentifier.init(rawValue: typeIdentifier) {
@@ -172,7 +174,7 @@ class ShareViewController: UIViewController {
                             }
                         }
                     case .none:
-                        print("Ignore typeIdentifier = \(typeIdentifier)")
+                        self.logger.log("Ignore typeIdentifier = \(typeIdentifier, privacy: .public)")
                         continue
                     }
                 }
@@ -209,7 +211,7 @@ class ShareViewController: UIViewController {
                 if let url = url {
                     self.findFavicon(url: url) { data, error in
                         guard let data = data else {
-                            print("Can't download favicon from \(url): \(String(describing: error))")
+                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
                             return
                         }
                         self.favicon = data
@@ -233,7 +235,7 @@ class ShareViewController: UIViewController {
                 if let url = url {
                     self.findFavicon(url: url) { data, error in
                         guard let data = data else {
-                            print("Can't download favicon from \(url): \(String(describing: error))")
+                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
                             return
                         }
                         self.favicon = data

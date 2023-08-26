@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private let recordType = "CD_LinkEntity"
     private let recordValueKey = "CD_title"
     
-    private var tokenCache = [NotificationToken: CKServerChangeToken]()
+    private var tokenCache = [NotificationTokenType: CKServerChangeToken]()
     
     private let databaseOperationHelper = DatabaseOperationHelper(appName: LinkPilerConstants.appPathComponent.rawValue)
     
@@ -143,7 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let title = record.value(forKey: recordValueKey) as? String else {
             return
         }
-
+        
         let content = UNMutableNotificationContent()
         content.title = LinkPilerConstants.appName.rawValue
         content.body = title
@@ -154,73 +154,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         logger.log("Processed \(record)")
     }
-    
-    private func addDatabaseChangesOperation(serverToken: CKServerChangeToken?) -> Void {
-        let dbChangesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: serverToken)
-        
-        dbChangesOperation.recordZoneWithIDChangedBlock = { self.addZoneChangesOperation(zoneId: $0) }
-        
-        dbChangesOperation.changeTokenUpdatedBlock = { token in
-            self.tokenCache[.server] = token
-        }
-
-        dbChangesOperation.fetchDatabaseChangesResultBlock = { result in
-            switch result {
-            case .success((let token, _)):
-                try? NotificationToken.server.write(token)
-            case .failure(let error):
-                self.logger.log("Failed to fetch database changes: \(String(describing: error))")
-                if let lastToken = self.tokenCache[.server] {
-                    try? NotificationToken.server.write(lastToken)
-                }
-            }
-        }
-        
-        dbChangesOperation.qualityOfService = .utility
-        CKContainer.default().privateCloudDatabase.add(dbChangesOperation)
-    }
-    
-    private func addZoneChangesOperation(zoneId: CKRecordZone.ID) -> Void {
-        let zoneToken = try? NotificationToken.zone.readToken()
-        if zoneToken != nil {
-            tokenCache[.zone] = zoneToken
-        }
-        
-        var configurations = [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneConfiguration]()
-        let config = CKFetchRecordZoneChangesOperation.ZoneConfiguration()
-        config.previousServerChangeToken = zoneToken
-        configurations[zoneId] = config
-        
-        let zoneChangesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [zoneId], configurationsByRecordZoneID: configurations)
-        
-        zoneChangesOperation.recordWasChangedBlock = { recordID, result in
-            switch(result) {
-            case .success(let record):
-                self.processRecord(record)
-            case .failure(let error):
-                self.logger.log("Failed to check if record was changed: recordID=\(recordID), error=\(String(describing: error))")
-            }
-        }
-        
-        zoneChangesOperation.recordZoneChangeTokensUpdatedBlock = { recordZoneID, token, _ in
-            self.tokenCache[.zone] = token
-        }
-        
-        zoneChangesOperation.recordZoneFetchResultBlock = { recordZoneID, result in
-            switch(result) {
-            case .success((let serverToken, _, _)):
-                try? NotificationToken.zone.write(serverToken)
-            case .failure(let error):
-                self.logger.log("Failed to fetch record zone: recordZoneID=\(recordZoneID), error=\(String(describing: error))")
-                if let lastToken = self.tokenCache[.zone] {
-                    try? NotificationToken.zone.write(lastToken)
-                }
-            }
-        }
-        
-        zoneChangesOperation.qualityOfService = .utility
-        CKContainer.default().privateCloudDatabase.add(zoneChangesOperation)
-    }
+       
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {

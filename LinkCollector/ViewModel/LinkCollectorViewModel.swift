@@ -211,6 +211,14 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) -> Void {
         let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
         
+        saveContext { error in
+            self.logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            DispatchQueue.main.async {
+                self.message = "Cannot save link = \(String(describing: title))"
+                self.showAlert.toggle()
+            }
+        }
+        
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
         for tag in tags {
@@ -293,8 +301,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         do {
             fetchedTags = try persistenceContainer.viewContext.fetch(fetchRequest)
         } catch {
-            let nsError = error as NSError
-            print("While fetching TagEntity with name=\(name) occured an unresolved error \(nsError), \(nsError.userInfo)")
+            self.logger.log("While fetching TagEntity with name=\(name) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot find a tag with name=\(name)"
                 self.showAlert.toggle()
@@ -316,7 +323,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         do {
             try persistenceHelper.saveContext()
         } catch {
-            self.logger.log("saveContext: \(error.localizedDescription)")
+            self.logger.log("saveContext: \(error.localizedDescription, privacy: .public)")
             completionHandler(error)
         }
         

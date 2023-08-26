@@ -21,7 +21,6 @@ extension LinkEntity {
         newLink.locality = locality
         newLink.created = Date()
         newLink.lastupd = Date()
-        context.saveContext()
         
         return newLink
     }

@@ -174,8 +174,7 @@ struct AddTagView: View {
             viewModel.delete(tag: tag)
         }
         
-        viewModel.saveContext { error in
-            print("\(error.localizedDescription)")
+        viewModel.saveContext { _ in
         }
     }
 }

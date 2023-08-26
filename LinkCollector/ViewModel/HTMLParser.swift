@@ -7,8 +7,11 @@
 
 import Foundation
 import SwiftSoup
+import os
 
 class HTMLParser {
+    private let logger = Logger()
+    
     var document: Document?
     var title = ""
     var ogTitle = ""
@@ -27,10 +30,10 @@ class HTMLParser {
         do {
             self.document = try SwiftSoup.parse(html)
         } catch Exception.Error(let type, let message) {
-            print("Caught an error: \(type) - \(message)")
+            logger.log("Caught an error: \(String(describing: type), privacy: .public) - \(String(describing: message), privacy: .public)")
             completionHandler(nil)
         } catch {
-            print("Cannot initialize HTMLParser for url = \(url)")
+            logger.log("Cannot initialize HTMLParser for url = \(url, privacy: .public)")
             completionHandler(nil)
         }
         
@@ -42,7 +45,7 @@ class HTMLParser {
                     self.title = titleText
                 }
             } catch {
-                print("Cannot find any title tags")
+                logger.log("Cannot find any title tags")
             }
             
             do {
@@ -57,7 +60,7 @@ class HTMLParser {
                     }
                 }
             } catch {
-                print("Cannot find any title tags")
+                logger.log("Cannot find any title tags")
             }
         }
         
@@ -81,41 +84,41 @@ class HTMLParser {
             let escapedString = youTubeUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
             let url = URL(string: "https://www.youtube.com/oembed?url=\(escapedString)")
         else {
-            print("Check if url belongs to YouTube: \(youTubeUrl)")
+            logger.log("Check if url belongs to YouTube: \(youTubeUrl, privacy: .public)")
             return
         }
         
-        print("url = \(url)")
+        logger.log("url = \(url, privacy: .public)")
         
         let request = URLRequest(url: url)
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard (error == nil) else {
-                print("There was an error with your request: \(error!)")
+                self.logger.log("There was an error with your request: \(error!.localizedDescription, privacy: .public)")
                 return
             }
             
             guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
                 let statusCode = (response as? HTTPURLResponse)!.statusCode
-                print("The status code was not between 200 and 299: \(statusCode)")
+                self.logger.log("The status code was not between 200 and 299: \(statusCode, privacy: .public)")
                 return
             }
             
             guard let data = data else {
-                print("There was no data downloaded")
+                self.logger.log("There was no data downloaded")
                 return
             }
             
-            print("data = \(data)")
+            self.logger.log("data = \(data, privacy: .public)")
             var youTubeOMebed: YouTubeOEmbed?
             do {
                 youTubeOMebed = try JSONDecoder().decode(YouTubeOEmbed.self, from: data)
             } catch {
-                print("Cannot parse data: \(data)")
+                self.logger.log("Cannot parse data: \(data, privacy: .public)")
             }
             
             guard let oEmbed = youTubeOMebed else {
-                print("Decoding JSON failed: \(String(describing: youTubeOMebed))")
+                self.logger.log("Decoding JSON failed: \(String(describing: youTubeOMebed), privacy: .public)")
                 return
             }
                 
