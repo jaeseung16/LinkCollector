@@ -14,15 +14,19 @@ import UserNotifications
 import FaviconFinder
 import os
 import Persistence
+import SwiftUI
+import CoreSpotlight
 
 class LinkCollectorViewModel: NSObject, ObservableObject {
+    @AppStorage("spotlightLinkIndexing") private var spotlightLinkIndexing: Bool = false
+    
     private let locationManager = CLLocationManager()
     private let logger = Logger()
     private let contentsJson = "contents.json"
     
     private let persistence: Persistence
     private var persistenceContainer: NSPersistentCloudKitContainer {
-        persistence.container
+        persistence.cloudContainer!
     }
     
     private var subscriptions: Set<AnyCancellable> = []
@@ -46,6 +50,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     private let persistenceHelper: PersistenceHelper
     
+    private(set) var linkIndexer: LinkSpotlightDelegate?
+    private var spotlightFoundLinks: [CSSearchableItem] = []
+    private var linkSearchQuery: CSSearchQuery?
+    
     init(persistence: Persistence) {
         self.persistence = persistence
         self.persistenceHelper = PersistenceHelper(persistence: persistence)
@@ -63,7 +71,138 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
         
+        if let linkIndexer: LinkSpotlightDelegate = self.persistenceHelper.getSpotlightDelegate() {
+            self.linkIndexer = linkIndexer
+            self.toggleIndexing(self.linkIndexer, enabled: true)
+            NotificationCenter.default.addObserver(self, selector: #selector(defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
+        }
+        
+        logger.log("spotlightLinkIndexing=\(self.spotlightLinkIndexing, privacy: .public)")
+        if !spotlightLinkIndexing {
+            DispatchQueue.main.async {
+                self.indexLinks()
+                self.spotlightLinkIndexing.toggle()
+                
+            }
+        }
+        
         fetchAll()
+    }
+    
+    // MARK:- CoreSpotlight
+    
+    @objc private func defaultsChanged() -> Void {
+        if !self.spotlightLinkIndexing {
+            DispatchQueue.main.async {
+                self.toggleIndexing(self.linkIndexer, enabled: false)
+                self.toggleIndexing(self.linkIndexer, enabled: true)
+                self.spotlightLinkIndexing.toggle()
+            }
+        }
+    }
+    
+    private func toggleIndexing(_ indexer: NSCoreDataCoreSpotlightDelegate?, enabled: Bool) {
+        guard let indexer = indexer else { return }
+        if enabled {
+            indexer.startSpotlightIndexing()
+        } else {
+            indexer.stopSpotlightIndexing()
+        }
+    }
+    
+    private func indexLinks() -> Void {
+        logger.log("Indexing \(self.links.count, privacy: .public) links")
+        index<LinkEntity>(links, indexName: LinkPilerConstants.linkIndexName.rawValue)
+    }
+    
+    private func index<T: NSManagedObject>(_ entities: [T], indexName: String) {
+        let searchableItems: [CSSearchableItem] = entities.compactMap { (entity: T) -> CSSearchableItem? in
+            guard let attributeSet = attributeSet(for: entity) else {
+                self.logger.log("Cannot generate attribute set for \(entity, privacy: .public)")
+                return nil
+            }
+            return CSSearchableItem(uniqueIdentifier: entity.objectID.uriRepresentation().absoluteString, domainIdentifier: LinkPilerConstants.domainIdentifier.rawValue, attributeSet: attributeSet)
+        }
+        
+        logger.log("Adding \(searchableItems.count) items to index=\(indexName, privacy: .public)")
+        
+        CSSearchableIndex(name: indexName).indexSearchableItems(searchableItems) { error in
+            guard let error = error else {
+                return
+            }
+            self.logger.log("Error while indexing \(T.self): \(error.localizedDescription, privacy: .public)")
+        }
+    }
+    
+    private func attributeSet(for object: NSManagedObject) -> CSSearchableItemAttributeSet? {
+        if let link = object as? LinkEntity {
+            let attributeSet = CSSearchableItemAttributeSet(contentType: .text)
+            attributeSet.title = link.title
+            attributeSet.displayName = link.title
+            return attributeSet
+        }
+        return nil
+    }
+    
+    func searchLink() -> Void {
+        if searchString.isEmpty {
+            linkSearchQuery?.cancel()
+            fetchAll()
+        } else {
+            searchLinks()
+        }
+    }
+    
+    private func searchLinks() -> Void {
+        let escapedText = searchString.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        let queryString = "(title == \"*\(escapedText)*\"cd)"
+        
+        linkSearchQuery = CSSearchQuery(queryString: queryString, attributes: ["title"])
+        
+        linkSearchQuery?.foundItemsHandler = { items in
+            DispatchQueue.main.async {
+                self.spotlightFoundLinks += items
+            }
+        }
+        
+        linkSearchQuery?.completionHandler = { error in
+            if let error = error {
+                self.logger.log("Searching \(self.searchString) came back with error: \(error.localizedDescription, privacy: .public)")
+            } else {
+                DispatchQueue.main.async {
+                    self.fetchLinks(self.spotlightFoundLinks)
+                    self.spotlightFoundLinks.removeAll()
+                }
+            }
+        }
+        
+        linkSearchQuery?.start()
+    }
+    
+    private func fetchLinks(_ items: [CSSearchableItem]) {
+        logger.log("Fetching \(items.count) links")
+        let fetched = fetch(LinkEntity.self, items)
+        logger.log("fetched.count=\(fetched.count)")
+        links = fetched.sorted(by: { link1, link2 in
+            guard let lastupd1 = link1.lastupd else {
+                return false
+            }
+            guard let lastupd2 = link2.lastupd else {
+                return true
+            }
+            return lastupd1 > lastupd2
+        })
+        logger.log("Found \(self.links.count) links")
+    }
+    
+    private func fetch<Element>(_ type: Element.Type, _ items: [CSSearchableItem]) -> [Element] where Element: NSManagedObject {
+        return items.compactMap { (item: CSSearchableItem) -> Element? in
+            guard let url = URL(string: item.uniqueIdentifier) else {
+                self.logger.log("url is nil for item=\(item)")
+                return nil
+            }
+            return persistenceHelper.find(for: url) as? Element
+        }
     }
     
     // MARK: - LocationManager

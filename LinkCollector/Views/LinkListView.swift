@@ -33,15 +33,6 @@ struct LinkListView: View {
             }
             return filter
         }
-        .filter { link in
-            if viewModel.searchString == "" {
-                return true
-            } else if let title = link.title {
-                return title.lowercased().contains(viewModel.searchString.lowercased())
-            } else {
-                return false
-            }
-        }
     }
     
     var body: some View {
@@ -92,6 +83,9 @@ struct LinkListView: View {
         }
         .onChange(of: viewModel.selected) { newValue in
             selected = newValue
+        }
+        .onChange(of: viewModel.searchString) { _ in
+            viewModel.searchLink()
         }
     }
     

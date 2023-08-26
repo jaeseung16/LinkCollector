@@ -66,4 +66,16 @@ class PersistenceHelper {
         }
         return fetchedEntities
     }
+    
+    func find(for url: URL) -> NSManagedObject? {
+        guard let objectID = viewContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url) else {
+            PersistenceHelper.logger.log("objectID is nil for url=\(url)")
+            return nil
+        }
+        return viewContext.object(with: objectID)
+    }
+    
+    func getSpotlightDelegate<T: NSCoreDataCoreSpotlightDelegate>() -> T? {
+        return persistence.createCoreSpotlightDelegate()
+    }
 }
