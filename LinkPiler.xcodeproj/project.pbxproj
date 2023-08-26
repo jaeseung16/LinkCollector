@@ -45,6 +45,8 @@
 		905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5425897B890090BFC6 /* Preview Assets.xcassets */; };
 		905E9C5825897B890090BFC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */; };
 		905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
+		9078D06D2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
+		9078D06E2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
@@ -144,6 +146,7 @@
 		905E9C5925897B890090BFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		905E9C6025897D960090BFC6 /* LinkCollector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollector.entitlements; sourceTree = "<group>"; };
 		905E9C6225897DE00090BFC6 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParserError.swift; sourceTree = "<group>"; };
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
 		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
@@ -325,6 +328,7 @@
 				90A290A7258FB663004988D9 /* HTMLParser.swift */,
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
 				9092A1E12A957EE600020880 /* PersistenceHelper.swift */,
+				9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -499,6 +503,7 @@
 			files = (
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
+				9078D06E2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
 				9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
@@ -539,6 +544,7 @@
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
+				9078D06D2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
 				905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */,
@@ -945,7 +951,7 @@
 			repositoryURL = "https://github.com/will-lumley/FaviconFinder";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 3.3.0;
+				minimumVersion = 4.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

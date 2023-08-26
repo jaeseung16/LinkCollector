@@ -89,50 +89,68 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         return scheme == "http" || scheme == "https"
     }
     
-    private func getURLAndHTML(from urlString: String) -> (URL?, String?) {
+    private func getURLAndHTML(from urlString: String) async -> (URL?, String?) {
         var url: URL?
         var html: String?
         
         if isValid(urlString: urlString) {
-            (url, html) = tryDownloadHTML(from: urlString)
+            (url, html) = try await tryDownloadHTML(from: urlString)
         } else {
-            (url, html) = tryDownloadHTML(from: "https://\(urlString)")
+            (url, html) = try await tryDownloadHTML(from: "https://\(urlString)")
             if html == nil {
-                (url, html) = tryDownloadHTML(from: "http://\(urlString)")
+                (url, html) = try await tryDownloadHTML(from: "http://\(urlString)")
             }
         }
         return (url, html)
     }
         
-    private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
-        if let url = URL(string: urlString) {
-            return (url, try? String(contentsOf: url))
-        } else {
+    private func tryDownloadHTML(from urlString: String) async -> (URL?, String?) {
+        guard let url = URL(string: urlString) else {
+            self.logger.log("Invalid url: \(urlString, privacy: .public)")
             return (nil, nil)
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return (url, String(data: data, encoding: .utf8))
+        } catch {
+            self.logger.log("Error while downloading data from \(url)")
+            return (url, nil)
         }
     }
     
     func process(urlString: String, completionHandler: @escaping (_ result: String?, _ correctedURL: URL?) -> Void) -> Void {
-        let (url, html) = getURLAndHTML(from: urlString)
-        
-        guard let url = url, let html = html else {
-            completionHandler(nil, nil)
-            return
-        }
-        
-        let htmlParser = HTMLParser()
-        htmlParser.parse(url: url, html: html) { result in
-            completionHandler(result, url)
+        Task {
+            let (url, html) = try await getURLAndHTML(from: urlString)
+            
+            guard let url = url, let html = html else {
+                DispatchQueue.main.async {
+                    completionHandler(nil, nil)
+                }
+                return
+            }
+            
+            let htmlParser = HTMLParser()
+            htmlParser.parse(url: url, html: html) { result in
+                DispatchQueue.main.async {
+                    completionHandler(result, url)
+                }
+            }
         }
     }
     
     func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
-        FaviconFinder(url: url).downloadFavicon { result in
-            switch result {
-            case .success(let favicon):
-                completionHandler(favicon.data, nil)
-            case .failure(let error):
-                completionHandler(nil, error)
+        Task {
+            do {
+                let favicon = try await FaviconFinder(url: url).downloadFavicon()
+                DispatchQueue.main.async {
+                    completionHandler(favicon.data, nil)
+                }
+            } catch {
+                self.logger.log("Cannot find favicon from \(url, privacy: .public)")
+                DispatchQueue.main.async {
+                    completionHandler(nil, error)
+                }
             }
         }
     }

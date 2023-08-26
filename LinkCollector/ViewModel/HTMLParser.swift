@@ -10,23 +10,19 @@ import SwiftSoup
 import os
 
 class HTMLParser {
+    private static let emptyString = ""
+    
     private let logger = Logger()
     
     var document: Document?
-    var title = ""
-    var ogTitle = ""
+    var title = HTMLParser.emptyString
+    var ogTitle = HTMLParser.emptyString
     
     var titleToReturn: String {
-        if self.ogTitle != "" {
-            return self.ogTitle
-        } else if self.title != "" {
-            return self.title
-        } else {
-            return ""
-        }
+        return !ogTitle.isEmpty ? ogTitle : (!title.isEmpty ? title : HTMLParser.emptyString)
     }
     
-    func parse(url: URL, html: String, completionHandler: @escaping (_ result: String?) -> Void) {
+    func parse(url: URL, html: String, completionHandler: @escaping (_ result: String?) -> Void) -> Void {
         do {
             self.document = try SwiftSoup.parse(html)
         } catch Exception.Error(let type, let message) {
@@ -64,19 +60,23 @@ class HTMLParser {
             }
         }
         
-        if let host = url.host {
-            if host.contains("youtube.com") {
-                findYouTubeTitle(url) { result in
-                    self.ogTitle = result.title
-                    completionHandler(self.titleToReturn)
+        Task {
+            if let host = url.host {
+                if host.contains("youtube.com") {
+                    do {
+                        self.ogTitle = try await findTitle(youTubeUrl: url)
+                    } catch {
+                        logger.log("Can't find the title from \(url): \(error.localizedDescription, privacy: .public)")
+                        self.ogTitle = HTMLParser.emptyString
+                    }
+                    completionHandler(titleToReturn)
+                } else {
+                    completionHandler(titleToReturn)
                 }
             } else {
                 completionHandler(titleToReturn)
             }
-        } else {
-            completionHandler(titleToReturn)
         }
-        
     }
     
     private func findYouTubeTitle(_ youTubeUrl: URL, completionHandler: @escaping (_ result: YouTubeOEmbed) -> Void) {
@@ -126,5 +126,34 @@ class HTMLParser {
         }
         
         task.resume()
+    }
+    
+    private func findTitle(youTubeUrl: URL) async throws -> String {
+        guard
+            let escapedString = youTubeUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+            let url = URL(string: "https://www.youtube.com/oembed?url=\(escapedString)")
+        else {
+            logger.log("Check if url belongs to YouTube: \(youTubeUrl, privacy: .public)")
+            throw HTMLParserError.invalidURL
+        }
+        
+        logger.log("url=\(url, privacy: .public)")
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299 else {
+            logger.log("The status code was not between 200 and 299: \(response, privacy: .public)")
+            throw HTMLParserError.invalidServerResponse
+        }
+        
+        self.logger.log("data=\(data, privacy: .public)")
+        
+        guard let youTubeOEmbed = try? JSONDecoder().decode(YouTubeOEmbed.self, from: data) else {
+            self.logger.log("Cannot parse data: \(data, privacy: .public)")
+            throw HTMLParserError.cannotParseData
+        }
+        
+        return youTubeOEmbed.title
+        
     }
 }

@@ -290,12 +290,17 @@ class ShareViewController: UIViewController {
     }
     
     private func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
-        FaviconFinder(url: url).downloadFavicon { result in
-            switch result {
-            case .success(let favicon):
-                completionHandler(favicon.data, nil)
-            case .failure(let error):
-                completionHandler(nil, error)
+        Task {
+            do {
+                let favicon = try await FaviconFinder(url: url).downloadFavicon()
+                DispatchQueue.main.async {
+                    completionHandler(favicon.data, nil)
+                }
+            } catch {
+                self.logger.log("Cannot find favicon from \(url, privacy: .public)")
+                DispatchQueue.main.async {
+                    completionHandler(nil, error)
+                }
             }
         }
     }
