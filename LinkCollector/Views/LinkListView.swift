@@ -86,6 +86,9 @@ struct LinkListView: View {
                 Text(message)
             }
             .searchable(text: $viewModel.searchString)
+            .refreshable {
+                viewModel.fetchAll()
+            }
         }
         .onChange(of: viewModel.selected) { newValue in
             selected = newValue
