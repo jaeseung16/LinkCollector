@@ -338,6 +338,12 @@ class ShareViewController: UIViewController {
                                        locality: self.locality,
                                        context: persistenceController.container.viewContext)
         
+        do {
+            try persistenceController.container.viewContext.save()
+        } catch {
+            self.logger.log("Cannot save \(self.linkEntity, privacy: .public)")
+        }
+        
         persistenceController.container.viewContext.name = nil
         
         // Terminate after 10 sec
