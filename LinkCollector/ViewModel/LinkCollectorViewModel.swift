@@ -94,11 +94,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         var html: String?
         
         if isValid(urlString: urlString) {
-            (url, html) = try await tryDownloadHTML(from: urlString)
+            (url, html) = await tryDownloadHTML(from: urlString)
         } else {
-            (url, html) = try await tryDownloadHTML(from: "https://\(urlString)")
+            (url, html) = await tryDownloadHTML(from: "https://\(urlString)")
             if html == nil {
-                (url, html) = try await tryDownloadHTML(from: "http://\(urlString)")
+                (url, html) = await tryDownloadHTML(from: "http://\(urlString)")
             }
         }
         return (url, html)
@@ -209,7 +209,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var links = [LinkEntity]()
     @Published var tags = [TagEntity]()
     
-    private func fetchAll() {
+    func fetchAll() {
         fetchLinks()
         fetchTags()
     }
