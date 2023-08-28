@@ -260,7 +260,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     func process(urlString: String, completionHandler: @escaping (_ result: String?, _ correctedURL: URL?) -> Void) -> Void {
         Task {
-            let (url, html) = try await getURLAndHTML(from: urlString)
+            let (url, html) = await getURLAndHTML(from: urlString)
             
             guard let url = url, let html = html else {
                 DispatchQueue.main.async {
