@@ -90,7 +90,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     // MARK:- CoreSpotlight
-    
     @objc private func defaultsChanged() -> Void {
         if !self.spotlightLinkIndexing {
             DispatchQueue.main.async {
@@ -202,6 +201,28 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 return nil
             }
             return persistenceHelper.find(for: url) as? Element
+        }
+    }
+    
+    func continueActivity(_ activity: NSUserActivity, completionHandler: @escaping (NSManagedObject) -> Void) {
+        logger.log("continueActivity: \(activity)")
+        guard let info = activity.userInfo, let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String else {
+            return
+        }
+
+        guard let objectURI = URL(string: objectIdentifier), let entity = persistenceHelper.find(for: objectURI) else {
+            logger.log("Can't find an object with objectIdentifier=\(objectIdentifier)")
+            return
+        }
+        
+        logger.log("entity = \(entity)")
+        
+        DispatchQueue.main.async {
+            if let link = entity as? LinkEntity {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    completionHandler(link)
+                }
+            }
         }
     }
     
@@ -493,7 +514,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     private func fetchUpdates(_ notification: Notification) -> Void {
         persistence.fetchUpdates(notification) { result in
             switch result {
-            case .success(()):
+            case .success(_):
                 DispatchQueue.main.async {
                     self.toggle.toggle()
                 }
