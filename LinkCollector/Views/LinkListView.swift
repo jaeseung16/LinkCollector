@@ -88,14 +88,6 @@ struct LinkListView: View {
         .onChange(of: viewModel.searchString) { _ in
             viewModel.searchLink()
         }
-        .onContinueUserActivity(CSSearchableItemActionType) { activity in
-            viewModel.continueActivity(activity) { entity in
-                if let link = entity as? LinkEntity {
-                    viewModel.searchString = link.title ?? ""
-                    selected = link.id
-                }
-            }
-        }
     }
     
     private func removeLink(indexSet: IndexSet) -> Void {

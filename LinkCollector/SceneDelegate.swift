@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import Persistence
+import CoreSpotlight
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -85,6 +86,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         viewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
         viewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
+    }
+    
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        guard let info = userActivity.userInfo, let _ = info[CSSearchableItemActivityIdentifier] as? String else {
+            return
+        }
+        
+        viewModel.continueActivity(userActivity) { entity in
+            if let link = entity as? LinkEntity, let id = link.id {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.viewModel.searchString = link.title ?? ""
+                    self.viewModel.selected = id
+                }
+            }
+        }
+        
     }
 
 }
