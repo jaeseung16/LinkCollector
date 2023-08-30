@@ -29,7 +29,7 @@ struct LinkDetailView: View {
     private var location: String {
         let locality = entity.locality
         
-        if locality == nil || locality == "Unknown" {
+        if locality == nil || locality == LinkCollectorViewModel.unknown {
             return "a unknown location"
         } else {
             return locality!

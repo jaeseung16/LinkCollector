@@ -47,9 +47,11 @@ struct AddLinkView: View {
         Form {
             Section(header: Label("URL", systemImage: "link")) {
                 TextField("Insert url", text: $url, onCommit: {
-                    updateURL()
-                    urlUpdated = true
-                    viewModel.lookUpCurrentLocation()
+                    Task {
+                        await updateURL()
+                        urlUpdated = true
+                        viewModel.userLocality = await viewModel.lookUpCurrentLocation()
+                    }
                 })
                 .autocapitalization(.none)
             }
@@ -99,35 +101,32 @@ struct AddLinkView: View {
         }
     }
     
-    private func updateURL() {
-        showProgress = true
+    private func updateURL() async {
+        let (correctedURL, result) = await viewModel.process(urlString: url)
         
-        viewModel.process(urlString: url) { result, correctedURL in
-            guard let result = result, !result.isEmpty else {
+        guard let result = result, !result.isEmpty else {
+            self.showProgress = false
+            self.message = "Cannot open the given url. Please check if a web browser can open it."
+            self.showAlert = true
+            return
+        }
+        
+        if let correctedURL = correctedURL, self.url != correctedURL.absoluteString {
+            self.url = correctedURL.absoluteString
+        }
+        
+        self.title = result
+        self.showProgress = false
+        
+        if let url = URL(string: self.url) {
+            let data = await viewModel.findFavicon(url: url)
+            guard let data = data else {
                 self.showProgress = false
                 self.message = "Cannot open the given url. Please check if a web browser can open it."
                 self.showAlert = true
                 return
             }
-            
-            if let correctedURL = correctedURL, self.url != correctedURL.absoluteString {
-                self.url = correctedURL.absoluteString
-            }
-            
-            self.title = result
-            self.showProgress = false
-            
-            if let url = URL(string: self.url) {
-                viewModel.findFavicon(url: url) { data, error in
-                    guard let data = data else {
-                        self.showProgress = false
-                        self.message = "Cannot open the given url. Please check if a web browser can open it."
-                        self.showAlert = true
-                        return
-                    }
-                    self.favicon = data
-                }
-            }
+            self.favicon = data
         }
     }
     

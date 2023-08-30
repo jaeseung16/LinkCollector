@@ -20,6 +20,8 @@ import CoreSpotlight
 class LinkCollectorViewModel: NSObject, ObservableObject {
     @AppStorage("spotlightLinkIndexing") private var spotlightLinkIndexing: Bool = false
     
+    static let unknown = "Unknown"
+    
     private let locationManager = CLLocationManager()
     private let logger = Logger()
     private let contentsJson = "contents.json"
@@ -35,7 +37,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     @Published var userLatitude: Double = 0
     @Published var userLongitude: Double = 0
-    @Published var userLocality: String = "Unknown"
+    @Published var userLocality: String = LinkCollectorViewModel.unknown
     @Published var showAlert = false
     
     @Published var toggle = false
@@ -229,13 +231,28 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             let geocoder = CLGeocoder()
             geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
                 if error == nil {
-                    self.userLocality = placemarks?[0].locality ?? "Unknown"
+                    self.userLocality = placemarks?[0].locality ?? LinkCollectorViewModel.unknown
                 } else {
-                    self.userLocality = "Unknown"
+                    self.userLocality = LinkCollectorViewModel.unknown
                 }
             }
         } else {
-            self.userLocality = "Unknown"
+            self.userLocality = LinkCollectorViewModel.unknown
+        }
+    }
+    
+    func lookUpCurrentLocation() async -> String {
+        if let lastLocation = locationManager.location {
+            do {
+                let geocoder = CLGeocoder()
+                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
+                return placemarks.isEmpty ? LinkCollectorViewModel.unknown : placemarks[0].locality ?? LinkCollectorViewModel.unknown
+            } catch {
+                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
+                return LinkCollectorViewModel.unknown
+            }
+        } else {
+            return LinkCollectorViewModel.unknown
         }
     }
     
@@ -276,39 +293,26 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
-    func process(urlString: String, completionHandler: @escaping (_ result: String?, _ correctedURL: URL?) -> Void) -> Void {
-        Task {
-            let (url, html) = await getURLAndHTML(from: urlString)
-            
-            guard let url = url, let html = html else {
-                DispatchQueue.main.async {
-                    completionHandler(nil, nil)
-                }
-                return
-            }
-            
-            let htmlParser = HTMLParser()
-            htmlParser.parse(url: url, html: html) { result in
-                DispatchQueue.main.async {
-                    completionHandler(result, url)
-                }
-            }
+    func process(urlString: String) async -> (URL?, String?) {
+        let (url, html) = await getURLAndHTML(from: urlString)
+        
+        guard let url = url, let html = html else {
+            self.logger.log("Cannot download html from url described by \(urlString, privacy: .public)")
+            return (nil, nil)
         }
+        
+        let htmlParser = HTMLParser()
+        let title = await htmlParser.parse(url: url, html: html)
+        return (url, title)
     }
     
-    func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
-        Task {
-            do {
-                let favicon = try await FaviconFinder(url: url).downloadFavicon()
-                DispatchQueue.main.async {
-                    completionHandler(favicon.data, nil)
-                }
-            } catch {
-                self.logger.log("Cannot find favicon from \(url, privacy: .public)")
-                DispatchQueue.main.async {
-                    completionHandler(nil, error)
-                }
-            }
+    func findFavicon(url: URL) async -> Data? {
+        do {
+            let favicon = try await FaviconFinder(url: url).downloadFavicon()
+            return favicon.data
+        } catch {
+            self.logger.log("Cannot find favicon from \(url, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            return nil
         }
     }
     
