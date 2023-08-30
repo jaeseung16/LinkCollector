@@ -19,12 +19,13 @@ struct LinkListView: View {
     @State private var selected: UUID?
     @State private var showDateRangePickerView = false
     
+    @State private var selectedTags = Set<TagEntity>()
     @State private var dateInterval: DateInterval?
     
     var filteredLinks: [LinkEntity] {
         viewModel.links.filter { link in
             var filter = true
-            if let tags = link.tags as? Set<TagEntity>, !viewModel.selectedTags.isEmpty && viewModel.selectedTags.intersection(tags).isEmpty {
+            if let tags = link.tags as? Set<TagEntity>, !selectedTags.isEmpty && selectedTags.intersection(tags).isEmpty {
                 filter = false
             }
             return filter
@@ -63,8 +64,7 @@ struct LinkListView: View {
                     .environmentObject(viewModel)
             }
             .sheet(isPresented: $showTagListView) {
-                SelectTagsView(selectedTags: viewModel.selectedTags)
-                    .environmentObject(viewModel)
+                SelectTagsView(selectedTags: $selectedTags)
             }
             .sheet(isPresented: $showDateRangePickerView) {
                 if let start = dateInterval?.start, let end = dateInterval?.end {

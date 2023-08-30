@@ -11,7 +11,7 @@ struct SelectTagsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
-    @State var selectedTags: Set<TagEntity>
+    @Binding var selectedTags: Set<TagEntity>
     
     private var filteredTags: [TagEntity] {
         viewModel.tags.filter { !selectedTags.contains($0) }
@@ -53,7 +53,6 @@ struct SelectTagsView: View {
     private func header() -> some View {
         HStack {
             Button {
-                viewModel.selectedTags = selectedTags
                 dismiss.callAsFunction()
             } label: {
                 Label("Done", systemImage: "chevron.backward")
