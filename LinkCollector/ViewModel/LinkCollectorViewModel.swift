@@ -44,8 +44,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var searchString = ""
     @Published var selectedTags = Set<TagEntity>()
     
-    @Published var dateInterval: DateInterval?
-    
     var message = ""
     
     private let persistenceHelper: PersistenceHelper

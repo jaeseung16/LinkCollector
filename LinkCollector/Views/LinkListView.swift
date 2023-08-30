@@ -19,7 +19,9 @@ struct LinkListView: View {
     @State private var selected: UUID?
     @State private var showDateRangePickerView = false
     
-    var filteredLinks: Array<LinkEntity> {
+    @State private var dateInterval: DateInterval?
+    
+    var filteredLinks: [LinkEntity] {
         viewModel.links.filter { link in
             var filter = true
             if let tags = link.tags as? Set<TagEntity>, !viewModel.selectedTags.isEmpty && viewModel.selectedTags.intersection(tags).isEmpty {
@@ -29,8 +31,8 @@ struct LinkListView: View {
         }
         .filter { link in
             var filter = true
-            if let created = link.created {
-                filter = viewModel.dateInterval?.contains(created) ?? true
+            if let dateInterval = dateInterval, let created = link.created {
+                filter = dateInterval.contains(created)
             }
             return filter
         }
@@ -65,8 +67,11 @@ struct LinkListView: View {
                     .environmentObject(viewModel)
             }
             .sheet(isPresented: $showDateRangePickerView) {
-                DateRangePickerView(start: viewModel.dateInterval?.start ?? Date(), end: viewModel.dateInterval?.end ?? Date())
-                    .environmentObject(viewModel)
+                if let start = dateInterval?.start, let end = dateInterval?.end {
+                    DateRangePickerView(dateInterval: $dateInterval, start: start, end: end)
+                } else {
+                    DateRangePickerView(dateInterval: $dateInterval)
+                }
             }
             .alert("Unable to Save Data", isPresented: $showAlert) {
                 Button {
