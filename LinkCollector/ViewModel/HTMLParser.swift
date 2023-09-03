@@ -18,7 +18,7 @@ class HTMLParser {
     var title = HTMLParser.emptyString
     var ogTitle = HTMLParser.emptyString
     
-    var titleToReturn: String {
+    var titleToUse: String {
         return !ogTitle.isEmpty ? ogTitle : (!title.isEmpty ? title : HTMLParser.emptyString)
     }
     
@@ -36,12 +36,12 @@ class HTMLParser {
             if let host = url.host {
                 if host.contains("youtube.com") {
                     await populateOgTitle(url)
-                    completionHandler(titleToReturn)
+                    completionHandler(titleToUse)
                 } else {
-                    completionHandler(titleToReturn)
+                    completionHandler(titleToUse)
                 }
             } else {
-                completionHandler(titleToReturn)
+                completionHandler(titleToUse)
             }
         }
     }
@@ -111,7 +111,7 @@ class HTMLParser {
             await populateOgTitle(url)
         }
         
-        return titleToReturn
+        return titleToUse
     }
     
     private func findYouTubeTitle(_ youTubeUrl: URL, completionHandler: @escaping (_ result: YouTubeOEmbed) -> Void) {
