@@ -23,8 +23,6 @@ struct AddLinkView: View {
     @State private var message = ""
     @State private var addNewTag = false
     
-    private var htmlParser = HTMLParser()
-    
     var body: some View {
         ZStack {
             VStack(alignment: .center) {
