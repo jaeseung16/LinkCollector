@@ -18,15 +18,15 @@ class ShareViewController: UIViewController {
 
     private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
     private let contextName = "share extension"
+    private let unknown = "Unknown"
     
     private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
     private var location: CLLocation? {
         didSet {
             locationManager.stopUpdatingLocation()
-            
-            lookUpCurrentLocation() { place in
-                self.locality = place != nil ? place!.locality : "Unknown"
+            Task {
+                locality = await lookUpCurrentLocation()
             }
         }
     }
@@ -34,7 +34,7 @@ class ShareViewController: UIViewController {
     private var locality: String? {
         didSet {
             DispatchQueue.main.async {
-                self.locationTextField.text = self.locality ?? "Unknown"
+                self.locationTextField.text = self.locality ?? self.unknown
             }
         }
     }
@@ -333,8 +333,8 @@ class ShareViewController: UIViewController {
                                        url: urlLabel.text,
                                        favicon: favicon,
                                        note: "",
-                                       latitude: location != nil ? location!.coordinate.latitude : 0.0,
-                                       longitude: location != nil ? location!.coordinate.latitude : 0.0,
+                                       latitude: location?.coordinate.latitude ?? 0.0,
+                                       longitude: location?.coordinate.latitude ?? 0.0,
                                        locality: self.locality,
                                        context: persistenceController.container.viewContext)
         
@@ -352,19 +352,18 @@ class ShareViewController: UIViewController {
         }
     }
     
-    private func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void) {
+    private func lookUpCurrentLocation() async -> String {
         if let lastLocation = location {
-            let geocoder = CLGeocoder()
-            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
-                if error == nil {
-                    let firstLocation = placemarks?[0]
-                    completionHandler(firstLocation)
-                } else {
-                    completionHandler(nil)
-                }
+            do {
+                let geocoder = CLGeocoder()
+                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
+                return placemarks.isEmpty ? unknown : placemarks[0].locality ?? unknown
+            } catch {
+                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
+                return unknown
             }
         } else {
-            completionHandler(nil)
+            return unknown
         }
     }
     
