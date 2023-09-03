@@ -329,9 +329,9 @@
 			children = (
 				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
 				90A290A7258FB663004988D9 /* HTMLParser.swift */,
+				9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */,
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
 				9092A1E12A957EE600020880 /* PersistenceHelper.swift */,
-				9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */,
 				9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */,
 			);
 			path = ViewModel;

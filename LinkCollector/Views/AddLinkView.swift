@@ -31,7 +31,7 @@ struct AddLinkView: View {
             }
             
             ProgressView()
-                .opacity(self.showProgress ? 1.0 : 0.0)
+                .opacity(showProgress ? 1.0 : 0.0)
         }
         .padding()
         .alert(isPresented: $showAlert) {
@@ -46,8 +46,10 @@ struct AddLinkView: View {
             Section(header: Label("URL", systemImage: "link")) {
                 TextField("Insert url", text: $url, onCommit: {
                     Task {
-                        await updateURL()
-                        urlUpdated = true
+                        urlUpdated = await updateURL()
+                        if (urlUpdated) {
+                            await findFavicon()
+                        }
                         viewModel.userLocality = await viewModel.lookUpCurrentLocation()
                     }
                 })
@@ -99,33 +101,39 @@ struct AddLinkView: View {
         }
     }
     
-    private func updateURL() async {
+    private func updateURL() async -> Bool {
         let (correctedURL, result) = await viewModel.process(urlString: url)
         
         guard let result = result, !result.isEmpty else {
-            self.showProgress = false
-            self.message = "Cannot open the given url. Please check if a web browser can open it."
-            self.showAlert = true
-            return
+            showAlertWhenCannotOpenURL()
+            return false
         }
         
         if let correctedURL = correctedURL, self.url != correctedURL.absoluteString {
-            self.url = correctedURL.absoluteString
+            url = correctedURL.absoluteString
         }
         
-        self.title = result
-        self.showProgress = false
-        
-        if let url = URL(string: self.url) {
+        title = result
+        showProgress = false
+        return true
+    }
+    
+    private func findFavicon() async -> Void {
+        if let url = URL(string: url) {
             let data = await viewModel.findFavicon(url: url)
             guard let data = data else {
-                self.showProgress = false
-                self.message = "Cannot open the given url. Please check if a web browser can open it."
-                self.showAlert = true
+                showAlertWhenCannotOpenURL()
                 return
             }
-            self.favicon = data
+            favicon = data
         }
+        return
+    }
+    
+    private func showAlertWhenCannotOpenURL() -> Void {
+        showProgress = false
+        message = "Cannot open the given url. Please check if a web browser can open it."
+        showAlert = true
     }
     
     private func tagSectionHeader() -> some View {
