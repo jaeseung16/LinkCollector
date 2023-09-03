@@ -13,6 +13,7 @@ struct AddLinkView: View {
     
     @State private var title: String = ""
     @State private var url: String = ""
+    @State private var submittedUrl = ""
     @State private var favicon: Data?
     @State private var note: String = ""
     @State private var tags = [TagEntity]()
@@ -44,16 +45,21 @@ struct AddLinkView: View {
     private func addLinkForm() -> some View {
         Form {
             Section(header: Label("URL", systemImage: "link")) {
-                TextField("Insert url", text: $url, onCommit: {
-                    Task {
-                        urlUpdated = await updateURL()
-                        if (urlUpdated) {
-                            await findFavicon()
-                        }
-                        viewModel.userLocality = await viewModel.lookUpCurrentLocation()
+                
+                TextField("Insert url", text: $url)
+                    .autocapitalization(.none)
+                    .onSubmit {
+                        submittedUrl = url
                     }
-                })
-                .autocapitalization(.none)
+                    .task(id: submittedUrl) {
+                        if !submittedUrl.isEmpty {
+                            urlUpdated = await updateURL()
+                            if (urlUpdated) {
+                                await findFavicon()
+                            }
+                            viewModel.userLocality = await viewModel.lookUpCurrentLocation()
+                        }
+                    }
             }
             
             Section(header: TitleLabel(title: "Title")) {
