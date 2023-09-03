@@ -49,6 +49,8 @@
 		9078D06E2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
 		9078D0702A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */; };
 		9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */; };
+		9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
+		9081DB182AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
@@ -150,6 +152,7 @@
 		905E9C6225897DE00090BFC6 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParserError.swift; sourceTree = "<group>"; };
 		9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSpotlightDelegate.swift; sourceTree = "<group>"; };
+		9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorDownloader.swift; sourceTree = "<group>"; };
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
 		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
@@ -333,6 +336,7 @@
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
 				9092A1E12A957EE600020880 /* PersistenceHelper.swift */,
 				9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */,
+				9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -505,6 +509,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9081DB182AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */,
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
 				9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
@@ -565,6 +570,7 @@
 				905E9C5025897B870090BFC6 /* LinkCollector.xcdatamodeld in Sources */,
 				900EA7BB28305A380055CBC4 /* LinkPilerConstants.swift in Sources */,
 				900F3FF726D8671900C63590 /* TagLabel.swift in Sources */,
+				9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */,
 				903A4073282862F70080E46A /* LinkListView.swift in Sources */,
 				9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */,
 				90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */,

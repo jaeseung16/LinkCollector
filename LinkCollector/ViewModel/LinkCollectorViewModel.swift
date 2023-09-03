@@ -9,9 +9,7 @@ import Foundation
 import Combine
 import CoreLocation
 import CoreData
-import SwiftSoup
 import UserNotifications
-import FaviconFinder
 import os
 import Persistence
 import SwiftUI
@@ -88,7 +86,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         fetchAll()
     }
     
-    // MARK:- CoreSpotlight
+    // MARK: - CoreSpotlight
     @objc private func defaultsChanged() -> Void {
         if !self.spotlightLinkIndexing {
             DispatchQueue.main.async {
@@ -256,45 +254,24 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
-    func isValid(urlString: String) -> Bool {
-        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
-            return false
-        }
-        return scheme == "http" || scheme == "https"
-    }
+    // MARK: - Download
     
-    private func getURLAndHTML(from urlString: String) async -> (URL?, String?) {
+    private func getUrlAndHtml(from urlString: String) async -> (URL?, String?) {
         var url: URL?
         var html: String?
-        
-        if isValid(urlString: urlString) {
-            (url, html) = await tryDownloadHTML(from: urlString)
+        if LinkCollectorDownloader.isValid(urlString: urlString) {
+            (url, html) = await LinkCollectorDownloader.download(from: urlString)
         } else {
-            (url, html) = await tryDownloadHTML(from: "https://\(urlString)")
+            (url, html) = await LinkCollectorDownloader.download(from: "https://\(urlString)")
             if html == nil {
-                (url, html) = await tryDownloadHTML(from: "http://\(urlString)")
+                (url, html) = await LinkCollectorDownloader.download(from: "http://\(urlString)")
             }
         }
         return (url, html)
     }
-        
-    private func tryDownloadHTML(from urlString: String) async -> (URL?, String?) {
-        guard let url = URL(string: urlString) else {
-            self.logger.log("Invalid url: \(urlString, privacy: .public)")
-            return (nil, nil)
-        }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            return (url, String(data: data, encoding: .utf8))
-        } catch {
-            self.logger.log("Error while downloading data from \(url)")
-            return (url, nil)
-        }
-    }
-    
+
     func process(urlString: String) async -> (URL?, String?) {
-        let (url, html) = await getURLAndHTML(from: urlString)
+        let (url, html) = await getUrlAndHtml(from: urlString)
         
         guard let url = url, let html = html else {
             self.logger.log("Cannot download html from url described by \(urlString, privacy: .public)")
@@ -307,13 +284,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     func findFavicon(url: URL) async -> Data? {
-        do {
-            let favicon = try await FaviconFinder(url: url).downloadFavicon()
-            return favicon.data
-        } catch {
-            self.logger.log("Cannot find favicon from \(url, privacy: .public): \(error.localizedDescription, privacy: .public)")
-            return nil
-        }
+        return await LinkCollectorDownloader.findFavicon(url: url)
     }
     
     // MARK: - Persistence
