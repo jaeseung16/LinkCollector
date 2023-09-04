@@ -84,8 +84,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let context = URLContexts.first else {
             return
         }
-        viewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
-        viewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.viewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
+            self.viewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
+        }
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
