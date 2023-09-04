@@ -17,6 +17,10 @@ class ShareViewController: UIViewController {
     private let logger = Logger()
 
     private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+    private var viewContext: NSManagedObjectContext {
+        persistenceController.container.viewContext
+    }
+    
     private let contextName = "share extension"
     private let unknown = "Unknown"
     
@@ -326,9 +330,7 @@ class ShareViewController: UIViewController {
             }
         }
         
-        persistenceController.container.viewContext.name = contextName
         posted = Date()
-        
         linkEntity = LinkEntity.create(title: titleTextField.text,
                                        url: urlLabel.text,
                                        favicon: favicon,
@@ -338,18 +340,22 @@ class ShareViewController: UIViewController {
                                        locality: self.locality,
                                        context: persistenceController.container.viewContext)
         
-        do {
-            try persistenceController.container.viewContext.save()
-        } catch {
-            self.logger.log("Cannot save \(self.linkEntity, privacy: .public)")
-        }
-        
-        persistenceController.container.viewContext.name = nil
+        save(with: contextName)
         
         // Terminate after 10 sec
         DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
             self.showAlertAndTerminate()
         }
+    }
+    
+    private func save(with contextName: String) -> Void {
+        viewContext.name = contextName
+        do {
+            try viewContext.save()
+        } catch {
+            self.logger.log("Cannot save \(self.linkEntity, privacy: .public)")
+        }
+        viewContext.name = nil
     }
     
     private func lookUpCurrentLocation() async -> String {
