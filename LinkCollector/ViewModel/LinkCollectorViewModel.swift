@@ -83,7 +83,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             }
         }
         
-        fetchAll()
     }
     
     // MARK: - CoreSpotlight
