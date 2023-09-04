@@ -505,10 +505,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - Widget
+    private let maxNumberOfWidgetEntries = 6
     func writeWidgetEntries() {
         var widgetEntries = [WidgetEntry]()
     
-        let numberOfWidgetEntries = 6
+        let numberOfWidgetEntries = links.count > maxNumberOfWidgetEntries ? maxNumberOfWidgetEntries : links.count
         
         // Randomly select 6 records to provide widgets per hour
         for _ in 0..<numberOfWidgetEntries {
