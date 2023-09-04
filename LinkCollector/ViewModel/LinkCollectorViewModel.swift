@@ -478,6 +478,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
         
         DispatchQueue.main.async {
+            self.fetchAll()
             self.toggle.toggle()
         }
     }
