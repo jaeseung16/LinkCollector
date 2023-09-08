@@ -38,8 +38,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var userLocality: String = LinkCollectorViewModel.unknown
     @Published var showAlert = false
     
-    @Published var toggle = false
-    
     @Published var selected = UUID()
     @Published var searchString = ""
     
@@ -470,7 +468,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         DispatchQueue.main.async {
             self.fetchAll()
-            self.toggle.toggle()
         }
     }
     
@@ -479,9 +476,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         persistence.fetchUpdates(notification) { result in
             switch result {
             case .success(_):
-                DispatchQueue.main.async {
-                    self.toggle.toggle()
-                }
+                return
             case .failure(let error):
                 self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
                 
