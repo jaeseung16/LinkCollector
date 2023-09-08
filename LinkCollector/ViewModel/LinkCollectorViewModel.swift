@@ -428,7 +428,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         let fetchRequest = persistenceHelper.getFetchRequest(for: LinkEntity.self,
                                                              entityName: "LinkEntity",
                                                              predicate: NSPredicate(format: "id == %@", argumentArray: [id]))
-        
         let fetchedLinks = persistenceHelper.fetch(fetchRequest)
         if fetchedLinks.isEmpty {
             DispatchQueue.main.async {
@@ -436,27 +435,20 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 self.showAlert.toggle()
             }
         }
-        
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
     
     private func getTagEntity(with name: String) -> TagEntity? {
-        let predicate = NSPredicate(format: "name == %@", argumentArray: [name])
-        
-        let fetchRequest = NSFetchRequest<TagEntity>(entityName: "TagEntity")
-        fetchRequest.predicate = predicate
-        
-        var fetchedTags = [TagEntity]()
-        do {
-            fetchedTags = try persistenceContainer.viewContext.fetch(fetchRequest)
-        } catch {
-            self.logger.log("While fetching TagEntity with name=\(name) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+        let fetchRequest = persistenceHelper.getFetchRequest(for: TagEntity.self,
+                                                             entityName: "TagEntity",
+                                                             predicate: NSPredicate(format: "name == %@", argumentArray: [name]))
+        let fetchedTags = persistenceHelper.fetch(fetchRequest)
+        if fetchedTags.isEmpty {
             DispatchQueue.main.async {
                 self.message = "Cannot find a tag with name=\(name)"
                 self.showAlert.toggle()
             }
         }
-        
         return fetchedTags.isEmpty ? nil : fetchedTags[0]
     }
     
