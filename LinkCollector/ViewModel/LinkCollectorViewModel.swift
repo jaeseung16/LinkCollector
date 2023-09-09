@@ -296,34 +296,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - Persistence
-    var linkDTO = LinkDTO(id: UUID(), title: "", note: "") {
-        didSet {
-            if let existingEntity = getLinkEntity(id: linkDTO.id) {
-                existingEntity.title = linkDTO.title
-                existingEntity.note = linkDTO.note
-
-                saveContext { error in
-                    self.logger.log("While saving \(self.linkDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-                    
-                    DispatchQueue.main.async {
-                        self.message = "Cannot update"
-                    }
-                }
-            }
-        }
-    }
-    
     var tagDTO = TagDTO(name: "", link: nil) {
         didSet {
             if let tagEntity = getTagEntity(with: tagDTO.name) {
                 if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
-                    if let links = tagEntity.links {
-                        if !links.contains(linkEntity) {
-                            tagEntity.addToLinks(linkEntity)
-                        }
+                    if let links = tagEntity.links, !links.contains(linkEntity) {
+                        tagEntity.addToLinks(linkEntity)
                     }
-                } else {
-                    message = "A tag \"\(tagDTO.name)\" already exists"
                 }
             } else {
                 let entity = TagEntity(context: persistenceContainer.viewContext)
@@ -338,8 +317,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     self.message = "Cannot save tag: \(self.tagDTO.name)"
                 }
             }
-            
-            fetchTags()
         }
     }
 
@@ -378,23 +355,26 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         for tag in tags {
             self.tagDTO = TagDTO(name: tag.name ?? "", link: linkDTO)
         }
-        
-        fetchAll()
     }
     
     func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
-        if let linkEntity = getLinkEntity(id: link.id) {
-            if let tagEntites = linkEntity.tags {
-                linkEntity.removeFromTags(tagEntites)
-            }
-            
-            linkEntity.addToTags(NSSet(array: tags))
+        guard let linkEntity = getLinkEntity(id: link.id) else {
+            logger.log("Cannot find an existing link: \(link, privacy: .public)")
+            return
         }
         
+        linkEntity.title = link.title
+        linkEntity.note = link.note
+        
+        if let tagEntites = linkEntity.tags {
+            linkEntity.removeFromTags(tagEntites)
+        }
+        linkEntity.addToTags(NSSet(array: tags))
+       
         saveContext { error in
-            self.logger.log("While removing tags from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.logger.log("While updating \(link) with \(tags) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
-                self.message = "Cannot save link: \(link.title)"
+                self.message = "Cannot update link: \(link)"
             }
         }
     }

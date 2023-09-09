@@ -124,9 +124,7 @@ struct EditLinkView: View {
     }
     
     private func saveEntities() -> Void {
-        let linkDTO = LinkDTO(id: id, title: title, note: note)
-        viewModel.linkDTO = linkDTO
-        viewModel.update(link: linkDTO, with: tags)
+        viewModel.update(link: LinkDTO(id: id, title: title, note: note), with: tags)
     }
 }
 

@@ -166,6 +166,7 @@ struct AddTagView: View {
     
     private func save() -> Void {
         viewModel.tagDTO = TagDTO(name: tagName)
+        viewModel.saveContext()
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
@@ -173,7 +174,6 @@ struct AddTagView: View {
             let tag = filteredTags[index]
             viewModel.delete(tag: tag)
         }
-        
         viewModel.saveContext()
     }
 }
