@@ -33,8 +33,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     
-    @Published var userLatitude: Double = 0
-    @Published var userLongitude: Double = 0
+    var userLatitude: Double = 0
+    var userLongitude: Double = 0
     @Published var userLocality: String = LinkCollectorViewModel.unknown
     @Published var showAlert = false
     
