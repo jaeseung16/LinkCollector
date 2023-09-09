@@ -41,7 +41,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var selected = UUID()
     @Published var searchString = ""
     
-    var message = ""
+    var message = "" {
+        didSet {
+            showAlert.toggle()
+        }
+    }
     
     private let persistenceHelper: PersistenceHelper
     
@@ -295,8 +299,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     self.logger.log("While saving \(self.linkDTO) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                     
                     DispatchQueue.main.async {
-                        self.message = "Cannot update title = \(self.linkDTO.title) and note = \(self.linkDTO.note)"
-                        self.showAlert.toggle()
+                        self.message = "Cannot update"
                     }
                 }
             }
@@ -314,7 +317,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     }
                 } else {
                     message = "A tag \"\(tagDTO.name)\" already exists"
-                    showAlert.toggle()
                 }
             } else {
                 let entity = TagEntity(context: persistenceContainer.viewContext)
@@ -326,8 +328,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             saveContext { error in
                 self.logger.log("While saving \(String(describing: self.tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 DispatchQueue.main.async {
-                    self.message = "Cannot save tag = \(self.tagDTO.name)"
-                    self.showAlert.toggle()
+                    self.message = "Cannot save tag: \(self.tagDTO.name)"
                 }
             }
             
@@ -361,8 +362,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         saveContext { error in
             self.logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
-                self.message = "Cannot save link = \(String(describing: title))"
-                self.showAlert.toggle()
+                self.message = "Cannot save link: \(String(describing: title))"
             }
         }
         
@@ -387,8 +387,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         saveContext { error in
             self.logger.log("While removing tags from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
-                self.message = "Cannot save link = \(link.title)"
-                self.showAlert.toggle()
+                self.message = "Cannot save link: \(link.title)"
             }
         }
     }
@@ -402,7 +401,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             self.logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot save link = \(link.title)"
-                self.showAlert.toggle()
             }
         }
     }
@@ -430,7 +428,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         if fetchedLinks.isEmpty {
             DispatchQueue.main.async {
                 self.message = "Cannot find a link with id=\(id)"
-                self.showAlert.toggle()
             }
         }
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
@@ -443,8 +440,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         let fetchedTags = persistenceHelper.fetch(fetchRequest)
         if fetchedTags.isEmpty {
             DispatchQueue.main.async {
-                self.message = "Cannot find a tag with name=\(name)"
-                self.showAlert.toggle()
+                self.message = "Cannot find a tag: \(name)"
             }
         }
         return fetchedTags.isEmpty ? nil : fetchedTags[0]
@@ -458,12 +454,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         persistenceHelper.delete(tag)
     }
     
-    func saveContext(completionHandler: @escaping (Error) -> Void) -> Void {
+    func saveContext(completionHandler: ((Error) -> Void)? = nil) -> Void {
         do {
             try persistenceHelper.saveContext()
         } catch {
-            self.logger.log("saveContext: \(error.localizedDescription, privacy: .public)")
-            completionHandler(error)
+            completionHandler?(error)
         }
         
         DispatchQueue.main.async {

@@ -174,8 +174,7 @@ struct AddTagView: View {
             viewModel.delete(tag: tag)
         }
         
-        viewModel.saveContext { _ in
-        }
+        viewModel.saveContext()
     }
 }
 
