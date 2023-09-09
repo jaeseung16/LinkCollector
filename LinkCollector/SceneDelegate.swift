@@ -83,30 +83,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let context = URLContexts.first else {
             return
         }
-        DispatchQueue.main.async {
-            self.viewModel.searchString = ""
-            self.viewModel.selected = UUID()
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.viewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
-            self.viewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
-        }
+        viewModel.set(searchString: context.url.query?.removingPercentEncoding ?? "",
+                           selected: UUID(uuidString: context.url.lastPathComponent)!)
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard let info = userActivity.userInfo, let _ = info[CSSearchableItemActivityIdentifier] as? String else {
             return
         }
-        
-        viewModel.continueActivity(userActivity) { entity in
-            if let link = entity as? LinkEntity, let id = link.id {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.viewModel.searchString = link.title ?? ""
-                    self.viewModel.selected = id
-                }
-            }
-        }
-        
+        viewModel.process(userActivity)
     }
 
 }

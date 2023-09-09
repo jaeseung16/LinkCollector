@@ -202,7 +202,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
-    func continueActivity(_ activity: NSUserActivity, completionHandler: @escaping (NSManagedObject) -> Void) {
+    func process(_ activity: NSUserActivity) -> Void {
         logger.log("continueActivity: \(activity)")
         guard let info = activity.userInfo, let objectIdentifier = info[CSSearchableItemActivityIdentifier] as? String else {
             return
@@ -215,12 +215,19 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         logger.log("entity = \(entity)")
         
+        if let link = entity as? LinkEntity, let id = link.id {
+            self.set(searchString: link.title ?? "", selected: id)
+        }
+    }
+    
+    func set(searchString: String, selected: UUID) -> Void {
         DispatchQueue.main.async {
-            if let link = entity as? LinkEntity {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    completionHandler(link)
-                }
-            }
+            self.searchString = ""
+            self.selected = UUID()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.searchString = searchString
+            self.selected = selected
         }
     }
     
