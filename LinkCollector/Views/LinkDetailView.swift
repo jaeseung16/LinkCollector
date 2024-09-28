@@ -9,7 +9,6 @@ import SwiftUI
 import MapKit
 
 struct LinkDetailView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
@@ -19,7 +18,7 @@ struct LinkDetailView: View {
     
     var entity: LinkEntity
     
-    private var dateFormatter: DateFormatter {
+    private static var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
@@ -30,7 +29,7 @@ struct LinkDetailView: View {
     private var location: String {
         let locality = entity.locality
         
-        if locality == nil || locality == "Unknown" {
+        if locality == nil || locality == LinkCollectorViewModel.unknown {
             return "a unknown location"
         } else {
             return locality!
@@ -50,13 +49,13 @@ struct LinkDetailView: View {
                     .padding()
                 
                 entity.created.map {
-                    Text("Added on \(dateFormatter.string(from: $0)) from \(location)")
+                    Text("Added on \(LinkDetailView.dateFormatter.string(from: $0)) from \(location)")
                         .font(.callout)
                         .foregroundColor(.secondary)
                 }
                
                 entity.lastupd.map {
-                    Text("Last updated on \(dateFormatter.string(from: $0))")
+                    Text("Last updated on \(LinkDetailView.dateFormatter.string(from: $0))")
                         .font(.callout)
                         .foregroundColor(.secondary)
                 }
@@ -80,7 +79,6 @@ struct LinkDetailView: View {
                              title: entity.title ?? "",
                              note: entity.note ?? "",
                              tags: tags)
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
         }

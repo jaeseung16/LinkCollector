@@ -6,12 +6,10 @@
 //
 
 import SwiftUI
+import CoreSpotlight
 
 struct LinkListView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
-    
-    @FetchRequest(entity: LinkEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]) private var links: FetchedResults<LinkEntity>
     
     @State private var showAddLinkView = false
     @State private var showTagListView = false
@@ -21,29 +19,23 @@ struct LinkListView: View {
     @State private var selected: UUID?
     @State private var showDateRangePickerView = false
     
-    var filteredLinks: Array<LinkEntity> {
-        links.filter { link in
+    @State private var selectedTags = Set<TagEntity>()
+    @State private var dateInterval: DateInterval?
+    
+    var filteredLinks: [LinkEntity] {
+        viewModel.links.filter { link in
             var filter = true
-            if let tags = link.tags as? Set<TagEntity>, !viewModel.selectedTags.isEmpty && viewModel.selectedTags.intersection(tags).isEmpty {
+            if let tags = link.tags as? Set<TagEntity>, !selectedTags.isEmpty && selectedTags.intersection(tags).isEmpty {
                 filter = false
             }
             return filter
         }
         .filter { link in
             var filter = true
-            if let created = link.created {
-                filter = viewModel.dateInterval?.contains(created) ?? true
+            if let dateInterval = dateInterval, let created = link.created {
+                filter = dateInterval.contains(created)
             }
             return filter
-        }
-        .filter { link in
-            if viewModel.searchString == "" {
-                return true
-            } else if let title = link.title {
-                return title.lowercased().contains(viewModel.searchString.lowercased())
-            } else {
-                return false
-            }
         }
     }
     
@@ -69,17 +61,17 @@ struct LinkListView: View {
             .navigationBarItems(trailing: navigationBarItems())
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
-                    .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
             .sheet(isPresented: $showTagListView) {
-                SelectTagsView(selectedTags: viewModel.selectedTags)
-                    .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
+                SelectTagsView(selectedTags: $selectedTags)
             }
             .sheet(isPresented: $showDateRangePickerView) {
-                DateRangePickerView(start: viewModel.dateInterval?.start ?? Date(), end: viewModel.dateInterval?.end ?? Date())
-                    .environmentObject(viewModel)
+                if let start = dateInterval?.start, let end = dateInterval?.end {
+                    DateRangePickerView(dateInterval: $dateInterval, start: start, end: end)
+                } else {
+                    DateRangePickerView(dateInterval: $dateInterval)
+                }
             }
             .alert("Unable to Save Data", isPresented: $showAlert) {
                 Button {
@@ -91,23 +83,29 @@ struct LinkListView: View {
                 Text(message)
             }
             .searchable(text: $viewModel.searchString)
+            .refreshable {
+                viewModel.fetchAll()
+            }
         }
         .onChange(of: viewModel.selected) { newValue in
             selected = newValue
+        }
+        .onChange(of: viewModel.searchString) { _ in
+            viewModel.searchLink()
         }
     }
     
     private func removeLink(indexSet: IndexSet) -> Void {
         for index in indexSet {
             let link = filteredLinks[index]
-            viewContext.delete(link)
+            viewModel.delete(link: link)
         }
         
-        do {
-            try viewContext.save()
-        } catch {
-            message = "Failed to delete the selected link"
-            showAlert = true
+        viewModel.saveContext { _ in
+            DispatchQueue.main.async {
+                message = "Failed to delete the selected link"
+                showAlert = true
+            }
         }
     }
     

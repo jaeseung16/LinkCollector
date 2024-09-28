@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -24,10 +24,9 @@
 		9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */; };
 		902C9B8726C063000071CADB /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C9B8626C063000071CADB /* ShareViewController.swift */; };
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
-		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
 		9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030552D282C70610081E026 /* DateRangePickerView.swift */; };
-		90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90337C1E281C9BCB00D82D97 /* NotificationToken.swift */; };
 		9037CEFF2857D34100B5C7C9 /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 9037CEFE2857D34100B5C7C9 /* Persistence */; };
 		903A4073282862F70080E46A /* LinkListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4072282862F70080E46A /* LinkListView.swift */; };
 		903A4075282864380080E46A /* SelectTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A4074282864380080E46A /* SelectTagsView.swift */; };
@@ -35,7 +34,7 @@
 		903C7294280CC8A500FD7F71 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7293280CC8A500FD7F71 /* SwiftUI.framework */; };
 		903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */; };
 		903C7299280CC8A800FD7F71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 903C7298280CC8A800FD7F71 /* Assets.xcassets */; };
-		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9042938B286B81AE00DAAC6C /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 9042938A286B81AE00DAAC6C /* Persistence */; };
 		90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
@@ -46,18 +45,23 @@
 		905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5425897B890090BFC6 /* Preview Assets.xcassets */; };
 		905E9C5825897B890090BFC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */; };
 		905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
+		9078D06D2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
+		9078D06E2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
+		9078D0702A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */; };
+		9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */; };
+		9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
+		9081DB182AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
+		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
+		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 90A290A4258FA519004988D9 /* SwiftSoup */; };
 		90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
 		90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
-		90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
-		90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
 		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
 		90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
-		90C30D322829C4CC00061A5F /* NSManagedObjectContext+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */; };
 		90C30D352829C50100061A5F /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 		90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C30D372829CC9500061A5F /* LinkLabel.swift */; };
@@ -92,16 +96,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		902C9B9326C063000071CADB /* Embed App Extensions */ = {
+		902C9B9326C063000071CADB /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed App Extensions */,
-				903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed App Extensions */,
+				902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed Foundation Extensions */,
+				903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -126,7 +130,6 @@
 		902C9B8F26C063000071CADB /* LinkCollectorShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollectorShareExtension.entitlements; sourceTree = "<group>"; };
 		902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = LinkCollectorShareExtension.js; sourceTree = "<group>"; };
 		9030552D282C70610081E026 /* DateRangePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateRangePickerView.swift; sourceTree = "<group>"; };
-		90337C1E281C9BCB00D82D97 /* NotificationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationToken.swift; sourceTree = "<group>"; };
 		903A4072282862F70080E46A /* LinkListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkListView.swift; sourceTree = "<group>"; };
 		903A4074282864380080E46A /* SelectTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTagsView.swift; sourceTree = "<group>"; };
 		903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,10 +150,13 @@
 		905E9C5925897B890090BFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		905E9C6025897D960090BFC6 /* LinkCollector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollector.entitlements; sourceTree = "<group>"; };
 		905E9C6225897DE00090BFC6 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParserError.swift; sourceTree = "<group>"; };
+		9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSpotlightDelegate.swift; sourceTree = "<group>"; };
+		9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorDownloader.swift; sourceTree = "<group>"; };
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
+		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
-		90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Extension.swift"; sourceTree = "<group>"; };
 		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		90C68DB0259538B200C78C1E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -294,7 +300,6 @@
 				905E9C4C25897B870090BFC6 /* ContentView.swift */,
 				900EA7BA28305A380055CBC4 /* LinkPilerConstants.swift */,
 				905E9C4A25897B870090BFC6 /* SceneDelegate.swift */,
-				90337C1E281C9BCB00D82D97 /* NotificationToken.swift */,
 				905E9C5125897B890090BFC6 /* Assets.xcassets */,
 				905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */,
 				905E9C5925897B890090BFC6 /* Info.plist */,
@@ -327,7 +332,11 @@
 			children = (
 				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
 				90A290A7258FB663004988D9 /* HTMLParser.swift */,
+				9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */,
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
+				9092A1E12A957EE600020880 /* PersistenceHelper.swift */,
+				9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */,
+				9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -335,7 +344,6 @@
 		90C30D302829C3B800061A5F /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
-				90B1983726D8518500C58A76 /* NSManagedObjectContext+Extension.swift */,
 				90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */,
 				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
 			);
@@ -402,7 +410,7 @@
 				905E9C4125897B870090BFC6 /* Sources */,
 				905E9C4225897B870090BFC6 /* Frameworks */,
 				905E9C4325897B870090BFC6 /* Resources */,
-				902C9B9326C063000071CADB /* Embed App Extensions */,
+				902C9B9326C063000071CADB /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -426,8 +434,9 @@
 		905E9C3D25897B870090BFC6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1330;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					902C9B8326C063000071CADB = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -500,13 +509,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9081DB182AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */,
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
+				9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
+				9078D06E2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
+				9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */,
 				90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */,
 				90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */,
 				90C30D352829C50100061A5F /* HTMLParser.swift in Sources */,
-				90B1983926D8522D00C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
 				90F4833E278116DE0085E26B /* LinkeEntity+Extension.swift in Sources */,
 				900EA7BE28305AD80055CBC4 /* LinkPilerConstants.swift in Sources */,
 			);
@@ -519,7 +531,6 @@
 				90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */,
 				903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */,
 				90208721281DEE38005A5264 /* WidgetEntryView.swift in Sources */,
-				90C30D322829C4CC00061A5F /* NSManagedObjectContext+Extension.swift in Sources */,
 				90208720281DEE1D005A5264 /* Provider.swift in Sources */,
 				900EA7BF28305AD80055CBC4 /* LinkPilerConstants.swift in Sources */,
 				900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */,
@@ -532,6 +543,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90A290AB258FB695004988D9 /* Title.swift in Sources */,
+				9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */,
 				903A4075282864380080E46A /* SelectTagsView.swift in Sources */,
 				90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */,
 				90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */,
@@ -540,11 +552,11 @@
 				90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */,
 				900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */,
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
-				90B1983826D8518500C58A76 /* NSManagedObjectContext+Extension.swift in Sources */,
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
+				9078D0702A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
+				9078D06D2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
-				90337C1F281C9BCB00D82D97 /* NotificationToken.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
 				905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */,
 				9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */,
@@ -558,6 +570,7 @@
 				905E9C5025897B870090BFC6 /* LinkCollector.xcdatamodeld in Sources */,
 				900EA7BB28305A380055CBC4 /* LinkPilerConstants.swift in Sources */,
 				900F3FF726D8671900C63590 /* TagLabel.swift in Sources */,
+				9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */,
 				903A4073282862F70080E46A /* LinkListView.swift in Sources */,
 				9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */,
 				90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */,
@@ -604,7 +617,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -613,7 +626,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -628,7 +641,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -637,7 +650,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -655,7 +668,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -668,7 +681,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -687,7 +700,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -700,7 +713,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -839,7 +852,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -848,10 +861,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -865,7 +880,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
@@ -874,10 +889,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.1;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -946,7 +963,7 @@
 			repositoryURL = "https://github.com/will-lumley/FaviconFinder";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 3.3.0;
+				minimumVersion = 4.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

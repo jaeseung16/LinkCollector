@@ -11,20 +11,26 @@ import CoreLocation
 import CoreData
 import FaviconFinder
 import Persistence
+import os
 
 class ShareViewController: UIViewController {
+    private let logger = Logger()
 
     private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+    private var viewContext: NSManagedObjectContext {
+        persistenceController.container.viewContext
+    }
+    
     private let contextName = "share extension"
+    private let unknown = "Unknown"
     
     private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
     private var location: CLLocation? {
         didSet {
             locationManager.stopUpdatingLocation()
-            
-            lookUpCurrentLocation() { place in
-                self.locality = place != nil ? place!.locality : "Unknown"
+            Task {
+                locality = await lookUpCurrentLocation()
             }
         }
     }
@@ -32,7 +38,7 @@ class ShareViewController: UIViewController {
     private var locality: String? {
         didSet {
             DispatchQueue.main.async {
-                self.locationTextField.text = self.locality ?? "Unknown"
+                self.locationTextField.text = self.locality ?? self.unknown
             }
         }
     }
@@ -125,7 +131,7 @@ class ShareViewController: UIViewController {
     private func accessWebpageProperties(extensionItem: NSExtensionItem) {
         if let userInfo = extensionItem.userInfo, let attachments = userInfo[NSExtensionItemAttachmentsKey] as? [NSItemProvider] {
             for attachment in attachments {
-                print("registeredTypeIdentifiers = \(attachment.registeredTypeIdentifiers)")
+                self.logger.log("registeredTypeIdentifiers = \(attachment.registeredTypeIdentifiers, privacy: .public)")
                 
                 for typeIdentifier in attachment.registeredTypeIdentifiers {
                     switch TypeIdentifier.init(rawValue: typeIdentifier) {
@@ -172,7 +178,7 @@ class ShareViewController: UIViewController {
                             }
                         }
                     case .none:
-                        print("Ignore typeIdentifier = \(typeIdentifier)")
+                        self.logger.log("Ignore typeIdentifier = \(typeIdentifier, privacy: .public)")
                         continue
                     }
                 }
@@ -209,7 +215,7 @@ class ShareViewController: UIViewController {
                 if let url = url {
                     self.findFavicon(url: url) { data, error in
                         guard let data = data else {
-                            print("Can't download favicon from \(url): \(String(describing: error))")
+                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
                             return
                         }
                         self.favicon = data
@@ -233,7 +239,7 @@ class ShareViewController: UIViewController {
                 if let url = url {
                     self.findFavicon(url: url) { data, error in
                         guard let data = data else {
-                            print("Can't download favicon from \(url): \(String(describing: error))")
+                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
                             return
                         }
                         self.favicon = data
@@ -288,12 +294,17 @@ class ShareViewController: UIViewController {
     }
     
     private func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
-        FaviconFinder(url: url).downloadFavicon { result in
-            switch result {
-            case .success(let favicon):
-                completionHandler(favicon.data, nil)
-            case .failure(let error):
-                completionHandler(nil, error)
+        Task {
+            do {
+                let favicon = try await FaviconFinder(url: url).downloadFavicon()
+                DispatchQueue.main.async {
+                    completionHandler(favicon.data, nil)
+                }
+            } catch {
+                self.logger.log("Cannot find favicon from \(url, privacy: .public)")
+                DispatchQueue.main.async {
+                    completionHandler(nil, error)
+                }
             }
         }
     }
@@ -319,19 +330,17 @@ class ShareViewController: UIViewController {
             }
         }
         
-        persistenceController.container.viewContext.name = contextName
         posted = Date()
-        
         linkEntity = LinkEntity.create(title: titleTextField.text,
                                        url: urlLabel.text,
                                        favicon: favicon,
                                        note: "",
-                                       latitude: location != nil ? location!.coordinate.latitude : 0.0,
-                                       longitude: location != nil ? location!.coordinate.latitude : 0.0,
+                                       latitude: location?.coordinate.latitude ?? 0.0,
+                                       longitude: location?.coordinate.latitude ?? 0.0,
                                        locality: self.locality,
                                        context: persistenceController.container.viewContext)
         
-        persistenceController.container.viewContext.name = nil
+        save(with: contextName)
         
         // Terminate after 10 sec
         DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
@@ -339,19 +348,28 @@ class ShareViewController: UIViewController {
         }
     }
     
-    private func lookUpCurrentLocation(completionHandler: @escaping (CLPlacemark?) -> Void) {
+    private func save(with contextName: String) -> Void {
+        viewContext.name = contextName
+        do {
+            try viewContext.save()
+        } catch {
+            self.logger.log("Cannot save \(self.linkEntity, privacy: .public)")
+        }
+        viewContext.name = nil
+    }
+    
+    private func lookUpCurrentLocation() async -> String {
         if let lastLocation = location {
-            let geocoder = CLGeocoder()
-            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
-                if error == nil {
-                    let firstLocation = placemarks?[0]
-                    completionHandler(firstLocation)
-                } else {
-                    completionHandler(nil)
-                }
+            do {
+                let geocoder = CLGeocoder()
+                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
+                return placemarks.isEmpty ? unknown : placemarks[0].locality ?? unknown
+            } catch {
+                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
+                return unknown
             }
         } else {
-            completionHandler(nil)
+            return unknown
         }
     }
     

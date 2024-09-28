@@ -9,10 +9,10 @@ import SwiftUI
 
 struct DateRangePickerView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var viewModel: LinkCollectorViewModel
-    
-    @State var start: Date
-    @State var end: Date
+
+    @Binding var dateInterval: DateInterval?
+    @State var start = Date()
+    @State var end = Date()
     
     var body: some View {
         VStack {
@@ -36,7 +36,7 @@ struct DateRangePickerView: View {
                     let startDate = Calendar.current.startOfDay(for: start)
                     let endDate = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: end)!
                     
-                    viewModel.dateInterval = DateInterval(start: startDate, end: endDate)
+                    dateInterval = DateInterval(start: startDate, end: endDate)
                     
                     dismiss.callAsFunction()
                 } label: {
@@ -46,7 +46,7 @@ struct DateRangePickerView: View {
                 Spacer()
                 
                 Button {
-                    viewModel.dateInterval = nil
+                    dateInterval = nil
                     dismiss.callAsFunction()
                 } label: {
                     Text("Reset")

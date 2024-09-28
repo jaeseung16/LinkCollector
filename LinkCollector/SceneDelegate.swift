@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import Persistence
+import CoreSpotlight
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -34,7 +35,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
         let contentView = ContentView()
-            .environment(\.managedObjectContext, persistence.container.viewContext)
             .environmentObject(viewModel)
 
         // Use a UIHostingController as window root view controller.
@@ -66,6 +66,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        viewModel.fetchAll()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -74,7 +75,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        try? viewModel.saveContext()
+        viewModel.saveContext()
         viewModel.writeWidgetEntries()
     }
     
@@ -82,8 +83,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let context = URLContexts.first else {
             return
         }
-        viewModel.selected = UUID(uuidString: context.url.lastPathComponent)!
-        viewModel.searchString = context.url.query?.removingPercentEncoding ?? ""
+        viewModel.set(searchString: context.url.query?.removingPercentEncoding ?? "",
+                           selected: UUID(uuidString: context.url.lastPathComponent)!)
+    }
+    
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        guard let info = userActivity.userInfo, let _ = info[CSSearchableItemActivityIdentifier] as? String else {
+            return
+        }
+        viewModel.process(userActivity)
     }
 
 }

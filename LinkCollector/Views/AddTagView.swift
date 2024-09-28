@@ -8,11 +8,8 @@
 import SwiftUI
 
 struct AddTagView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
-    
-    @FetchRequest(entity: TagEntity.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TagEntity.name, ascending: true)]) private var existingTags: FetchedResults<TagEntity>
     
     @State private var tagName = ""
     @State var isEditing = false
@@ -23,7 +20,7 @@ struct AddTagView: View {
     var isUpdate = false
     
     private var filteredTags: [TagEntity] {
-        existingTags.filter { !tags.contains($0) }
+        viewModel.tags.filter { !tags.contains($0) }
     }
     
     var body: some View {
@@ -169,19 +166,15 @@ struct AddTagView: View {
     
     private func save() -> Void {
         viewModel.tagDTO = TagDTO(name: tagName)
+        viewModel.saveContext()
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
         for index in indexSet {
             let tag = filteredTags[index]
-            viewContext.delete(tag)
+            viewModel.delete(tag: tag)
         }
-        
-        do {
-            try viewContext.save()
-        } catch {
-            print(error)
-        }
+        viewModel.saveContext()
     }
 }
 

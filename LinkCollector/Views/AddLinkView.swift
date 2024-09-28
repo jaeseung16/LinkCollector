@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct AddLinkView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
     @State private var title: String = ""
     @State private var url: String = ""
+    @State private var submittedUrl = ""
     @State private var favicon: Data?
     @State private var note: String = ""
     @State private var tags = [TagEntity]()
@@ -24,8 +24,6 @@ struct AddLinkView: View {
     @State private var message = ""
     @State private var addNewTag = false
     
-    private var htmlParser = HTMLParser()
-    
     var body: some View {
         ZStack {
             VStack(alignment: .center) {
@@ -34,7 +32,7 @@ struct AddLinkView: View {
             }
             
             ProgressView()
-                .opacity(self.showProgress ? 1.0 : 0.0)
+                .opacity(showProgress ? 1.0 : 0.0)
         }
         .padding()
         .alert(isPresented: $showAlert) {
@@ -47,12 +45,21 @@ struct AddLinkView: View {
     private func addLinkForm() -> some View {
         Form {
             Section(header: Label("URL", systemImage: "link")) {
-                TextField("Insert url", text: $url, onCommit: {
-                    updateURL()
-                    urlUpdated = true
-                    viewModel.lookUpCurrentLocation()
-                })
-                .autocapitalization(.none)
+                
+                TextField("Insert url", text: $url)
+                    .autocapitalization(.none)
+                    .onSubmit {
+                        submittedUrl = url
+                    }
+                    .task(id: submittedUrl) {
+                        if !submittedUrl.isEmpty {
+                            urlUpdated = await updateURL()
+                            if (urlUpdated) {
+                                await findFavicon()
+                            }
+                            viewModel.userLocality = await viewModel.lookUpCurrentLocation()
+                        }
+                    }
             }
             
             Section(header: TitleLabel(title: "Title")) {
@@ -100,36 +107,39 @@ struct AddLinkView: View {
         }
     }
     
-    private func updateURL() {
-        showProgress = true
+    private func updateURL() async -> Bool {
+        let (correctedURL, result) = await viewModel.process(urlString: url)
         
-        viewModel.process(urlString: url) { result, correctedURL in
-            guard let result = result, !result.isEmpty else {
-                self.showProgress = false
-                self.message = "Cannot open the given url. Please check if a web browser can open it."
-                self.showAlert = true
+        guard let result = result, !result.isEmpty else {
+            showAlertWhenCannotOpenURL()
+            return false
+        }
+        
+        if let correctedURL = correctedURL, self.url != correctedURL.absoluteString {
+            url = correctedURL.absoluteString
+        }
+        
+        title = result
+        showProgress = false
+        return true
+    }
+    
+    private func findFavicon() async -> Void {
+        if let url = URL(string: url) {
+            let data = await viewModel.findFavicon(url: url)
+            guard let data = data else {
+                showAlertWhenCannotOpenURL()
                 return
             }
-            
-            if let correctedURL = correctedURL, self.url != correctedURL.absoluteString {
-                self.url = correctedURL.absoluteString
-            }
-            
-            self.title = result
-            self.showProgress = false
-            
-            if let url = URL(string: self.url) {
-                viewModel.findFavicon(url: url) { data, error in
-                    guard let data = data else {
-                        self.showProgress = false
-                        self.message = "Cannot open the given url. Please check if a web browser can open it."
-                        self.showAlert = true
-                        return
-                    }
-                    self.favicon = data
-                }
-            }
+            favicon = data
         }
+        return
+    }
+    
+    private func showAlertWhenCannotOpenURL() -> Void {
+        showProgress = false
+        message = "Cannot open the given url. Please check if a web browser can open it."
+        showAlert = true
     }
     
     private func tagSectionHeader() -> some View {
@@ -160,7 +170,6 @@ struct AddLinkView: View {
         }
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
-                .environment(\.managedObjectContext, viewContext)
                 .environmentObject(viewModel)
         }
         #else
@@ -173,26 +182,13 @@ struct AddLinkView: View {
         .listStyle(InsetListStyle())
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
-                .environment(\.managedObjectContext, viewContext)
                 .environmentObject(viewModel)
         }
         #endif
     }
     
     private func saveLinkAndTags() -> Void {
-        let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: viewModel.userLatitude, longitude: viewModel.userLongitude, locality: viewModel.userLocality, context: viewContext)
-        
-        let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
-        
-        for tag in tags {
-            viewModel.tagDTO = TagDTO(name: tag.name ?? "", link: linkDTO)
-        }
+        viewModel.saveLinkAndTags(title: title, url: url, favicon: favicon, note: note, latitude: viewModel.userLatitude, longitude: viewModel.userLongitude, locality: viewModel.userLocality, tags: tags)
     }
     
-}
-
-struct AddLinkView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddLinkView()
-    }
 }

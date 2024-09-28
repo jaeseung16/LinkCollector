@@ -9,7 +9,6 @@ import SwiftUI
 import MapKit
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
     let calendar = Calendar(identifier: .iso8601)

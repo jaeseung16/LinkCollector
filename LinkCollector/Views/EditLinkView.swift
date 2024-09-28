@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EditLinkView: View {
-    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
@@ -65,7 +64,6 @@ struct EditLinkView: View {
                 .listStyle(PlainListStyle())
                 .sheet(isPresented: $editTags) {
                     AddTagView(tags: $tags, isUpdate: true)
-                        .environment(\.managedObjectContext, viewContext)
                         .environmentObject(viewModel)
                 }
             }
@@ -126,9 +124,7 @@ struct EditLinkView: View {
     }
     
     private func saveEntities() -> Void {
-        let linkDTO = LinkDTO(id: id, title: title, note: note)
-        viewModel.linkDTO = linkDTO
-        viewModel.update(link: linkDTO, with: tags)
+        viewModel.update(link: LinkDTO(id: id, title: title, note: note), with: tags)
     }
 }
 
