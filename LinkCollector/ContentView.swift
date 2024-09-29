@@ -35,8 +35,23 @@ struct ContentView: View {
         return DateInterval(start: firstDayOfMonth, end: sevenDaysAgo)
     }
     
+    @State private var selectedLink: LinkEntity?
+    
     var body: some View {
-        LinkListView()
+        GeometryReader { geometry in
+            VStack {
+                NavigationSplitView {
+                    LinkListView(selectedLink: $selectedLink)
+                } detail: {
+                    if let selectedLink = selectedLink {
+                        LinkDetailView(entity: selectedLink, tags: selectedLink.getTagList())
+                            .navigationTitle(selectedLink.title ?? "")
+                            .id(selectedLink)
+                    }
+                }
+            }
+        }
+        
     }
     
 }

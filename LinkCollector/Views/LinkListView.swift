@@ -39,24 +39,22 @@ struct LinkListView: View {
         }
     }
     
+    @Binding var selectedLink: LinkEntity?
+    
     var body: some View {
-        NavigationView {
-            VStack(alignment: .center) {
-                List {
-                    ForEach(filteredLinks, id: \.id) { link in
-                        if link.created != nil {
-                            NavigationLink(tag: link.id!, selection: $selected) {
-                                LinkDetailView(entity: link, tags: link.getTagList())
-                                    .navigationTitle(link.title ?? "")
-                            } label: {
-                                LinkLabel(link: link)
-                            }
+        GeometryReader { geometry in
+            List(selection: $selectedLink) {
+                ForEach(filteredLinks) { link in
+                    if link.created != nil {
+                        NavigationLink(value: link) {
+                            LinkLabel(link: link)
                         }
+                        .id(link)
                     }
-                    .onDelete(perform: self.removeLink)
                 }
-                .listStyle(GroupedListStyle())
+                .onDelete(perform: self.removeLink)
             }
+            .listStyle(GroupedListStyle())
             .navigationBarTitle("Links")
             .navigationBarItems(trailing: navigationBarItems())
             .sheet(isPresented: $showAddLinkView) {
@@ -86,12 +84,12 @@ struct LinkListView: View {
             .refreshable {
                 viewModel.fetchAll()
             }
-        }
-        .onChange(of: viewModel.selected) { newValue in
-            selected = newValue
-        }
-        .onChange(of: viewModel.searchString) { _ in
-            viewModel.searchLink()
+            .onChange(of: viewModel.selected) {
+                selected = viewModel.selected
+            }
+            .onChange(of: viewModel.searchString) {
+                viewModel.searchLink()
+            }
         }
     }
     
