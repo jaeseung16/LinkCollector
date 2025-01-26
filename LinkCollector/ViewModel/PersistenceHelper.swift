@@ -28,17 +28,6 @@ final class PersistenceHelper: Sendable {
         viewContext.transactionAuthor = nil
     }
     
-    func save(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
-        Task {
-            do {
-                try await save()
-                completionHandler(.success(()))
-            } catch {
-                completionHandler(.failure(error))
-            }
-        }
-    }
-    
     func save() async throws -> Void {
         try await persistence.save()
     }

@@ -7,12 +7,13 @@
 
 import UIKit
 import CoreData
-import UserNotifications
+@preconcurrency import UserNotifications
 import CloudKit
 import os
 import Persistence
 
 @main
+@MainActor
 class AppDelegate: UIResponder, UIApplicationDelegate {
     private let logger = Logger()
     
@@ -158,13 +159,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         logger.info("userNotificationCenter: notification=\(notification)")
-        completionHandler([.banner, .sound])
+        return [.banner, .sound]
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        completionHandler()
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        return
     }
 }
 

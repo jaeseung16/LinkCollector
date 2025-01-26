@@ -5,11 +5,11 @@
 //  Created by Jae Seung Lee on 8/8/21.
 //
 
-import UIKit
+@preconcurrency import UIKit
 import Social
 import CoreLocation
 import CoreData
-import FaviconFinder
+@preconcurrency import FaviconFinder
 import Persistence
 import os
 
@@ -136,45 +136,40 @@ class ShareViewController: UIViewController {
                 for typeIdentifier in attachment.registeredTypeIdentifiers {
                     switch TypeIdentifier.init(rawValue: typeIdentifier) {
                     case .propertyList:
-                        attachment.loadItem(forTypeIdentifier: TypeIdentifier.propertyList.rawValue, options: nil) { item, error in
-                            guard error == nil else {
-                                DispatchQueue.main.async {
-                                    self.showAlert(attachment: attachment, error: error!)
-                                }
-                                return
-                            }
-                            
-                            if let dictionary = item as? NSDictionary,
-                               let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary {
-                                DispatchQueue.main.async {
+                        Task {
+                            do {
+                                let item = try await attachment.loadItem(forTypeIdentifier: TypeIdentifier.propertyList.rawValue, options: nil)
+                                
+                                if let dictionary = item as? NSDictionary,
+                                   let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary {
                                     self.update(with: results)
                                 }
+                            } catch {
+                                self.showAlert(attachment: attachment, error: error)
                             }
                         }
                     case .publicURL:
-                        attachment.loadItem(forTypeIdentifier: TypeIdentifier.publicURL.rawValue, options: nil) { item, error in
-                            guard error == nil else {
-                                DispatchQueue.main.async {
-                                    self.showAlert(attachment: attachment, error: error!)
+                        Task {
+                            do {
+                                let item = try await attachment.loadItem(forTypeIdentifier: TypeIdentifier.publicURL.rawValue, options: nil)
+                                
+                                if let publicURL = item as? URL {
+                                    self.update(with: publicURL)
                                 }
-                                return
-                            }
-                            
-                            if let publicURL = item as? URL {
-                                self.update(with: publicURL)
+                            } catch {
+                                self.showAlert(attachment: attachment, error: error)
                             }
                         }
                     case .plainText:
-                        attachment.loadItem(forTypeIdentifier: TypeIdentifier.plainText.rawValue, options: nil) { item, error in
-                            guard error == nil else {
-                                DispatchQueue.main.async {
-                                    self.showAlert(attachment: attachment, error: error!)
+                        Task {
+                            do {
+                                let item = try await attachment.loadItem(forTypeIdentifier: TypeIdentifier.plainText.rawValue, options: nil)
+                                
+                                if let text = item as? String {
+                                    self.update(with: text)
                                 }
-                                return
-                            }
-                            
-                            if let text = item as? String {
-                                self.update(with: text)
+                            } catch {
+                                self.showAlert(attachment: attachment, error: error)
                             }
                         }
                     case .none:
@@ -273,7 +268,7 @@ class ShareViewController: UIViewController {
         
     private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
         if let url = URL(string: urlString) {
-            return (url, try? String(contentsOf: url))
+            return (url, try? String(contentsOf: url, encoding: .utf8))
         } else {
             return (nil, nil)
         }
@@ -287,10 +282,12 @@ class ShareViewController: UIViewController {
             return
         }
         
-        let htmlParser = HTMLParser()
-        htmlParser.parse(url: url, html: html) { result in
+        Task {
+            let htmlParser = HTMLParser()
+            let result = await htmlParser.parse(url: url, html: html)
             completionHandler(url, result)
         }
+        
     }
     
     private func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
@@ -375,13 +372,13 @@ class ShareViewController: UIViewController {
     
 }
 
-extension ShareViewController: CLLocationManagerDelegate {
+extension ShareViewController: @preconcurrency CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         self.location = location
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        NSLog("didFailWithError: \(error)")
+        logger.log("didFailWithError: \(error)")
     }
 }

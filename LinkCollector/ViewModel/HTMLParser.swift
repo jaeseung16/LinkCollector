@@ -9,16 +9,16 @@ import Foundation
 import SwiftSoup
 import os
 
-class HTMLParser {
+actor HTMLParser {
     private static let emptyString = ""
     
     private let logger = Logger()
     
-    var document: Document?
-    var title = HTMLParser.emptyString
-    var ogTitle = HTMLParser.emptyString
+    private var document: Document?
+    private var title = HTMLParser.emptyString
+    private var ogTitle = HTMLParser.emptyString
     
-    var titleToUse: String {
+    private var titleToUse: String {
         return !ogTitle.isEmpty ? ogTitle : (!title.isEmpty ? title : HTMLParser.emptyString)
     }
     
@@ -44,6 +44,23 @@ class HTMLParser {
                 completionHandler(titleToUse)
             }
         }
+    }
+    
+    func parseTitle(url: URL, html: String) async -> String? {
+        if !populateDocument(url: url, html: html) {
+            return nil
+        }
+        
+        if let document = document {
+            populateTitle(document: document)
+            populateOgTitle(document: document)
+        }
+        
+        if let host = url.host, host.contains("youtube.com") {
+            await populateOgTitle(url)
+        }
+        
+        return titleToUse
     }
     
     private func populateDocument(url: URL, html: String) -> Bool {
@@ -125,42 +142,24 @@ class HTMLParser {
         
         logger.log("url = \(url, privacy: .public)")
         
-        let request = URLRequest(url: url)
-        
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard (error == nil) else {
-                self.logger.log("There was an error with your request: \(error!.localizedDescription, privacy: .public)")
-                return
-            }
-            
-            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                let statusCode = (response as? HTTPURLResponse)!.statusCode
-                self.logger.log("The status code was not between 200 and 299: \(statusCode, privacy: .public)")
-                return
-            }
-            
-            guard let data = data else {
-                self.logger.log("There was no data downloaded")
-                return
-            }
-            
-            self.logger.log("data = \(data, privacy: .public)")
-            var youTubeOMebed: YouTubeOEmbed?
+        Task {
             do {
-                youTubeOMebed = try JSONDecoder().decode(YouTubeOEmbed.self, from: data)
-            } catch {
-                self.logger.log("Cannot parse data: \(data, privacy: .public)")
-            }
-            
-            guard let oEmbed = youTubeOMebed else {
-                self.logger.log("Decoding JSON failed: \(String(describing: youTubeOMebed), privacy: .public)")
-                return
-            }
+                let (data, response) = try await URLSession.shared.data(from: url)
+                self.logger.log("data = \(data, privacy: .public)")
                 
-            completionHandler(oEmbed)
+                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                    let statusCode = (response as? HTTPURLResponse)!.statusCode
+                    self.logger.log("The status code was not between 200 and 299: \(statusCode, privacy: .public)")
+                    throw HTMLParserError.invalidServerResponse
+                }
+                
+                let youTubeOMebed = try JSONDecoder().decode(YouTubeOEmbed.self, from: data)
+                    
+                completionHandler(youTubeOMebed)
+            } catch {
+                self.logger.log("Error while finding youtube title for url=\(url): \(error.localizedDescription, privacy: .public)")
+            }
         }
-        
-        task.resume()
     }
     
     private func findTitle(youTubeUrl: URL) async throws -> String {

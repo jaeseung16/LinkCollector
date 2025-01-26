@@ -511,7 +511,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
 }
 
-extension LinkCollectorViewModel: CLLocationManagerDelegate {
+extension LinkCollectorViewModel: @preconcurrency CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
       guard let location = locations.last else { return }
       userLatitude = location.coordinate.latitude
