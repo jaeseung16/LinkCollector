@@ -15,6 +15,7 @@ import Persistence
 import SwiftUI
 import CoreSpotlight
 
+@MainActor
 class LinkCollectorViewModel: NSObject, ObservableObject {
     @AppStorage("spotlightLinkIndexing") private var spotlightLinkIndexing: Bool = false
     
@@ -25,9 +26,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     private let contentsJson = "contents.json"
     
     private let persistence: Persistence
-    private var persistenceContainer: NSPersistentCloudKitContainer {
-        persistence.cloudContainer!
-    }
     
     private var subscriptions: Set<AnyCancellable> = []
     
@@ -308,7 +306,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     }
                 }
             } else {
-                let entity = TagEntity(context: persistenceContainer.viewContext)
+                let entity = TagEntity(context: persistenceHelper.viewContext)
                 entity.id = UUID()
                 entity.name = tagDTO.name
                 entity.created = Date()
@@ -458,21 +456,25 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     // MARK: - Persistence History Request
     private func fetchUpdates(_ notification: Notification) -> Void {
-        persistence.fetchUpdates(notification) { result in
-            switch result {
-            case .success(_):
-                return
-            case .failure(let error):
-                self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
-                
-                if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-                    self.logger.log("version=\(version, privacy: .public)")
-                    if version == "1.4.1" {
-                        self.logger.log("try to invalidate token")
-                        self.persistence.invalidateHistoryToken()
-                    }
-                }
-            }
+        Task {
+           await persistence.fetchUpdates(notification) { result in
+               switch result {
+               case .success(_):
+                   return
+               case .failure(let error):
+                   self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
+                   
+                   if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+                       self.logger.log("version=\(version, privacy: .public)")
+                       if version == "1.4.1" {
+                           Task {
+                               self.logger.log("try to invalidate token")
+                               await self.persistence.invalidateHistoryToken()
+                           }
+                       }
+                   }
+               }
+           }
         }
     }
     
