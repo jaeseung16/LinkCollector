@@ -70,9 +70,9 @@ struct EditLinkView: View {
             
             Section(header: NoteLabel(title: "Note")) {
                 TextEditor(text: $note)
-                    .onChange(of: note, perform: { _ in
+                    .onChange(of: note) {
                         saveButtonEnabled = true
-                    })
+                    }
                     .disableAutocorrection(true)
                     .multilineTextAlignment(.leading)
                     .border(Color.secondary)

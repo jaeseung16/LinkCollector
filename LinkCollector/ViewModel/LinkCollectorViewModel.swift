@@ -154,7 +154,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         let escapedText = searchString.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
         let queryString = "(title == \"*\(escapedText)*\"cd)"
         
-        linkSearchQuery = CSSearchQuery(queryString: queryString, attributes: ["title"])
+        let queryContext = CSSearchQueryContext()
+        queryContext.fetchAttributes = ["title"]
+        
+        linkSearchQuery = CSSearchQuery(queryString: queryString, queryContext: queryContext)
         
         linkSearchQuery?.foundItemsHandler = { items in
             DispatchQueue.main.async {
