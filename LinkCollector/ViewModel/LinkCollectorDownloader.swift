@@ -36,8 +36,11 @@ class LinkCollectorDownloader {
     
     static func findFavicon(url: URL) async -> Data? {
         do {
-            let favicon = try await FaviconFinder(url: url).downloadFavicon()
-            return favicon.data
+            let favicon = try await FaviconFinder(url: url, configuration: .init(preferredSource: .ico, acceptHeaderImage: true))
+                .fetchFaviconURLs()
+                .download()
+                .largest()
+            return favicon.image?.data
         } catch {
             self.logger.log("Cannot find favicon from \(url, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return nil

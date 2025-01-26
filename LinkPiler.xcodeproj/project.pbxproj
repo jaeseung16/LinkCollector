@@ -965,7 +965,7 @@
 			repositoryURL = "https://github.com/scinfu/SwiftSoup";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.5;
+				minimumVersion = 2.6.0;
 			};
 		};
 		90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */ = {
@@ -973,7 +973,7 @@
 			repositoryURL = "https://github.com/will-lumley/FaviconFinder";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 4.1.0;
+				minimumVersion = 5.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
