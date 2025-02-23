@@ -51,31 +51,31 @@ struct LinkListView: View {
                         .id(link)
                     }
                 }
-                .onDelete(perform: self.removeLink)
+                .onDelete(perform: removeLink)
             }
             .listStyle(GroupedListStyle())
             .navigationTitle("Links")
             .toolbar {
                 ToolbarItemGroup {
-                    Button(action: {
-                        self.showDateRangePickerView = true
-                    }, label: {
+                    Button {
+                        showDateRangePickerView = true
+                    } label: {
                         Label("Date Range", systemImage: "calendar")
-                    })
+                    }
                     .foregroundColor(Color.blue)
                     
-                    Button(action: {
-                        self.showTagListView = true
-                    }, label: {
+                    Button {
+                        showTagListView = true
+                    } label: {
                         TagLabel(title: "Tags")
-                    })
+                    }
                     .foregroundColor(Color.blue)
                     
-                    Button(action: {
-                        self.showAddLinkView = true
-                    }, label: {
+                    Button {
+                        showAddLinkView = true
+                    } label: {
                         Label("Add", systemImage: "plus")
-                    })
+                    }
                     .foregroundColor(Color.blue)
                 }
             }
@@ -122,10 +122,8 @@ struct LinkListView: View {
         }
         
         viewModel.saveContext { _ in
-            DispatchQueue.main.async {
-                message = "Failed to delete the selected link"
-                showAlert = true
-            }
+            message = "Failed to delete the selected link"
+            showAlert = true
         }
     }
     
