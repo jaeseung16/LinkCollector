@@ -125,15 +125,11 @@ struct AddLinkView: View {
     }
     
     private func findFavicon() async -> Void {
-        if let url = URL(string: url) {
-            let data = await viewModel.findFavicon(url: url)
-            guard let data = data else {
-                showAlertWhenCannotOpenURL()
-                return
-            }
-            favicon = data
+        guard let data = await viewModel.findFavicon(from: url) else {
+            showAlertWhenCannotOpenURL()
+            return
         }
-        return
+        favicon = data
     }
     
     private func showAlertWhenCannotOpenURL() -> Void {

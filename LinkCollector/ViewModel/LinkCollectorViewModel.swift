@@ -266,17 +266,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     // MARK: - Download
     
     private func getUrlAndHtml(from urlString: String) async -> (URL?, String?) {
-        var url: URL?
-        var html: String?
-        if LinkCollectorDownloader.isValid(urlString: urlString) {
-            (url, html) = await LinkCollectorDownloader.download(from: urlString)
-        } else {
-            (url, html) = await LinkCollectorDownloader.download(from: "https://\(urlString)")
-            if html == nil {
-                (url, html) = await LinkCollectorDownloader.download(from: "http://\(urlString)")
-            }
-        }
-        return (url, html)
+        let downloader = LinkCollectorDownloader(url: urlString)
+        return await downloader.getUrlAndHtml()
     }
 
     func process(urlString: String) async -> (URL?, String?) {
@@ -292,8 +283,9 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         return (url, title)
     }
     
-    func findFavicon(url: URL) async -> Data? {
-        return await LinkCollectorDownloader.findFavicon(url: url)
+    func findFavicon(from urlString: String) async -> Data? {
+        let downloader = LinkCollectorDownloader(url: urlString)
+        return await downloader.findFavicon()
     }
     
     // MARK: - Persistence
