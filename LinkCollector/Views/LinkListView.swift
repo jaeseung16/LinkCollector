@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreSpotlight
 
 struct LinkListView: View {
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
@@ -25,8 +24,8 @@ struct LinkListView: View {
     var filteredLinks: [LinkEntity] {
         viewModel.links.filter { link in
             var filter = true
-            if let tags = link.tags as? Set<TagEntity>, !selectedTags.isEmpty && selectedTags.intersection(tags).isEmpty {
-                filter = false
+            if let tags = link.tags as? Set<TagEntity> {
+                filter = selectedTags.isEmpty || !selectedTags.intersection(tags).isEmpty
             }
             return filter
         }
