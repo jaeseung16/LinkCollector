@@ -12,6 +12,9 @@ import FaviconFinder
 actor LinkCollectorDownloader {
     private static let logger = Logger()
     
+    private static let httpSchemePrefix = "http://"
+    private static let httpsSchemePrefix = "https://"
+    
     private let urlString: String
     
     init(url: String) {
@@ -25,46 +28,16 @@ actor LinkCollectorDownloader {
         if isValid() {
             (url, html) = await download()
         } else {
-            (url, html) = await downloadHttps()
+            (url, html) = await download(schemePrefix: LinkCollectorDownloader.httpsSchemePrefix)
             if html == nil {
-                (url, html) = await downloadHttp()
+                (url, html) = await download(schemePrefix: LinkCollectorDownloader.httpSchemePrefix)
             }
         }
         return (url, html)
     }
     
-    private func download() async -> (URL?, String?) {
-        guard let url = URL(string: urlString) else {
-            LinkCollectorDownloader.logger.log("Invalid url: \(self.urlString, privacy: .public)")
-            return (nil, nil)
-        }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            return (url, String(data: data, encoding: .utf8))
-        } catch {
-            LinkCollectorDownloader.logger.log("Error while downloading data from \(self.urlString)")
-            return (url, nil)
-        }
-    }
-    
-    private func downloadHttps() async -> (URL?, String?) {
-        guard let url = URL(string: "https://\(urlString)") else {
-            LinkCollectorDownloader.logger.log("Invalid url: \(self.urlString, privacy: .public)")
-            return (nil, nil)
-        }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            return (url, String(data: data, encoding: .utf8))
-        } catch {
-            LinkCollectorDownloader.logger.log("Error while downloading data from \(self.urlString)")
-            return (url, nil)
-        }
-    }
-    
-    private func downloadHttp() async -> (URL?, String?) {
-        guard let url = URL(string: "http://\(urlString)") else {
+    private func download(schemePrefix: String? = nil) async -> (URL?, String?) {
+        guard let url = URL(string: "\(schemePrefix ?? "")\(urlString)") else {
             LinkCollectorDownloader.logger.log("Invalid url: \(self.urlString, privacy: .public)")
             return (nil, nil)
         }
