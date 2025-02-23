@@ -55,8 +55,31 @@ struct LinkListView: View {
                 .onDelete(perform: self.removeLink)
             }
             .listStyle(GroupedListStyle())
-            .navigationBarTitle("Links")
-            .navigationBarItems(trailing: navigationBarItems())
+            .navigationTitle("Links")
+            .toolbar {
+                ToolbarItemGroup {
+                    Button(action: {
+                        self.showDateRangePickerView = true
+                    }, label: {
+                        Label("Date Range", systemImage: "calendar")
+                    })
+                    .foregroundColor(Color.blue)
+                    
+                    Button(action: {
+                        self.showTagListView = true
+                    }, label: {
+                        TagLabel(title: "Tags")
+                    })
+                    .foregroundColor(Color.blue)
+                    
+                    Button(action: {
+                        self.showAddLinkView = true
+                    }, label: {
+                        Label("Add", systemImage: "plus")
+                    })
+                    .foregroundColor(Color.blue)
+                }
+            }
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
                     .environmentObject(viewModel)
@@ -107,28 +130,4 @@ struct LinkListView: View {
         }
     }
     
-    private func navigationBarItems() -> some View {
-        HStack {
-            Button(action: {
-                self.showDateRangePickerView = true
-            }, label: {
-                Label("Date Range", systemImage: "calendar")
-            })
-            .foregroundColor(Color.blue)
-            
-            Button(action: {
-                self.showTagListView = true
-            }, label: {
-                TagLabel(title: "Tags")
-            })
-            .foregroundColor(Color.blue)
-            
-            Button(action: {
-                self.showAddLinkView = true
-            }, label: {
-                Label("Add", systemImage: "plus")
-            })
-            .foregroundColor(Color.blue)
-        }
-    }
 }
