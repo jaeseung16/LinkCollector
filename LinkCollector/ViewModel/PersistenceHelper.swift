@@ -23,9 +23,11 @@ final class PersistenceHelper: Sendable {
     }
     
     func saveContext() throws -> Void {
-        viewContext.transactionAuthor = "App"
-        try viewContext.save()
-        viewContext.transactionAuthor = nil
+        if viewContext.hasChanges {
+            viewContext.transactionAuthor = "App"
+            try viewContext.save()
+            viewContext.transactionAuthor = nil
+        }
     }
     
     func save() async throws -> Void {
@@ -72,6 +74,10 @@ final class PersistenceHelper: Sendable {
             PersistenceHelper.logger.log("objectID is nil for url=\(url)")
             return nil
         }
+        return viewContext.object(with: objectID)
+    }
+    
+    func find(with objectID: NSManagedObjectID) -> NSManagedObject? {
         return viewContext.object(with: objectID)
     }
     

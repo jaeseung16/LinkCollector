@@ -71,28 +71,30 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         if let linkIndexer: LinkSpotlightDelegate = self.persistenceHelper.getSpotlightDelegate() {
             self.linkIndexer = linkIndexer
             self.toggleIndexing(self.linkIndexer, enabled: true)
-            NotificationCenter.default.addObserver(self, selector: #selector(defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
+            
+            NotificationCenter.default
+                .publisher(for: UserDefaults.didChangeNotification)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in
+                    self?.defaultsChanged()
+                }
+                .store(in: &subscriptions)
         }
         
         logger.log("spotlightLinkIndexing=\(self.spotlightLinkIndexing, privacy: .public)")
-        if !spotlightLinkIndexing {
-            DispatchQueue.main.async {
-                self.indexLinks()
-                self.spotlightLinkIndexing.toggle()
-                
-            }
+        if !self.spotlightLinkIndexing {
+            self.indexLinks()
+            self.spotlightLinkIndexing.toggle()
         }
         
     }
     
     // MARK: - CoreSpotlight
     @objc private func defaultsChanged() -> Void {
-        if !self.spotlightLinkIndexing {
-            DispatchQueue.main.async {
-                self.toggleIndexing(self.linkIndexer, enabled: false)
-                self.toggleIndexing(self.linkIndexer, enabled: true)
-                self.spotlightLinkIndexing.toggle()
-            }
+        if !spotlightLinkIndexing {
+            toggleIndexing(linkIndexer, enabled: false)
+            toggleIndexing(linkIndexer, enabled: true)
+            spotlightLinkIndexing.toggle()
         }
     }
     
@@ -318,6 +320,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var tags = [TagEntity]()
     
     func fetchAll() {
+        searchString = ""
         fetchLinks()
         fetchTags()
     }
@@ -455,10 +458,33 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     private func fetchUpdates(_ notification: Notification) -> Void {
         Task {
             do {
-                let _ = try await persistence.fetchUpdates(notification)
+                let objectIDs = try await persistence.fetchUpdates(notification)
+                for objectId in objectIDs {
+                    await addToIndex(objectId)
+                }
             } catch {
                 logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
             }
+        }
+    }
+    
+    private func addToIndex(_ objectID: NSManagedObjectID) async -> Void {
+        guard let object = persistenceHelper.find(with: objectID) else {
+            remove(with: objectID.uriRepresentation().absoluteString)
+            logger.log("Removed from index: \(objectID)")
+            return
+        }
+        
+        if let linkEntity = persistenceHelper.find(with: objectID) as? LinkEntity {
+            index<LinkEntity>([linkEntity], indexName: LinkPilerConstants.linkIndexName.rawValue)
+        }
+    }
+    
+    private func remove(with identifier: String) {
+        guard let linkIndexer = linkIndexer, let indexName = linkIndexer.indexName() else { return }
+        
+        CSSearchableIndex(name: indexName).deleteSearchableItems(withIdentifiers: [identifier]) { error in
+            self.logger.log("Can't delete an item with identifier=\(identifier, privacy: .public)")
         }
     }
     
