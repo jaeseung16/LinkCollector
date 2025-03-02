@@ -127,6 +127,8 @@ struct LinkListView: View {
             message = "Failed to delete the selected link"
             showAlert = true
         }
+        
+        viewModel.fetchAll()
     }
     
 }

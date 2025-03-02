@@ -166,6 +166,7 @@ struct AddTagView: View {
     
     private func save() -> Void {
         viewModel.saveTag(TagDTO(name: tagName))
+        viewModel.fetchAll()
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
@@ -181,6 +182,8 @@ struct AddTagView: View {
                 viewModel.message = "Failed to save changes"
             }
         }
+        
+        viewModel.fetchAll()
     }
 }
 

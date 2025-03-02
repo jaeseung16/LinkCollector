@@ -351,6 +351,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         for tag in tags {
             saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
         }
+        
+        fetchAll()
     }
     
     func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
@@ -375,6 +377,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 self.message = "Cannot update link: \(link)"
             }
         }
+        
+        fetchAll()
     }
     
     func remove(tag: String, from link: LinkDTO) {
@@ -390,6 +394,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                 self.message = "Cannot save link = \(link.title)"
             }
         }
+        
+        fetchAll()
     }
     
     func getTagList(of link: LinkEntity) -> [String] {
@@ -448,24 +454,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     // MARK: - Persistence History Request
     private func fetchUpdates(_ notification: Notification) -> Void {
         Task {
-           await persistence.fetchUpdates(notification) { result in
-               switch result {
-               case .success(_):
-                   return
-               case .failure(let error):
-                   self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
-                   
-                   if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-                       self.logger.log("version=\(version, privacy: .public)")
-                       if version == "1.4.1" {
-                           Task {
-                               self.logger.log("try to invalidate token")
-                               await self.persistence.invalidateHistoryToken()
-                           }
-                       }
-                   }
-               }
-           }
+            do {
+                let _ = try await persistence.fetchUpdates(notification)
+            } catch {
+                logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
+            }
         }
     }
     
