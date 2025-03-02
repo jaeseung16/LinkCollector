@@ -132,7 +132,7 @@ struct AddTagView: View {
                         .foregroundColor(.primary)
                 }
             }
-            .onDelete(perform: self.removeTag)
+            .onDelete(perform: removeTag)
         }
         .listStyle(InsetListStyle())
     }
@@ -173,7 +173,14 @@ struct AddTagView: View {
             let tag = filteredTags[index]
             viewModel.delete(tag: tag)
         }
-        viewModel.saveContext()
+        
+        Task {
+            do {
+                try viewModel.save()
+            } catch {
+                viewModel.message = "Failed to save changes"
+            }
+        }
     }
 }
 

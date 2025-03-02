@@ -121,7 +121,9 @@ struct LinkListView: View {
             viewModel.delete(link: link)
         }
         
-        viewModel.saveContext { _ in
+        do {
+            try viewModel.save()
+        } catch {
             message = "Failed to delete the selected link"
             showAlert = true
         }

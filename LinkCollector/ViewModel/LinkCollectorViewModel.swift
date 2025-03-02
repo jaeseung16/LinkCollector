@@ -289,6 +289,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - Persistence
+    
     func saveTag(_ tagDTO: TagDTO) -> Void {
         if let tagEntity = getTagEntity(with: tagDTO.name) {
             if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
@@ -303,8 +304,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             entity.created = Date()
         }
         
-        saveContext { error in
-            self.logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+        do {
+            try save()
+        } catch {
+            logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot save tag: \( tagDTO.name)"
             }
@@ -334,8 +337,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) -> Void {
         let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
         
-        saveContext { error in
-            self.logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+        do {
+            try save()
+        } catch {
+            logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot save link: \(String(describing: title))"
             }
@@ -361,9 +366,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             linkEntity.removeFromTags(tagEntites)
         }
         linkEntity.addToTags(NSSet(array: tags))
-       
-        saveContext { error in
-            self.logger.log("While updating \(link) with \(tags) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+        
+        do {
+            try save()
+        } catch {
+            logger.log("While updating \(link) with \(tags) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot update link: \(link)"
             }
@@ -375,8 +382,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             tagEntity.removeFromLinks(linkEntity)
         }
         
-        saveContext { error in
-            self.logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+        do {
+            try save()
+        } catch {
+            logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             DispatchQueue.main.async {
                 self.message = "Cannot save link = \(link.title)"
             }
@@ -432,16 +441,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         persistenceHelper.delete(tag)
     }
     
-    func saveContext(completionHandler: ((Error) -> Void)? = nil) -> Void {
-        do {
-            try persistenceHelper.saveContext()
-        } catch {
-            completionHandler?(error)
-        }
-        
-        DispatchQueue.main.async {
-            self.fetchAll()
-        }
+    func save() throws -> Void {
+        try persistenceHelper.saveContext()
     }
     
     // MARK: - Persistence History Request
