@@ -39,6 +39,8 @@ struct WebView: UIViewRepresentable {
         var title: String?
         var ogTitle: String?
         
+        var snapshot: Data?
+        
         private var url: URL?
         
         init(_ parent: WebView) {
@@ -72,7 +74,15 @@ struct WebView: UIViewRepresentable {
                 }
             })
             
-            /*
+            Task {
+                do {
+                    snapshot = try await webView.pdf()
+                } catch {
+                    logger.log("Cannot generate a pdf snapshot: \(error.localizedDescription, privacy: .public)")
+                }
+            }
+            
+        /*
             webView.evaluateJavaScript("document.getElementsByTagName('meta')[0].innerText", completionHandler: { (value: Any!, error: Error!) -> Void in
                 if let error = error {
                     logger.log("didFinish: \(error.localizedDescription, privacy: .public))")
@@ -84,7 +94,7 @@ struct WebView: UIViewRepresentable {
                     self.ogTitle = result
                 }
             })
- */
+        */
         }
     }
 }
