@@ -964,7 +964,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jaeseung16/PersistenceSwift";
 			requirement = {
-				branch = 0.2.12;
+				branch = 0.2.13;
 				kind = branch;
 			};
 		};
