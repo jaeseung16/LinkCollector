@@ -65,6 +65,9 @@
 		90C30D352829C50100061A5F /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 		90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C30D372829CC9500061A5F /* LinkLabel.swift */; };
+		90C45DC82D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */; };
+		90C45DC92D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */; };
+		90C45DCA2D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */; };
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
 		90C68DB1259538B200C78C1E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB0259538B200C78C1E /* WebView.swift */; };
 		90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
@@ -158,6 +161,7 @@
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
+		90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SnapshotEntity+Extension.swift"; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		90C68DB0259538B200C78C1E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeOEmbed.swift; sourceTree = "<group>"; };
@@ -346,6 +350,7 @@
 			children = (
 				90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */,
 				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
+				90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -513,6 +518,7 @@
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
 				9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
+				90C45DC92D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */,
 				9078D06E2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
 				9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */,
@@ -534,6 +540,7 @@
 				90208720281DEE1D005A5264 /* Provider.swift in Sources */,
 				900EA7BF28305AD80055CBC4 /* LinkPilerConstants.swift in Sources */,
 				900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */,
+				90C45DC82D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */,
 				9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -542,6 +549,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90C45DCA2D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */,
 				90A290AB258FB695004988D9 /* Title.swift in Sources */,
 				9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */,
 				903A4075282864380080E46A /* SelectTagsView.swift in Sources */,
