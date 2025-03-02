@@ -289,26 +289,24 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     // MARK: - Persistence
-    var tagDTO = TagDTO(name: "", link: nil) {
-        didSet {
-            if let tagEntity = getTagEntity(with: tagDTO.name) {
-                if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
-                    if let links = tagEntity.links, !links.contains(linkEntity) {
-                        tagEntity.addToLinks(linkEntity)
-                    }
+    func saveTag(_ tagDTO: TagDTO) -> Void {
+        if let tagEntity = getTagEntity(with: tagDTO.name) {
+            if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
+                if let links = tagEntity.links, !links.contains(linkEntity) {
+                    tagEntity.addToLinks(linkEntity)
                 }
-            } else {
-                let entity = TagEntity(context: persistenceHelper.viewContext)
-                entity.id = UUID()
-                entity.name = tagDTO.name
-                entity.created = Date()
             }
-            
-            saveContext { error in
-                self.logger.log("While saving \(String(describing: self.tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-                DispatchQueue.main.async {
-                    self.message = "Cannot save tag: \(self.tagDTO.name)"
-                }
+        } else {
+            let entity = TagEntity(context: persistenceHelper.viewContext)
+            entity.id = UUID()
+            entity.name = tagDTO.name
+            entity.created = Date()
+        }
+        
+        saveContext { error in
+            self.logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            DispatchQueue.main.async {
+                self.message = "Cannot save tag: \( tagDTO.name)"
             }
         }
     }
@@ -346,7 +344,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
         for tag in tags {
-            self.tagDTO = TagDTO(name: tag.name ?? "", link: linkDTO)
+            saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
         }
     }
     

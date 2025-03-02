@@ -165,8 +165,7 @@ struct AddTagView: View {
     }
     
     private func save() -> Void {
-        viewModel.tagDTO = TagDTO(name: tagName)
-        viewModel.saveContext()
+        viewModel.saveTag(TagDTO(name: tagName))
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
