@@ -469,15 +469,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     private func addToIndex(_ objectID: NSManagedObjectID) async -> Void {
-        guard let object = persistenceHelper.find(with: objectID) else {
+        guard let linkEntity = persistenceHelper.find(with: objectID) as? LinkEntity else {
             remove(with: objectID.uriRepresentation().absoluteString)
             logger.log("Removed from index: \(objectID)")
             return
         }
         
-        if let linkEntity = persistenceHelper.find(with: objectID) as? LinkEntity {
-            index<LinkEntity>([linkEntity], indexName: LinkPilerConstants.linkIndexName.rawValue)
-        }
+        index<LinkEntity>([linkEntity], indexName: LinkPilerConstants.linkIndexName.rawValue)
     }
     
     private func remove(with identifier: String) {
