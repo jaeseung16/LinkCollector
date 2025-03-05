@@ -64,6 +64,7 @@ struct LinkDetailView: View {
                 
                 entity.url.map {
                     WebView(url: $0)
+                        .environmentObject(viewModel)
                         .shadow(color: Color.gray, radius: 1.0)
                         .padding()
                 }

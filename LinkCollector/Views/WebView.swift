@@ -10,6 +10,8 @@ import WebKit
 import os
 
 struct WebView: UIViewRepresentable {
+    @EnvironmentObject var viewModel: LinkCollectorViewModel
+    
     private let logger = Logger()
     
     let url: URL
@@ -39,7 +41,11 @@ struct WebView: UIViewRepresentable {
         var title: String?
         var ogTitle: String?
         
-        var snapshot: Data?
+        var snapshot: Data? {
+            didSet {
+                parent.viewModel.snapshot = snapshot
+            }
+        }
         
         private var url: URL?
         
