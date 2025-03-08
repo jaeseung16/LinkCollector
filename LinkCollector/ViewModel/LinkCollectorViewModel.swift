@@ -39,8 +39,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var selected = UUID()
     @Published var searchString = ""
     
-    @Published var snapshot: Data?
-    
     var message = "" {
         didSet {
             showAlert.toggle()

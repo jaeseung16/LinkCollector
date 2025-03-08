@@ -11,13 +11,7 @@
         <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
         <attribute name="url" optional="YES" attributeType="URI"/>
-        <relationship name="snapshots" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SnapshotEntity" inverseName="link" inverseEntity="SnapshotEntity"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TagEntity" inverseName="links" inverseEntity="TagEntity"/>
-    </entity>
-    <entity name="SnapshotEntity" representedClassName="SnapshotEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="snapshot" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
-        <relationship name="link" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LinkEntity" inverseName="snapshots" inverseEntity="LinkEntity"/>
     </entity>
     <entity name="TagEntity" representedClassName="TagEntity" syncable="YES" codeGenerationType="class">
         <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

@@ -59,21 +59,18 @@
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
 		90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
-		90AB8F302D74BE3C00D92A40 /* SnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB8F2F2D74BE3C00D92A40 /* SnapshotView.swift */; };
 		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
 		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
 		90C30D312829C3C200061A5F /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90C30D352829C50100061A5F /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 		90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C30D372829CC9500061A5F /* LinkLabel.swift */; };
-		90C45DC82D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */; };
-		90C45DC92D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */; };
-		90C45DCA2D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */; };
 		90C68DAE2595334600C78C1E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DAD2595334600C78C1E /* MapView.swift */; };
 		90C68DB1259538B200C78C1E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB0259538B200C78C1E /* WebView.swift */; };
 		90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 		90C97D702D7CAA51006195A8 /* BookmarkGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C97D6F2D7CAA51006195A8 /* BookmarkGenerator.swift */; };
 		90C97D712D7CAA51006195A8 /* BookmarkGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C97D6F2D7CAA51006195A8 /* BookmarkGenerator.swift */; };
+		90C97D732D7CD323006195A8 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C97D722D7CD323006195A8 /* FilterView.swift */; };
 		90CF0F4026CD710400D1CBF4 /* LinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */; };
 		90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DBF26CEE1D5007F7819 /* AddTagView.swift */; };
 		90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DC126CEF2BB007F7819 /* TagDTO.swift */; };
@@ -163,13 +160,12 @@
 		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
-		90AB8F2F2D74BE3C00D92A40 /* SnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotView.swift; sourceTree = "<group>"; };
 		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
-		90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SnapshotEntity+Extension.swift"; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		90C68DB0259538B200C78C1E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeOEmbed.swift; sourceTree = "<group>"; };
 		90C97D6F2D7CAA51006195A8 /* BookmarkGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkGenerator.swift; sourceTree = "<group>"; };
+		90C97D722D7CD323006195A8 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDTO.swift; sourceTree = "<group>"; };
 		90D25DBF26CEE1D5007F7819 /* AddTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagView.swift; sourceTree = "<group>"; };
 		90D25DC126CEF2BB007F7819 /* TagDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDTO.swift; sourceTree = "<group>"; };
@@ -238,7 +234,7 @@
 				90C68DAD2595334600C78C1E /* MapView.swift */,
 				90C68DB0259538B200C78C1E /* WebView.swift */,
 				9030552D282C70610081E026 /* DateRangePickerView.swift */,
-				90AB8F2F2D74BE3C00D92A40 /* SnapshotView.swift */,
+				90C97D722D7CD323006195A8 /* FilterView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -357,7 +353,6 @@
 			children = (
 				90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */,
 				9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */,
-				90C45DC72D6FE9B4006AF004 /* SnapshotEntity+Extension.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -526,7 +521,6 @@
 				902C9B8726C063000071CADB /* ShareViewController.swift in Sources */,
 				90C30D362829C51B00061A5F /* YouTubeOEmbed.swift in Sources */,
 				9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
-				90C45DC92D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */,
 				9078D06E2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				90FD202226C9A78E008CC190 /* TypeIdentifier.swift in Sources */,
 				9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */,
@@ -548,7 +542,6 @@
 				90208720281DEE1D005A5264 /* Provider.swift in Sources */,
 				900EA7BF28305AD80055CBC4 /* LinkPilerConstants.swift in Sources */,
 				900BF905281F43070046839D /* LinkCollector.xcdatamodeld in Sources */,
-				90C45DC82D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */,
 				9023C38C280E16130055E322 /* WidgetEntry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -557,17 +550,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90C45DCA2D6FE9B4006AF004 /* SnapshotEntity+Extension.swift in Sources */,
 				90A290AB258FB695004988D9 /* Title.swift in Sources */,
 				9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */,
 				903A4075282864380080E46A /* SelectTagsView.swift in Sources */,
+				90C97D732D7CD323006195A8 /* FilterView.swift in Sources */,
 				90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */,
 				90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */,
 				90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */,
 				9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */,
 				90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */,
 				900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */,
-				90AB8F302D74BE3C00D92A40 /* SnapshotView.swift in Sources */,
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
 				9078D0702A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
