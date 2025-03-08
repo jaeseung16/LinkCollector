@@ -11,12 +11,11 @@ struct LinkListView: View {
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
     @State private var showAddLinkView = false
-    @State private var showTagListView = false
     @State private var showAlert = false
     @State private var message = ""
     @State private var searchString = ""
     @State private var selected: UUID?
-    @State private var showDateRangePickerView = false
+    @State private var presentFilterItemsView = false
     
     @State private var selectedTags = Set<TagEntity>()
     @State private var dateInterval: DateInterval?
@@ -63,7 +62,7 @@ struct LinkListView: View {
                         Label("Add", systemImage: "plus")
                     }
                     .foregroundColor(Color.blue)
-                    
+                    /*
                     Button {
                         showTagListView = true
                     } label: {
@@ -77,6 +76,12 @@ struct LinkListView: View {
                         Label("Date Range", systemImage: "calendar")
                     }
                     .foregroundColor(Color.blue)
+                    */
+                    Button  {
+                        presentFilterItemsView = true
+                    } label: {
+                        Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
+                    }
                     
                     ShareLink("Export Links", item: generateBookmarkFile())
                 }
@@ -85,14 +90,13 @@ struct LinkListView: View {
                 AddLinkView()
                     .environmentObject(viewModel)
             }
-            .sheet(isPresented: $showTagListView) {
-                SelectTagsView(selectedTags: $selectedTags)
-            }
-            .sheet(isPresented: $showDateRangePickerView) {
+            .sheet(isPresented: $presentFilterItemsView) {
                 if let start = dateInterval?.start, let end = dateInterval?.end {
-                    DateRangePickerView(dateInterval: $dateInterval, start: start, end: end)
+                    FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval, start: start, end: end)
+                        .environmentObject(viewModel)
                 } else {
-                    DateRangePickerView(dateInterval: $dateInterval)
+                    FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval)
+                        .environmentObject(viewModel)
                 }
             }
             .alert("Unable to Save Data", isPresented: $showAlert) {
