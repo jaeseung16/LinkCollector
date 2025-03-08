@@ -519,6 +519,21 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
+    // MARK: - Export links as a bookmark file
+    private let bookmarksFileName = "bookmarks.html"
+    
+    func generateBookmarkFile(_ links: [LinkEntity]) -> URL {
+        let bookmarkGenerator = BookmarkGenerator(links: links)
+        let url = URL.documentsDirectory.appending(path: bookmarksFileName)
+        do {
+            try bookmarkGenerator.getBookmarkFile()
+                .write(to: url, atomically: true, encoding: .utf8)
+        } catch {
+            logger.log("Error while writing bookmark file: \(error.localizedDescription, privacy: .public)")
+        }
+        return url
+    }
+    
 }
 
 extension LinkCollectorViewModel: @preconcurrency CLLocationManagerDelegate {

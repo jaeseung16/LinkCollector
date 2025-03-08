@@ -58,9 +58,9 @@ struct LinkListView: View {
             .toolbar {
                 ToolbarItemGroup {
                     Button {
-                        showDateRangePickerView = true
+                        showAddLinkView = true
                     } label: {
-                        Label("Date Range", systemImage: "calendar")
+                        Label("Add", systemImage: "plus")
                     }
                     .foregroundColor(Color.blue)
                     
@@ -72,11 +72,13 @@ struct LinkListView: View {
                     .foregroundColor(Color.blue)
                     
                     Button {
-                        showAddLinkView = true
+                        showDateRangePickerView = true
                     } label: {
-                        Label("Add", systemImage: "plus")
+                        Label("Date Range", systemImage: "calendar")
                     }
                     .foregroundColor(Color.blue)
+                    
+                    ShareLink("Export Links", item: generateBookmarkFile())
                 }
             }
             .sheet(isPresented: $showAddLinkView) {
@@ -129,6 +131,10 @@ struct LinkListView: View {
         }
         
         viewModel.fetchAll()
+    }
+    
+    private func generateBookmarkFile() -> URL {
+        return viewModel.generateBookmarkFile(filteredLinks)
     }
     
 }
