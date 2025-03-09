@@ -72,6 +72,10 @@
 		90C97D732D7CD323006195A8 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C97D722D7CD323006195A8 /* FilterView.swift */; };
 		90CF0F4026CD710400D1CBF4 /* LinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */; };
 		90CFB3382D7DDDE100ED620E /* LinkPilerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB3372D7DDDE100ED620E /* LinkPilerApp.swift */; };
+		90CFB33A2D7E056100ED620E /* SearchHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB3392D7E056100ED620E /* SearchHelper.swift */; };
+		90CFB33B2D7E056100ED620E /* SearchHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB3392D7E056100ED620E /* SearchHelper.swift */; };
+		90CFB33D2D7E0DEA00ED620E /* SearchAttributeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */; };
+		90CFB33E2D7E0DEA00ED620E /* SearchAttributeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */; };
 		90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DBF26CEE1D5007F7819 /* AddTagView.swift */; };
 		90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DC126CEF2BB007F7819 /* TagDTO.swift */; };
 		90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
@@ -167,6 +171,8 @@
 		90C97D722D7CD323006195A8 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDTO.swift; sourceTree = "<group>"; };
 		90CFB3372D7DDDE100ED620E /* LinkPilerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPilerApp.swift; sourceTree = "<group>"; };
+		90CFB3392D7E056100ED620E /* SearchHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHelper.swift; sourceTree = "<group>"; };
+		90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAttributeSet.swift; sourceTree = "<group>"; };
 		90D25DBF26CEE1D5007F7819 /* AddTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagView.swift; sourceTree = "<group>"; };
 		90D25DC126CEF2BB007F7819 /* TagDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDTO.swift; sourceTree = "<group>"; };
 		90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LinkeEntity+Extension.swift"; sourceTree = "<group>"; };
@@ -344,6 +350,8 @@
 				9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */,
 				9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */,
 				90C97D6F2D7CAA51006195A8 /* BookmarkGenerator.swift */,
+				90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */,
+				90CFB3392D7E056100ED620E /* SearchHelper.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -529,6 +537,8 @@
 				90C30D352829C50100061A5F /* HTMLParser.swift in Sources */,
 				90F4833E278116DE0085E26B /* LinkeEntity+Extension.swift in Sources */,
 				900EA7BE28305AD80055CBC4 /* LinkPilerConstants.swift in Sources */,
+				90CFB33A2D7E056100ED620E /* SearchHelper.swift in Sources */,
+				90CFB33D2D7E0DEA00ED620E /* SearchAttributeSet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,9 +577,11 @@
 				90C97D712D7CAA51006195A8 /* BookmarkGenerator.swift in Sources */,
 				9078D06D2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
+				90CFB33E2D7E0DEA00ED620E /* SearchAttributeSet.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
 				9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */,
 				9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */,
+				90CFB33B2D7E056100ED620E /* SearchHelper.swift in Sources */,
 				90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */,
 				900F3FFD26D86B6300C63590 /* LocationLabel.swift in Sources */,
 				90CF0F4026CD710400D1CBF4 /* LinkDTO.swift in Sources */,
