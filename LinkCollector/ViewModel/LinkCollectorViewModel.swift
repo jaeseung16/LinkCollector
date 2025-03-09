@@ -9,7 +9,6 @@ import Foundation
 import Combine
 import CoreLocation
 import CoreData
-import UserNotifications
 import os
 import Persistence
 import SwiftUI
@@ -458,12 +457,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     private func fetchUpdates(_ notification: Notification) -> Void {
         Task {
             do {
-                let objectIDs = try await persistence.fetchUpdates(notification)
+                let objectIDs = try await persistence.fetchUpdates()
                 for objectId in objectIDs {
                     await addToIndex(objectId)
                 }
             } catch {
-                logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
+                logger.log("Error while updating history: notification=\(notification)\n\(error.localizedDescription, privacy: .public)\n\(Thread.callStackSymbols, privacy: .public)")
             }
         }
     }

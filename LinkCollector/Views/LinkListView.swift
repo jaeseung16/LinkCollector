@@ -62,21 +62,7 @@ struct LinkListView: View {
                         Label("Add", systemImage: "plus")
                     }
                     .foregroundColor(Color.blue)
-                    /*
-                    Button {
-                        showTagListView = true
-                    } label: {
-                        TagLabel(title: "Tags")
-                    }
-                    .foregroundColor(Color.blue)
                     
-                    Button {
-                        showDateRangePickerView = true
-                    } label: {
-                        Label("Date Range", systemImage: "calendar")
-                    }
-                    .foregroundColor(Color.blue)
-                    */
                     Button  {
                         presentFilterItemsView = true
                     } label: {
