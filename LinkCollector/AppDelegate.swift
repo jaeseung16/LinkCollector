@@ -11,10 +11,10 @@ import CoreData
 import CloudKit
 import os
 import Persistence
+import CoreSpotlight
 
-@main
 @MainActor
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: NSObject {
     private let logger = Logger()
     
     private let subscriptionID = "link-updated"
@@ -30,18 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         CKContainer(identifier: LinkPilerConstants.containerIdentifier.rawValue).privateCloudDatabase
     }
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-       
-        UNUserNotificationCenter.current().delegate = self
+    let persistence: Persistence
+    let viewModel: LinkCollectorViewModel
+    
+    override init() {
+        self.persistence = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+        self.viewModel = LinkCollectorViewModel(persistence: persistence)
         
-        registerForPushNotifications()
-        
-        // TODO: - Remove or comment out after testing
-        //UserDefaults.standard.setValue(false, forKey: didCreateLinkSubscription)
-        
-        subscribe()
-
-        return true
+        super.init()
     }
     
     private func registerForPushNotifications() {
@@ -86,45 +82,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     }
 
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenParts = deviceToken.map { String(format: "%02.2hhx", $0) }
-        let token = tokenParts.joined()
-        logger.log("Device Token: \(token)")
-    }
-    
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        logger.log("Failed to register: \(String(describing: error))")
-    }
-    
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-    
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        guard let notification = CKNotification(fromRemoteNotificationDictionary: userInfo) else {
-            logger.log("notification=failed")
-            completionHandler(.failed)
-            return
-        }
-        logger.log("notification=\(String(describing: notification))")
-        if !notification.isPruned && notification.notificationType == .database {
-            if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
-                logger.log("databaseNotification=\(String(describing: databaseNotification.subscriptionID))")
-                processRemoteNotification()
-            }
-        }
-        
-        completionHandler(.newData)
-    }
-    
     private func processRemoteNotification() {
         databaseOperationHelper.addDatabaseChangesOperation(database: database) { result in
             switch result {
@@ -155,7 +112,70 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         logger.log("Processed \(record)")
     }
+}
+
+extension AppDelegate: UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
        
+        UNUserNotificationCenter.current().delegate = self
+        
+        registerForPushNotifications()
+        
+        // TODO: - Remove or comment out after testing
+        //UserDefaults.standard.setValue(false, forKey: didCreateLinkSubscription)
+        
+        subscribe()
+
+        return true
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenParts = deviceToken.map { String(format: "%02.2hhx", $0) }
+        let token = tokenParts.joined()
+        logger.log("Device Token: \(token)")
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        logger.log("Failed to register: \(String(describing: error))")
+    }
+    
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        // Called when a new scene session is being created.
+        // Use this method to select a configuration to create the new scene with.
+        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+    
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+        // Called when the user discards a scene session.
+        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        guard let notification = CKNotification(fromRemoteNotificationDictionary: userInfo) else {
+            logger.log("notification=failed")
+            completionHandler(.failed)
+            return
+        }
+        logger.log("notification=\(String(describing: notification))")
+        if !notification.isPruned && notification.notificationType == .database {
+            if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
+                logger.log("databaseNotification=\(String(describing: databaseNotification.subscriptionID))")
+                processRemoteNotification()
+            }
+        }
+        
+        completionHandler(.newData)
+    }
+       
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([any UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard let info = userActivity.userInfo, let _ = info[CSSearchableItemActivityIdentifier] as? String else {
+            return false
+        }
+        
+        viewModel.process(userActivity)
+        return true
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
@@ -168,4 +188,3 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         return
     }
 }
-

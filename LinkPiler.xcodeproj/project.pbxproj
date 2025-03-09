@@ -24,7 +24,7 @@
 		9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */; };
 		902C9B8726C063000071CADB /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C9B8626C063000071CADB /* ShareViewController.swift */; };
 		902C9B8A26C063000071CADB /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B8826C063000071CADB /* MainInterface.storyboard */; };
-		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		902C9B9626C06EC70071CADB /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
 		9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9030552D282C70610081E026 /* DateRangePickerView.swift */; };
 		9037CEFF2857D34100B5C7C9 /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 9037CEFE2857D34100B5C7C9 /* Persistence */; };
@@ -34,11 +34,10 @@
 		903C7294280CC8A500FD7F71 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903C7293280CC8A500FD7F71 /* SwiftUI.framework */; };
 		903C7297280CC8A500FD7F71 /* LinkPilerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903C7296280CC8A500FD7F71 /* LinkPilerWidget.swift */; };
 		903C7299280CC8A800FD7F71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 903C7298280CC8A800FD7F71 /* Assets.xcassets */; };
-		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9042938B286B81AE00DAAC6C /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 9042938A286B81AE00DAAC6C /* Persistence */; };
 		90526CF226D0444B00836865 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4825897B870090BFC6 /* AppDelegate.swift */; };
-		905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4A25897B870090BFC6 /* SceneDelegate.swift */; };
 		905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4C25897B870090BFC6 /* ContentView.swift */; };
 		905E9C5025897B870090BFC6 /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		905E9C5225897B890090BFC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5125897B890090BFC6 /* Assets.xcassets */; };
@@ -72,6 +71,7 @@
 		90C97D712D7CAA51006195A8 /* BookmarkGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C97D6F2D7CAA51006195A8 /* BookmarkGenerator.swift */; };
 		90C97D732D7CD323006195A8 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C97D722D7CD323006195A8 /* FilterView.swift */; };
 		90CF0F4026CD710400D1CBF4 /* LinkDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */; };
+		90CFB3382D7DDDE100ED620E /* LinkPilerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB3372D7DDDE100ED620E /* LinkPilerApp.swift */; };
 		90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DBF26CEE1D5007F7819 /* AddTagView.swift */; };
 		90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DC126CEF2BB007F7819 /* TagDTO.swift */; };
 		90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
@@ -144,7 +144,6 @@
 		903C729E280CC8A800FD7F71 /* LinkPilerWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkPilerWidgetExtension.entitlements; sourceTree = "<group>"; };
 		905E9C4525897B870090BFC6 /* LinkPiler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkPiler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		905E9C4825897B870090BFC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		905E9C4A25897B870090BFC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		905E9C4C25897B870090BFC6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		905E9C4F25897B870090BFC6 /* LinkCollector.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LinkCollector.xcdatamodel; sourceTree = "<group>"; };
 		905E9C5125897B890090BFC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -167,6 +166,7 @@
 		90C97D6F2D7CAA51006195A8 /* BookmarkGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkGenerator.swift; sourceTree = "<group>"; };
 		90C97D722D7CD323006195A8 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		90CF0F3F26CD710400D1CBF4 /* LinkDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkDTO.swift; sourceTree = "<group>"; };
+		90CFB3372D7DDDE100ED620E /* LinkPilerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPilerApp.swift; sourceTree = "<group>"; };
 		90D25DBF26CEE1D5007F7819 /* AddTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagView.swift; sourceTree = "<group>"; };
 		90D25DC126CEF2BB007F7819 /* TagDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDTO.swift; sourceTree = "<group>"; };
 		90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LinkeEntity+Extension.swift"; sourceTree = "<group>"; };
@@ -304,8 +304,8 @@
 				905E9C6025897D960090BFC6 /* LinkCollector.entitlements */,
 				905E9C4825897B870090BFC6 /* AppDelegate.swift */,
 				905E9C4C25897B870090BFC6 /* ContentView.swift */,
+				90CFB3372D7DDDE100ED620E /* LinkPilerApp.swift */,
 				900EA7BA28305A380055CBC4 /* LinkPilerConstants.swift */,
-				905E9C4A25897B870090BFC6 /* SceneDelegate.swift */,
 				905E9C5125897B890090BFC6 /* Assets.xcassets */,
 				905E9C5625897B890090BFC6 /* LaunchScreen.storyboard */,
 				905E9C5925897B890090BFC6 /* Info.plist */,
@@ -568,7 +568,6 @@
 				9078D06D2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */,
 				9009B7D2258C1715001B4A3F /* AddLinkView.swift in Sources */,
 				905E9C4925897B870090BFC6 /* AppDelegate.swift in Sources */,
-				905E9C4B25897B870090BFC6 /* SceneDelegate.swift in Sources */,
 				9009B7CF258C0F45001B4A3F /* LinkDetailView.swift in Sources */,
 				9030552E282C70610081E026 /* DateRangePickerView.swift in Sources */,
 				90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */,
@@ -582,6 +581,7 @@
 				900F3FF726D8671900C63590 /* TagLabel.swift in Sources */,
 				9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */,
 				903A4073282862F70080E46A /* LinkListView.swift in Sources */,
+				90CFB3382D7DDDE100ED620E /* LinkPilerApp.swift in Sources */,
 				9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */,
 				90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */,
 			);
@@ -592,11 +592,13 @@
 /* Begin PBXTargetDependency section */
 		902C9B8D26C063000071CADB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 902C9B8326C063000071CADB /* LinkPilerShareExtension */;
 			targetProxy = 902C9B8C26C063000071CADB /* PBXContainerItemProxy */;
 		};
 		903C729C280CC8A800FD7F71 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 903C728F280CC8A500FD7F71 /* LinkPilerWidgetExtension */;
 			targetProxy = 903C729B280CC8A800FD7F71 /* PBXContainerItemProxy */;
 		};
@@ -879,9 +881,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = NO;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -908,9 +912,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = NO;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

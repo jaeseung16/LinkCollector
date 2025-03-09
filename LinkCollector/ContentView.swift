@@ -9,6 +9,8 @@ import SwiftUI
 import MapKit
 
 struct ContentView: View {
+    @Environment(\.scenePhase) var scenePhase
+    
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
     @State private var selectedLink: LinkEntity?
@@ -24,6 +26,18 @@ struct ContentView: View {
                             .navigationTitle(selectedLink.title ?? "")
                             .id(selectedLink)
                     }
+                }
+            }
+            .onChange(of: scenePhase) { oldPhase, newPhase in
+                if newPhase == .active {
+                    viewModel.fetchAll()
+                } else {
+                    do {
+                        try viewModel.save()
+                    } catch {
+                        // TODO:
+                    }
+                    viewModel.writeWidgetEntries()
                 }
             }
         }
