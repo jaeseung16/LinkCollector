@@ -22,18 +22,21 @@ struct LinkListView: View {
     
     var filteredLinks: [LinkEntity] {
         viewModel.links.filter { link in
-            var filter = true
+            if link.created == nil {
+                return false
+            }
+            
+            var filterByTag = true
             if let tags = link.tags as? Set<TagEntity> {
-                filter = selectedTags.isEmpty || !selectedTags.intersection(tags).isEmpty
+                filterByTag = selectedTags.isEmpty || !selectedTags.intersection(tags).isEmpty
             }
-            return filter
-        }
-        .filter { link in
-            var filter = true
+            
+            var filterByDateInterval = true
             if let dateInterval = dateInterval, let created = link.created {
-                filter = dateInterval.contains(created)
+                filterByDateInterval = dateInterval.contains(created)
             }
-            return filter
+            
+            return filterByTag && filterByDateInterval
         }
     }
     
@@ -43,12 +46,10 @@ struct LinkListView: View {
         GeometryReader { geometry in
             List(selection: $selectedLink) {
                 ForEach(filteredLinks) { link in
-                    if link.created != nil {
-                        NavigationLink(value: link) {
-                            LinkLabel(link: link)
-                        }
-                        .id(link)
+                    NavigationLink(value: link) {
+                        LinkLabel(link: link)
                     }
+                    .id(link)
                 }
                 .onDelete(perform: removeLink)
             }
@@ -81,7 +82,7 @@ struct LinkListView: View {
                     FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval, start: start, end: end)
                         .environmentObject(viewModel)
                 } else {
-                    FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval)
+                    FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval, start: viewModel.firstDate, end: Date())
                         .environmentObject(viewModel)
                 }
             }

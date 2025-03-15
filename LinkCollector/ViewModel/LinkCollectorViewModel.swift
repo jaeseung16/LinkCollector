@@ -317,6 +317,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         fetchTags()
     }
     
+    var firstDate: Date {
+        return links.last?.created ?? Date()
+    }
+    
     private func fetchLinks() -> Void {
         let sortDescriptors = [NSSortDescriptor(keyPath: \LinkEntity.created, ascending: false)]
         let fetchRequest = persistenceHelper.getFetchRequest(for: LinkEntity.self, entityName: "LinkEntity", sortDescriptors: sortDescriptors)

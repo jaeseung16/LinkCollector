@@ -13,8 +13,8 @@ struct FilterView: View {
     
     @Binding var selectedTags: Set<TagEntity>
     @Binding var dateInterval: DateInterval?
-    @State var start = Date()
-    @State var end = Date()
+    @State var start: Date
+    @State var end: Date
     
     private var filteredTags: [TagEntity] {
         viewModel.tags.filter { !selectedTags.contains($0) }
@@ -23,8 +23,6 @@ struct FilterView: View {
     var body: some View {
         VStack {
             header()
-            
-            Divider()
 
             Form {
                 Section {
