@@ -54,7 +54,6 @@ struct LinkListView: View {
                 .onDelete(perform: removeLink)
             }
             .listStyle(GroupedListStyle())
-            .navigationTitle("Links")
             .toolbar {
                 ToolbarItemGroup {
                     Button {

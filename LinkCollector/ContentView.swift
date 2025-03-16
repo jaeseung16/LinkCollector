@@ -19,6 +19,7 @@ struct ContentView: View {
         VStack {
             NavigationSplitView {
                 LinkListView(selectedLink: $selectedLink)
+                    .navigationTitle("Links")
             } detail: {
                 if let selectedLink = selectedLink {
                     LinkDetailView(entity: selectedLink, tags: selectedLink.getTagList())
