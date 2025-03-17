@@ -41,21 +41,25 @@ class AppDelegate: NSObject {
     }
     
     private func registerForPushNotifications() {
-        UNUserNotificationCenter.current()
-            .requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
-                guard granted else {
-                    return
+        Task {
+            let notificationCenter = UNUserNotificationCenter.current()
+            do {
+                let authroized = try await notificationCenter.requestAuthorization(options: [.alert, .sound, .badge])
+                logger.info("registerForPushNotifications \(authroized)")
+                if authroized {
+                    getNotificationSettings()
                 }
-                self?.getNotificationSettings()
+            } catch {
+                logger.info("Failed to register for push notifications: \(error)")
             }
+        }
     }
 
     private func getNotificationSettings() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            guard settings.authorizationStatus == .authorized else {
-                return
-            }
-            DispatchQueue.main.async {
+        Task {
+            let notificationCenter = UNUserNotificationCenter.current()
+            let settings = await notificationCenter.notificationSettings()
+            if settings.authorizationStatus == .authorized {
                 UIApplication.shared.registerForRemoteNotifications()
             }
         }
@@ -63,23 +67,13 @@ class AppDelegate: NSObject {
     
     private func subscribe() {
         guard !UserDefaults.standard.bool(forKey: didCreateLinkSubscription) else {
-            logger.log("alredy true: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
+            logger.log("already true: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
             return
         }
         
         let subscriber = Subscriber(database: database, subscriptionID: subscriptionID, recordType: recordType)
-        subscriber.subscribe { result in
-            switch result {
-            case .success(let subscription):
-                self.logger.log("Subscribed to \(subscription, privacy: .public)")
-                UserDefaults.standard.setValue(true, forKey: self.didCreateLinkSubscription)
-                self.logger.log("set: didCreateLinkSubscription=\(UserDefaults.standard.bool(forKey: self.didCreateLinkSubscription))")
-            case .failure(let error):
-                self.logger.log("Failed to modify subscription: \(error.localizedDescription, privacy: .public)")
-                UserDefaults.standard.setValue(false, forKey: self.didCreateLinkSubscription)
-            }
-        }
-        
+        // TODO: - Not working with Swift 6
+        subscriber.subscribe()
     }
 
     private func processRemoteNotification() {
