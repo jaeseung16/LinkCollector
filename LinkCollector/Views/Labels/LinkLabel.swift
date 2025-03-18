@@ -8,14 +8,6 @@
 import SwiftUI
 
 struct LinkLabel: View {
-    private static var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .none
-        dateFormatter.locale = Locale(identifier: "en_US")
-        return dateFormatter
-    }()
-    
     var link: LinkEntity
     
     var body: some View {
@@ -38,7 +30,7 @@ struct LinkLabel: View {
                 
                 Spacer()
                 
-                Text(LinkLabel.dateFormatter.string(from: link.created!))
+                Text(link.created!, format: Date.FormatStyle(date: .numeric, time: .omitted))
                     .font(.callout)
                     .foregroundColor(.secondary)
             }
