@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jaeseung16/PersistenceSwift",
       "state" : {
-        "branch" : "0.2.14",
-        "revision" : "04970ada4da8558152f982692ada0e117f76c714"
+        "revision" : "8d9a37463003ee4287c198d6ecf8ae7c6a4dc537",
+        "version" : "0.2.15"
       }
     },
     {
