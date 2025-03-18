@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct LinkLabel: View {
-    private static var dateFormatter: DateFormatter {
+    private static var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .none
         dateFormatter.locale = Locale(identifier: "en_US")
         return dateFormatter
-    }
+    }()
     
     var link: LinkEntity
     
