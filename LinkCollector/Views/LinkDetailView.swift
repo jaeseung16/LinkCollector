@@ -69,7 +69,9 @@ struct LinkDetailView: View {
                         .padding()
                 }
             }
+            #if canImport(UIKit)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .alert(isPresented: $viewModel.showAlert, content: {
                 Alert(title: Text("Unable to Save Data"),
                       message: Text(viewModel.message),

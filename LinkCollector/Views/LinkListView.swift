@@ -53,7 +53,11 @@ struct LinkListView: View {
                 }
                 .onDelete(perform: removeLink)
             }
+            #if canImport(UIKit)
             .listStyle(GroupedListStyle())
+            #else
+            .listStyle(DefaultListStyle())
+            #endif
             .toolbar {
                 ToolbarItemGroup {
                     Button {

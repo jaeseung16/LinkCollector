@@ -5,7 +5,11 @@
 //  Created by Jae Seung Lee on 12/15/20.
 //
 
+#if canImport(UIKit)
 import UIKit
+#else
+import AppKit
+#endif
 import CoreData
 @preconcurrency import UserNotifications
 import CloudKit
@@ -60,7 +64,11 @@ class AppDelegate: NSObject {
             let notificationCenter = UNUserNotificationCenter.current()
             let settings = await notificationCenter.notificationSettings()
             if settings.authorizationStatus == .authorized {
+                #if canImport(UIKit)
                 UIApplication.shared.registerForRemoteNotifications()
+                #else
+                NSApplication.shared.registerForRemoteNotifications()
+                #endif
             }
         }
     }
@@ -108,6 +116,7 @@ class AppDelegate: NSObject {
     }
 }
 
+#if canImport(UIKit)
 extension AppDelegate: UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
        
@@ -171,6 +180,54 @@ extension AppDelegate: UIApplicationDelegate {
         return true
     }
 }
+#else
+extension AppDelegate: NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        UNUserNotificationCenter.current().delegate = self
+        
+        registerForPushNotifications()
+        
+        // TODO: - Remove or comment out after testing
+        //UserDefaults.standard.setValue(false, forKey: didCreateLinkSubscription)
+        
+        subscribe()
+    }
+    
+    func application(_ application: NSApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let tokenParts = deviceToken.map { String(format: "%02.2hhx", $0) }
+        let token = tokenParts.joined()
+        logger.log("Device Token: \(token)")
+    }
+    
+    func application(_ application: NSApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        logger.log("Failed to register: \(String(describing: error))")
+    }
+    
+    func application(_ application: NSApplication, didReceiveRemoteNotification userInfo: [String : Any]) -> Void {
+        guard let notification = CKNotification(fromRemoteNotificationDictionary: userInfo) else {
+            logger.log("notification=failed")
+            return
+        }
+        logger.log("notification=\(String(describing: notification))")
+        if !notification.isPruned && notification.notificationType == .database {
+            if let databaseNotification = notification as? CKDatabaseNotification, databaseNotification.subscriptionID == subscriptionID {
+                logger.log("databaseNotification=\(String(describing: databaseNotification.subscriptionID))")
+                processRemoteNotification()
+            }
+        }
+        
+    }
+       
+    func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([any NSUserActivityRestoring]) -> Void) -> Bool {
+        guard let info = userActivity.userInfo, let _ = info[CSSearchableItemActivityIdentifier] as? String else {
+            return false
+        }
+        
+        viewModel.process(userActivity)
+        return true
+    }
+}
+#endif
 
 extension AppDelegate: @preconcurrency UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {

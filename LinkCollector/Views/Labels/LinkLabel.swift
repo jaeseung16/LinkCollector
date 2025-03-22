@@ -19,6 +19,7 @@ struct LinkLabel: View {
             Spacer()
             
             VStack {
+                #if canImport(UIKit)
                 if let favicon = link.favicon, let uiImage = UIImage(data: favicon) {
                     Spacer()
                     
@@ -27,6 +28,16 @@ struct LinkLabel: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: 24, maxHeight: 24)
                 }
+                #else
+                if let favicon = link.favicon, let nsImage = NSImage(data: favicon) {
+                    Spacer()
+                    
+                    Image(nsImage: nsImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: 24, maxHeight: 24)
+                }
+                #endif
                 
                 Spacer()
                 

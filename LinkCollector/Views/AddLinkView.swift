@@ -47,7 +47,6 @@ struct AddLinkView: View {
             Section(header: Label("URL", systemImage: "link")) {
                 
                 TextField("Insert url", text: $url)
-                    .autocapitalization(.none)
                     .onSubmit {
                         submittedUrl = url
                     }

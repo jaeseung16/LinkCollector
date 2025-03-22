@@ -16,13 +16,26 @@ struct Provider: TimelineProvider {
     private let imageName = "LinkPiler"
     private let contentsJson = "contents.json"
     
+    private var favicon: Data? {
+        #if canImport(UIKit)
+        return UIImage(named: imageName)?.pngData()
+        #else
+        if let tiff = NSImage(named: NSImage.Name(imageName))?.tiffRepresentation,
+           let imageRep = NSBitmapImageRep(data: tiff) {
+            return imageRep.representation(using: .png, properties: [:])
+        } else {
+            return nil
+        }
+        #endif
+    }
+    
     private var exampleEntry: WidgetEntry {
         WidgetEntry(id: UUID(),
                     title: title,
                     url: URL(fileURLWithPath: ""),
                     created: Date(),
                     date: Date(),
-                    favicon: UIImage(named: imageName)?.pngData())
+                    favicon: favicon)
     }
     
     func placeholder(in context: Context) -> WidgetEntry {

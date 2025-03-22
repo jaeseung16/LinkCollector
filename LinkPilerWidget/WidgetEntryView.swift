@@ -51,12 +51,21 @@ struct WidgetEntryView : View {
                 Spacer(minLength: 16)
                 
                 HStack {
+                    #if canImport(UIKit)
                     if let favicon = entry.favicon, let uiImage = UIImage(data: favicon) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: 32, maxHeight: 32)
                     }
+                    #else
+                    if let favicon = entry.favicon, let nsImage = NSImage(data: favicon) {
+                        Image(nsImage: nsImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: 32, maxHeight: 32)
+                    }
+                    #endif
                     
                     Text(entry.title)
                         .truncationMode(.tail)
