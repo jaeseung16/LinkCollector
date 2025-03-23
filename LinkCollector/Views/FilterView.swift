@@ -68,7 +68,9 @@ struct FilterView: View {
                 }
             }
         }
+        #if canImport(UIKit)
         .frame(maxHeight: .infinity, alignment: .top)
+        #endif
         .padding()
     }
     

@@ -155,19 +155,7 @@ struct AddLinkView: View {
     @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
     
     private func tagSection() -> some View {
-        #if targetEnvironment(macCatalyst)
-        ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-                ForEach(self.tags, id: \.self) { tag in
-                    TagLabel(title: tag.name ?? "")
-                }
-            }
-        }
-        .sheet(isPresented: $addNewTag) {
-            AddTagView(tags: $tags)
-                .environmentObject(viewModel)
-        }
-        #else
+        #if canImport(UIKit)
         List {
             ForEach(self.tags, id: \.self) { tag in
                 TagLabel(title: tag.name ?? "")
@@ -178,6 +166,19 @@ struct AddLinkView: View {
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
                 .environmentObject(viewModel)
+        }
+        #else
+        ScrollView {
+            LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+                ForEach(self.tags, id: \.self) { tag in
+                    TagLabel(title: tag.name ?? "")
+                }
+            }
+        }
+        .sheet(isPresented: $addNewTag) {
+            AddTagView(tags: $tags)
+                .environmentObject(viewModel)
+                .frame(height: 400.0)
         }
         #endif
     }

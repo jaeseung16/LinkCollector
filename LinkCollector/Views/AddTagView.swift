@@ -49,7 +49,15 @@ struct AddTagView: View {
     
     private func barItems(in geometry: GeometryProxy) -> some View {
         ZStack {
-            #if targetEnvironment(macCatalyst)
+            #if canImport(UIKit)
+            Button(action: {
+                dismiss.callAsFunction()
+            }, label: {
+                Label("Done", systemImage: "chevron.backward")
+                    .foregroundColor(.blue)
+            })
+            .frame(width: geometry.size.width, alignment: .leading)
+            #else
             Button(action: {
                 dismiss.callAsFunction()
             }, label: {
@@ -64,14 +72,6 @@ struct AddTagView: View {
                     NSCursor.pop()
                 }
             })
-            #else
-            Button(action: {
-                dismiss.callAsFunction()
-            }, label: {
-                Label("Done", systemImage: "chevron.backward")
-                    .foregroundColor(.blue)
-            })
-            .frame(width: geometry.size.width, alignment: .leading)
             #endif
             
             Text(isUpdate ? "Edit Tags" : "Add Tags")
@@ -82,20 +82,7 @@ struct AddTagView: View {
     @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
     
     private func tagsToAttach() -> some View {
-        #if targetEnvironment(macCatalyst)
-        LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-            ForEach(self.tags, id: \.self) { tag in
-                Button {
-                    if let index = self.tags.firstIndex(of: tag) {
-                        tags.remove(at: index)
-                    }
-                } label: {
-                    TagLabel(title: tag.name ?? "")
-                        .foregroundColor(.primary)
-                }
-            }
-        }
-        #else
+        #if canImport(UIKit)
         List {
             ForEach(self.tags, id: \.self) { tag in
                 Button {
@@ -110,6 +97,19 @@ struct AddTagView: View {
         }
         .listStyle(InsetListStyle())
         .frame(height: bodyTextHeight * CGFloat(self.tags.count))
+        #else
+        LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+            ForEach(self.tags, id: \.self) { tag in
+                Button {
+                    if let index = self.tags.firstIndex(of: tag) {
+                        tags.remove(at: index)
+                    }
+                } label: {
+                    TagLabel(title: tag.name ?? "")
+                        .foregroundColor(.primary)
+                }
+            }
+        }
         #endif
     }
     
