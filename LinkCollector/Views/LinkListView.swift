@@ -51,7 +51,8 @@ struct LinkListView: View {
                     }
                     .id(link)
                 }
-                .onDelete(perform: removeLink)
+                // This causes hangs
+                //.onDelete(perform: removeLink)
             }
             #if canImport(UIKit)
             .listStyle(GroupedListStyle())
