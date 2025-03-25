@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -78,6 +78,7 @@
 		90CFB33E2D7E0DEA00ED620E /* SearchAttributeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */; };
 		90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DBF26CEE1D5007F7819 /* AddTagView.swift */; };
 		90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DC126CEF2BB007F7819 /* TagDTO.swift */; };
+		90DBCD8C2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 90DBCD7F2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90F4833E278116DE0085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90F9CCBB26CC619300B875FE /* EditLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F9CCBA26CC619300B875FE /* EditLinkView.swift */; };
@@ -100,6 +101,13 @@
 			remoteGlobalIDString = 903C728F280CC8A500FD7F71;
 			remoteInfo = LinkPilerWidgetExtension;
 		};
+		90DBCD8A2D93691C0059D2E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 905E9C3D25897B870090BFC6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 90DBCD7E2D93691C0059D2E2;
+			remoteInfo = LinkPilerShareExtensionMac;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -110,6 +118,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				902C9B8E26C063000071CADB /* LinkPilerShareExtension.appex in Embed Foundation Extensions */,
+				90DBCD8C2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex in Embed Foundation Extensions */,
 				903C729D280CC8A800FD7F71 /* LinkPilerWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -175,10 +184,25 @@
 		90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAttributeSet.swift; sourceTree = "<group>"; };
 		90D25DBF26CEE1D5007F7819 /* AddTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagView.swift; sourceTree = "<group>"; };
 		90D25DC126CEF2BB007F7819 /* TagDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDTO.swift; sourceTree = "<group>"; };
+		90DBCD7F2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerShareExtensionMac.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LinkeEntity+Extension.swift"; sourceTree = "<group>"; };
 		90F9CCBA26CC619300B875FE /* EditLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLinkView.swift; sourceTree = "<group>"; };
 		90FD202126C9A78E008CC190 /* TypeIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeIdentifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		90DBCD8F2D93691C0059D2E2 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 90DBCD7E2D93691C0059D2E2 /* LinkPilerShareExtensionMac */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		90DBCD802D93691C0059D2E2 /* LinkPilerShareExtensionMac */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (90DBCD8F2D93691C0059D2E2 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LinkPilerShareExtensionMac; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		902C9B8126C063000071CADB /* Frameworks */ = {
@@ -209,6 +233,13 @@
 				90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */,
 				905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */,
 				90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90DBCD7C2D93691C0059D2E2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +316,7 @@
 				905E9C4725897B870090BFC6 /* LinkCollector */,
 				902C9B8526C063000071CADB /* LinkCollectorShareExtension */,
 				903C7295280CC8A500FD7F71 /* LinkPilerWidget */,
+				90DBCD802D93691C0059D2E2 /* LinkPilerShareExtensionMac */,
 				905E9C4625897B870090BFC6 /* Products */,
 				905E9C6125897DE00090BFC6 /* Frameworks */,
 			);
@@ -296,6 +328,7 @@
 				905E9C4525897B870090BFC6 /* LinkPiler.app */,
 				902C9B8426C063000071CADB /* LinkPilerShareExtension.appex */,
 				903C7290280CC8A500FD7F71 /* LinkPilerWidgetExtension.appex */,
+				90DBCD7F2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -432,6 +465,7 @@
 			dependencies = (
 				902C9B8D26C063000071CADB /* PBXTargetDependency */,
 				903C729C280CC8A800FD7F71 /* PBXTargetDependency */,
+				90DBCD8B2D93691C0059D2E2 /* PBXTargetDependency */,
 			);
 			name = LinkPiler;
 			packageProductDependencies = (
@@ -443,6 +477,28 @@
 			productReference = 905E9C4525897B870090BFC6 /* LinkPiler.app */;
 			productType = "com.apple.product-type.application";
 		};
+		90DBCD7E2D93691C0059D2E2 /* LinkPilerShareExtensionMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90DBCD902D93691C0059D2E2 /* Build configuration list for PBXNativeTarget "LinkPilerShareExtensionMac" */;
+			buildPhases = (
+				90DBCD7B2D93691C0059D2E2 /* Sources */,
+				90DBCD7C2D93691C0059D2E2 /* Frameworks */,
+				90DBCD7D2D93691C0059D2E2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				90DBCD802D93691C0059D2E2 /* LinkPilerShareExtensionMac */,
+			);
+			name = LinkPilerShareExtensionMac;
+			packageProductDependencies = (
+			);
+			productName = LinkPilerShareExtensionMac;
+			productReference = 90DBCD7F2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -450,7 +506,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1330;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					902C9B8326C063000071CADB = {
@@ -461,6 +517,9 @@
 					};
 					905E9C4425897B870090BFC6 = {
 						CreatedOnToolsVersion = 12.3;
+					};
+					90DBCD7E2D93691C0059D2E2 = {
+						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
@@ -485,6 +544,7 @@
 				905E9C4425897B870090BFC6 /* LinkPiler */,
 				902C9B8326C063000071CADB /* LinkPilerShareExtension */,
 				903C728F280CC8A500FD7F71 /* LinkPilerWidgetExtension */,
+				90DBCD7E2D93691C0059D2E2 /* LinkPilerShareExtensionMac */,
 			);
 		};
 /* End PBXProject section */
@@ -514,6 +574,13 @@
 				90BAF1602D90BBDA009C9E8B /* LaunchScreen.storyboard in Resources */,
 				905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */,
 				905E9C5225897B890090BFC6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90DBCD7D2D93691C0059D2E2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,6 +666,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		90DBCD7B2D93691C0059D2E2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -612,6 +686,14 @@
 			isa = PBXTargetDependency;
 			target = 903C728F280CC8A500FD7F71 /* LinkPilerWidgetExtension */;
 			targetProxy = 903C729B280CC8A800FD7F71 /* PBXContainerItemProxy */;
+		};
+		90DBCD8B2D93691C0059D2E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilters = (
+				macos,
+			);
+			target = 90DBCD7E2D93691C0059D2E2 /* LinkPilerShareExtensionMac */;
+			targetProxy = 90DBCD8A2D93691C0059D2E2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -953,6 +1035,73 @@
 			};
 			name = Release;
 		};
+		90DBCD8D2D93691C0059D2E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LinkPilerShareExtensionMac/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerShareExtensionMac;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		90DBCD8E2D93691C0059D2E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LinkPilerShareExtensionMac/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerShareExtensionMac;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -988,6 +1137,15 @@
 			buildConfigurations = (
 				905E9C5D25897B890090BFC6 /* Debug */,
 				905E9C5E25897B890090BFC6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		90DBCD902D93691C0059D2E2 /* Build configuration list for PBXNativeTarget "LinkPilerShareExtensionMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90DBCD8D2D93691C0059D2E2 /* Debug */,
+				90DBCD8E2D93691C0059D2E2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
