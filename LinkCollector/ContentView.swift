@@ -13,7 +13,7 @@ struct ContentView: View {
     
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
-    @State private var selectedMenu: LinkCollectorMenu?
+    @State private var selectedMenu: LinkCollectorMenu? = .links
     @State private var selectedLink: LinkEntity?
     
     var body: some View {
