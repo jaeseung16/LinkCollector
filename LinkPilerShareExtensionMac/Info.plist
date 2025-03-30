@@ -19,11 +19,17 @@
                 <key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
                 <integer>1</integer>
             </dict>
+            <key>NSExtensionJavaScriptPreprocessingFile</key>
+            <string>LinkCollectorShareExtension</string>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
 		<key>NSExtensionPrincipalClass</key>
 		<string>$(PRODUCT_MODULE_NAME).ShareViewController</string>
 	</dict>
+    <key>NSLocationUsageDescription</key>
+    <string>Turning on location services allows us to show locations with links.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Turning on location services allows us to show locations with links.</string>
 </dict>
 </plist>

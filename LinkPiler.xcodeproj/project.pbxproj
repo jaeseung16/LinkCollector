@@ -52,11 +52,23 @@
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
+		909C8F132D99754500D761FC /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
+		909C8F142D99754B00D761FC /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
+		909C8F162D99759C00D761FC /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 909C8F152D99759C00D761FC /* FaviconFinder */; };
+		909C8F172D99792300D761FC /* LinkPilerConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900EA7BA28305A380055CBC4 /* LinkPilerConstants.swift */; };
+		909C8F192D99793900D761FC /* Persistence in Frameworks */ = {isa = PBXBuildFile; productRef = 909C8F182D99793900D761FC /* Persistence */; };
+		909C8F1B2D99794800D761FC /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 909C8F1A2D99794800D761FC /* CloudKit.framework */; };
+		909C8F1D2D99794B00D761FC /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 909C8F1C2D99794B00D761FC /* SwiftSoup */; };
+		909C8F1E2D997C3A00D761FC /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
+		909C8F1F2D998A5800D761FC /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
+		909C8F202D998A9B00D761FC /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 90A290A4258FA519004988D9 /* SwiftSoup */; };
 		90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
 		90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
+		90A89FB92D9773AD002D1C34 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
+		90A89FBA2D9773C1002D1C34 /* TypeIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FD202126C9A78E008CC190 /* TypeIdentifier.swift */; };
 		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
 		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
 		90BAF1602D90BBDA009C9E8B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90BAF15E2D90BBDA009C9E8B /* LaunchScreen.storyboard */; platformFilter = ios; };
@@ -169,6 +181,7 @@
 		9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorDownloader.swift; sourceTree = "<group>"; };
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
 		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
+		909C8F1A2D99794800D761FC /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90BAF15F2D90BBDA009C9E8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -240,6 +253,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				909C8F1B2D99794800D761FC /* CloudKit.framework in Frameworks */,
+				909C8F1D2D99794B00D761FC /* SwiftSoup in Frameworks */,
+				909C8F192D99793900D761FC /* Persistence in Frameworks */,
+				909C8F162D99759C00D761FC /* FaviconFinder in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,6 +383,7 @@
 			isa = PBXGroup;
 			children = (
 				905E9C6225897DE00090BFC6 /* CloudKit.framework */,
+				909C8F1A2D99794800D761FC /* CloudKit.framework */,
 				903C7291280CC8A500FD7F71 /* WidgetKit.framework */,
 				903C7293280CC8A500FD7F71 /* SwiftUI.framework */,
 			);
@@ -494,6 +512,9 @@
 			);
 			name = LinkPilerShareExtensionMac;
 			packageProductDependencies = (
+				909C8F152D99759C00D761FC /* FaviconFinder */,
+				909C8F182D99793900D761FC /* Persistence */,
+				909C8F1C2D99794B00D761FC /* SwiftSoup */,
 			);
 			productName = LinkPilerShareExtensionMac;
 			productReference = 90DBCD7F2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex */;
@@ -581,6 +602,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				909C8F1E2D997C3A00D761FC /* LinkCollectorShareExtension.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -670,6 +692,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				909C8F172D99792300D761FC /* LinkPilerConstants.swift in Sources */,
+				909C8F132D99754500D761FC /* HTMLParserError.swift in Sources */,
+				909C8F1F2D998A5800D761FC /* LinkCollector.xcdatamodeld in Sources */,
+				90A89FB92D9773AD002D1C34 /* HTMLParser.swift in Sources */,
+				909C8F142D99754B00D761FC /* YouTubeOEmbed.swift in Sources */,
+				909C8F202D998A9B00D761FC /* LinkeEntity+Extension.swift in Sources */,
+				90A89FBA2D9773C1002D1C34 /* TypeIdentifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1043,7 +1072,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 41;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1058,7 +1087,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1077,7 +1106,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 41;
 				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -1092,7 +1121,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1189,6 +1218,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9037CEFD2857D34100B5C7C9 /* XCRemoteSwiftPackageReference "PersistenceSwift" */;
 			productName = Persistence;
+		};
+		909C8F152D99759C00D761FC /* FaviconFinder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */;
+			productName = FaviconFinder;
+		};
+		909C8F182D99793900D761FC /* Persistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9037CEFD2857D34100B5C7C9 /* XCRemoteSwiftPackageReference "PersistenceSwift" */;
+			productName = Persistence;
+		};
+		909C8F1C2D99794B00D761FC /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
 		};
 		90A290A4258FA519004988D9 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;

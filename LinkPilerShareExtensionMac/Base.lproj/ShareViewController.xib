@@ -7,6 +7,10 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ShareViewController" customModule="LinkPilerShareExtensionMac" customModuleProvider="target">
             <connections>
+                <outlet property="locationTextField" destination="0Y2-xa-r9j" id="RbF-6q-ROw"/>
+                <outlet property="progressIndicator" destination="gS2-G5-dvP" id="Iea-ug-ecz"/>
+                <outlet property="titleTextField" destination="5LW-LD-gdf" id="lEk-gN-kN4"/>
+                <outlet property="urlTextField" destination="kJ1-OE-WPT" id="dU1-zb-cPR"/>
                 <outlet property="view" destination="1" id="2"/>
             </connections>
         </customObject>
@@ -15,6 +19,10 @@
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="1">
             <rect key="frame" x="0.0" y="0.0" width="388" height="227"/>
             <subviews>
+                <progressIndicator maxValue="100" displayedWhenStopped="NO" indeterminate="YES" controlSize="small" style="spinning" id="gS2-G5-dvP">
+                    <rect key="frame" x="185" y="105" width="16" height="16"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                </progressIndicator>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Hgx-gb-rxm">
                     <rect key="frame" x="8" y="167" width="372" height="16"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="URL" id="9te-px-tgV">
