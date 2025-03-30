@@ -62,6 +62,7 @@
 		909C8F1E2D997C3A00D761FC /* LinkCollectorShareExtension.js in Resources */ = {isa = PBXBuildFile; fileRef = 902C9B9526C06EC70071CADB /* LinkCollectorShareExtension.js */; };
 		909C8F1F2D998A5800D761FC /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		909C8F202D998A9B00D761FC /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
+		909C8F362D99CB0000D761FC /* LinkCollectorMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909C8F352D99CB0000D761FC /* LinkCollectorMenu.swift */; };
 		90A290A5258FA519004988D9 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 90A290A4258FA519004988D9 /* SwiftSoup */; };
 		90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
@@ -182,6 +183,7 @@
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
 		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
 		909C8F1A2D99794800D761FC /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
+		909C8F352D99CB0000D761FC /* LinkCollectorMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorMenu.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90BAF15F2D90BBDA009C9E8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -367,6 +369,7 @@
 				905E9C5925897B890090BFC6 /* Info.plist */,
 				905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */,
 				905E9C5325897B890090BFC6 /* Preview Content */,
+				909C8F352D99CB0000D761FC /* LinkCollectorMenu.swift */,
 			);
 			path = LinkCollector;
 			sourceTree = "<group>";
@@ -682,6 +685,7 @@
 				900F3FF726D8671900C63590 /* TagLabel.swift in Sources */,
 				9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */,
 				903A4073282862F70080E46A /* LinkListView.swift in Sources */,
+				909C8F362D99CB0000D761FC /* LinkCollectorMenu.swift in Sources */,
 				90CFB3382D7DDDE100ED620E /* LinkPilerApp.swift in Sources */,
 				9023F553258ECA3300192D42 /* LinkCollectorViewModel.swift in Sources */,
 				90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */,

@@ -45,14 +45,13 @@ struct LinkListView: View {
     var body: some View {
         GeometryReader { geometry in
             List(selection: $selectedLink) {
-                ForEach(filteredLinks) { link in
+                // .onDelete works better with id: \.self ?
+                ForEach(filteredLinks, id: \.self) { link in
                     NavigationLink(value: link) {
                         LinkLabel(link: link)
                     }
-                    .id(link)
                 }
-                // This causes hangs
-                //.onDelete(perform: removeLink)
+                .onDelete(perform: removeLink)
             }
             #if canImport(UIKit)
             .listStyle(GroupedListStyle())

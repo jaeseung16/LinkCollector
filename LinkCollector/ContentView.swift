@@ -13,13 +13,27 @@ struct ContentView: View {
     
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
+    @State private var selectedMenu: LinkCollectorMenu?
     @State private var selectedLink: LinkEntity?
     
     var body: some View {
         VStack {
             NavigationSplitView {
-                LinkListView(selectedLink: $selectedLink)
-                    .navigationTitle("Links")
+                List(selection: $selectedMenu) {
+                    ForEach(LinkCollectorMenu.allCases) { menu in
+                        NavigationLink(value: menu) {
+                            Text(menu.rawValue)
+                        }
+                    }
+                }
+            } content: {
+                switch selectedMenu {
+                case .links:
+                    LinkListView(selectedLink: $selectedLink)
+                        .navigationTitle("Links")
+                case nil:
+                    EmptyView()
+                }
             } detail: {
                 if let selectedLink = selectedLink {
                     LinkDetailView(entity: selectedLink, tags: selectedLink.getTagList())
