@@ -9,6 +9,7 @@ import Foundation
 
 enum LinkCollectorMenu: String, CaseIterable, Identifiable {
     case links = "Links"
+    case tags = "Tags"
     
     var id: Self { self }
 }

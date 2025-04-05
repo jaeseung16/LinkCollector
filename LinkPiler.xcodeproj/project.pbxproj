@@ -91,6 +91,7 @@
 		90CFB33E2D7E0DEA00ED620E /* SearchAttributeSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */; };
 		90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DBF26CEE1D5007F7819 /* AddTagView.swift */; };
 		90D25DC226CEF2BB007F7819 /* TagDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D25DC126CEF2BB007F7819 /* TagDTO.swift */; };
+		90D332042DA091B200045ED6 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D332032DA091B200045ED6 /* TagListView.swift */; };
 		90DBCD8C2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 90DBCD7F2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex */; platformFilters = (macos, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
 		90F4833E278116DE0085E26B /* LinkeEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */; };
@@ -199,6 +200,7 @@
 		90CFB33C2D7E0DE400ED620E /* SearchAttributeSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAttributeSet.swift; sourceTree = "<group>"; };
 		90D25DBF26CEE1D5007F7819 /* AddTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagView.swift; sourceTree = "<group>"; };
 		90D25DC126CEF2BB007F7819 /* TagDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDTO.swift; sourceTree = "<group>"; };
+		90D332032DA091B200045ED6 /* TagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
 		90DBCD7F2D93691C0059D2E2 /* LinkPilerShareExtensionMac.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LinkPilerShareExtensionMac.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		90F4833C278116B60085E26B /* LinkeEntity+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LinkeEntity+Extension.swift"; sourceTree = "<group>"; };
 		90F9CCBA26CC619300B875FE /* EditLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLinkView.swift; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 				90C68DB0259538B200C78C1E /* WebView.swift */,
 				9030552D282C70610081E026 /* DateRangePickerView.swift */,
 				90C97D722D7CD323006195A8 /* FilterView.swift */,
+				90D332032DA091B200045ED6 /* TagListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -663,6 +666,7 @@
 				90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */,
 				900F3FFB26D86AA500C63590 /* TitleLabel.swift in Sources */,
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
+				90D332042DA091B200045ED6 /* TagListView.swift in Sources */,
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
 				9078D0702A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,

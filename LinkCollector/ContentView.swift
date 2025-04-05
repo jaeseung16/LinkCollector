@@ -15,6 +15,7 @@ struct ContentView: View {
     
     @State private var selectedMenu: LinkCollectorMenu? = .links
     @State private var selectedLink: LinkEntity?
+    @State private var selectedTag: TagEntity?
     
     var body: some View {
         VStack {
@@ -31,6 +32,8 @@ struct ContentView: View {
                 case .links:
                     LinkListView(selectedLink: $selectedLink)
                         .navigationTitle("Links")
+                case .tags:
+                    TagListView(selectedTag: $selectedTag)
                 case nil:
                     EmptyView()
                 }
@@ -39,6 +42,10 @@ struct ContentView: View {
                     LinkDetailView(entity: selectedLink, tags: selectedLink.getTagList())
                         .navigationTitle(selectedLink.title ?? "")
                         .id(selectedLink)
+                } else if let selectedTag = selectedTag {
+                    EmptyView()
+                } else {
+                    EmptyView()
                 }
             }
         }
