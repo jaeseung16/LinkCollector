@@ -34,6 +34,7 @@ struct ContentView: View {
                         .navigationTitle("Links")
                 case .tags:
                     TagListView(selectedTag: $selectedTag)
+                        .navigationTitle("Tags")
                 case nil:
                     EmptyView()
                 }
@@ -43,7 +44,9 @@ struct ContentView: View {
                         .navigationTitle(selectedLink.title ?? "")
                         .id(selectedLink)
                 } else if let selectedTag = selectedTag {
-                    EmptyView()
+                    TagDetailView(entity: selectedTag)
+                        .navigationTitle(selectedTag.name ?? "")
+                        .id(selectedTag)
                 } else {
                     EmptyView()
                 }
@@ -60,6 +63,10 @@ struct ContentView: View {
                 }
                 viewModel.writeWidgetEntries()
             }
+        }
+        .onChange(of: selectedMenu) { oldValue, newValue in
+            selectedLink = nil
+            selectedTag = nil
         }
         
     }

@@ -52,6 +52,7 @@
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
+		9094101B2DA28EF900011E15 /* TagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9094101A2DA28EF900011E15 /* TagDetailView.swift */; };
 		909C8F132D99754500D761FC /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
 		909C8F142D99754B00D761FC /* YouTubeOEmbed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */; };
 		909C8F162D99759C00D761FC /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 909C8F152D99759C00D761FC /* FaviconFinder */; };
@@ -183,6 +184,7 @@
 		9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorDownloader.swift; sourceTree = "<group>"; };
 		9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TagEntity+Extension.swift"; sourceTree = "<group>"; };
 		9092A1E12A957EE600020880 /* PersistenceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceHelper.swift; sourceTree = "<group>"; };
+		9094101A2DA28EF900011E15 /* TagDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDetailView.swift; sourceTree = "<group>"; };
 		909C8F1A2D99794800D761FC /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		909C8F352D99CB0000D761FC /* LinkCollectorMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorMenu.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				9030552D282C70610081E026 /* DateRangePickerView.swift */,
 				90C97D722D7CD323006195A8 /* FilterView.swift */,
 				90D332032DA091B200045ED6 /* TagListView.swift */,
+				9094101A2DA28EF900011E15 /* TagDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -680,6 +683,7 @@
 				90CFB33B2D7E056100ED620E /* SearchHelper.swift in Sources */,
 				90F4833D278116B60085E26B /* LinkeEntity+Extension.swift in Sources */,
 				900F3FFD26D86B6300C63590 /* LocationLabel.swift in Sources */,
+				9094101B2DA28EF900011E15 /* TagDetailView.swift in Sources */,
 				90CF0F4026CD710400D1CBF4 /* LinkDTO.swift in Sources */,
 				905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */,
 				90F9CCBB26CC619300B875FE /* EditLinkView.swift in Sources */,
