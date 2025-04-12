@@ -84,9 +84,15 @@ struct LinkListView: View {
                 if let start = dateInterval?.start, let end = dateInterval?.end {
                     FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval, start: start, end: end)
                         .environmentObject(viewModel)
+                        #if canImport(AppKit)
+                        .frame(minHeight: 0.7 * geometry.size.height, maxHeight: 0.8 * geometry.size.height)
+                        #endif
                 } else {
                     FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval, start: viewModel.firstDate, end: Date())
                         .environmentObject(viewModel)
+                        #if canImport(AppKit)
+                        .frame(minHeight: 0.7 * geometry.size.height, maxHeight: 0.8 * geometry.size.height)
+                        #endif
                 }
             }
             .alert("Unable to Save Data", isPresented: $showAlert) {

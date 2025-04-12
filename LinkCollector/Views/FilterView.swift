@@ -21,57 +21,75 @@ struct FilterView: View {
     }
     
     var body: some View {
-        VStack {
-            header()
-
-            Form {
-                Section {
-                    DatePicker("From", selection: $start, displayedComponents: [.date])
-                        .datePickerStyle(.compact)
-                    DatePicker(selection: $end, in: start..., displayedComponents: [.date]) {
-                        Text("To")
-                    }
-                } header: {
-                    Text("Filter by Date Range")
-                }
+        GeometryReader { geometry in
+            VStack {
+                header()
                 
-                Section {
-                    Text("SELECTED")
-                        .font(.caption)
+                #if canImport(AppKit)
+                Divider()
+                #endif
+                
+                Form {
+                    Section {
+                        DatePicker("From", selection: $start, displayedComponents: [.date])
+                            .datePickerStyle(.compact)
+                        DatePicker(selection: $end, in: start..., displayedComponents: [.date]) {
+                            Text("To")
+                        }
+                    } header: {
+                        Text("Filter by Date Range")
+                    }
                     
-                    List {
-                        ForEach(Array(selectedTags), id: \.id) { tag in
-                            Button {
-                                selectedTags.remove(tag)
-                            } label: {
-                                tagInfo(for: tag)
-                                    .font(.callout)
-                                    .foregroundColor(.primary)
+                    #if canImport(AppKit)
+                    Divider()
+                    #endif
+                    
+                    Section {
+                        Text("SELECTED")
+                            .font(.caption)
+                        
+                        List {
+                            ForEach(Array(selectedTags), id: \.id) { tag in
+                                Button {
+                                    selectedTags.remove(tag)
+                                } label: {
+                                    tagInfo(for: tag)
+                                        .font(.callout)
+                                        .foregroundColor(.primary)
+                                }
                             }
                         }
-                    }
-                    
-                    Text("TAGS")
-                        .font(.caption)
-                    
-                    ForEach(filteredTags, id: \.id) { tag in
-                        Button {
-                            selectedTags.insert(tag)
-                        } label: {
-                            tagInfo(for: tag)
-                                .font(.callout)
-                                .foregroundColor(.secondary)
+                        #if canImport(AppKit)
+                        .frame(minHeight: 20.0, maxHeight: 80.0)
+                        #endif
+                        
+                        Text("TAGS")
+                            .font(.caption)
+                        
+                        List {
+                            ForEach(filteredTags, id: \.id) { tag in
+                                Button {
+                                    selectedTags.insert(tag)
+                                } label: {
+                                    tagInfo(for: tag)
+                                        .font(.callout)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
                         }
+                        #if canImport(AppKit)
+                        .frame(minHeight: 20.0, maxHeight: geometry.size.height)
+                        #endif
+                    } header: {
+                        Text("Filter By Tags")
                     }
-                } header: {
-                    Text("Filter By Tags")
                 }
             }
+            #if canImport(UIKit)
+            .frame(maxHeight: .infinity, alignment: .top)
+            #endif
+            .padding()
         }
-        #if canImport(UIKit)
-        .frame(maxHeight: .infinity, alignment: .top)
-        #endif
-        .padding()
     }
     
     private func header() -> some View {
