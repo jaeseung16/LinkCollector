@@ -537,7 +537,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					902C9B8326C063000071CADB = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -763,8 +763,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				CURRENT_PROJECT_VERSION = 45;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -791,8 +790,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				CURRENT_PROJECT_VERSION = 45;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -822,9 +820,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerWidget;
@@ -839,7 +836,7 @@
 				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = NO;
+				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
@@ -859,9 +856,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerWidget;
@@ -876,7 +872,7 @@
 				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = NO;
+				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
@@ -924,6 +920,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -989,6 +986,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -1019,9 +1017,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -1034,7 +1031,7 @@
 				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = NO;
+				REGISTER_APP_GROUPS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1051,9 +1048,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -1066,7 +1062,7 @@
 				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = NO;
+				REGISTER_APP_GROUPS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1084,8 +1080,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 44;
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				CURRENT_PROJECT_VERSION = 45;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1118,8 +1113,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 44;
-				DEVELOPMENT_TEAM = U8VSJXRJTQ;
+				CURRENT_PROJECT_VERSION = 45;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
