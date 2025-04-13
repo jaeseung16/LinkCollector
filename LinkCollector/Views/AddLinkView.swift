@@ -61,17 +61,33 @@ struct AddLinkView: View {
                     }
             }
             
+            #if canImport(AppKit)
+            Divider()
+            #endif
+            
             Section(header: TitleLabel(title: "Title")) {
                 TextField("Insert title", text: $title)
             }
+            
+            #if canImport(AppKit)
+            Divider()
+            #endif
             
             Section(header: LocationLabel(title: "Location")) {
                 Text("\(viewModel.userLocality)")
             }
             
+            #if canImport(AppKit)
+            Divider()
+            #endif
+            
             Section(header: NoteLabel(title: "Note")) {
                 TextField("Insert note", text: $note)
             }
+            
+            #if canImport(AppKit)
+            Divider()
+            #endif
             
             Section(header: tagSectionHeader()) {
                 tagSection()

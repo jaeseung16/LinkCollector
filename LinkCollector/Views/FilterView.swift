@@ -20,6 +20,8 @@ struct FilterView: View {
         viewModel.tags.filter { !selectedTags.contains($0) }
     }
     
+    @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
+    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -60,7 +62,7 @@ struct FilterView: View {
                             }
                         }
                         #if canImport(AppKit)
-                        .frame(minHeight: 20.0, maxHeight: 80.0)
+                        .frame(maxHeight: bodyTextHeight * CGFloat(selectedTags.count))
                         #endif
                         
                         Text("TAGS")
@@ -78,7 +80,7 @@ struct FilterView: View {
                             }
                         }
                         #if canImport(AppKit)
-                        .frame(minHeight: 20.0, maxHeight: geometry.size.height)
+                        .frame(maxHeight: bodyTextHeight * CGFloat(filteredTags.count))
                         #endif
                     } header: {
                         Text("Filter By Tags")

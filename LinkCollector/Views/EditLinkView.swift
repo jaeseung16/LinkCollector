@@ -36,47 +36,59 @@ struct EditLinkView: View {
     @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
     
     private func editLinkForm() -> some View {
-        Form {
-            Section(header: TitleLabel(title: "Title")) {
-                TextField("Title", text: $title) { isEditing in
-                    if isEditing && titleBeforeEditing == "" {
-                        titleBeforeEditing = title
+        GeometryReader { geometry in
+            Form {
+                Section(header: TitleLabel(title: "Title")) {
+                    TextField("Title", text: $title) { isEditing in
+                        if isEditing && titleBeforeEditing == "" {
+                            titleBeforeEditing = title
+                        }
+                    } onCommit: {
+                        saveButtonEnabled = titleBeforeEditing != title
                     }
-                } onCommit: {
-                    saveButtonEnabled = titleBeforeEditing != title
                 }
-            }
-            
-            Section(header: tagSectionHeaderView()) {
-                List {
-                    ForEach(self.tags, id: \.self) { tag in
-                        Button {
-                            if let index = tags.firstIndex(of: tag) {
-                                tags.remove(at: index)
+                
+                Section(header: tagSectionHeaderView()) {
+                    List {
+                        ForEach(self.tags, id: \.self) { tag in
+                            Button {
+                                if let index = tags.firstIndex(of: tag) {
+                                    tags.remove(at: index)
+                                }
+                            } label: {
+                                TagLabel(title: tag.name ?? "")
+                                    .foregroundColor(.primary)
                             }
-                        } label: {
-                            TagLabel(title: tag.name ?? "")
-                                .foregroundColor(.primary)
                         }
                     }
-                }
-                .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
-                .listStyle(PlainListStyle())
-                .sheet(isPresented: $editTags) {
-                    AddTagView(tags: $tags, isUpdate: true)
-                        .environmentObject(viewModel)
-                }
-            }
-            
-            Section(header: NoteLabel(title: "Note")) {
-                TextEditor(text: $note)
-                    .onChange(of: note) {
+                    #if canImport(UIKit)
+                    .frame(minHeight: bodyTextHeight * CGFloat(self.tags.count))
+                    #else
+                    .frame(maxHeight: bodyTextHeight * CGFloat(self.tags.count))
+                    #endif
+                    .listStyle(PlainListStyle())
+                    .sheet(isPresented: $editTags) {
+                        AddTagView(tags: $tags, isUpdate: true)
+                            #if canImport(AppKit)
+                            .frame(height: 0.5 * geometry.size.height)
+                            #endif
+                            .environmentObject(viewModel)
+                    }
+                    .onChange(of: tags) {
                         saveButtonEnabled = true
                     }
-                    .disableAutocorrection(true)
-                    .multilineTextAlignment(.leading)
-                    .border(Color.secondary)
-                    .frame(minHeight: 150)
+                }
+                
+                Section(header: NoteLabel(title: "Note")) {
+                    TextEditor(text: $note)
+                        .onChange(of: note) {
+                            saveButtonEnabled = true
+                        }
+                        .disableAutocorrection(true)
+                        .multilineTextAlignment(.leading)
+                        .border(Color.secondary)
+                        .frame(minHeight: 150)
+                }
             }
         }
     }
@@ -88,8 +100,7 @@ struct EditLinkView: View {
             Spacer()
             
             Button {
-                editTags.toggle()
-                saveButtonEnabled = true
+                editTags = true
             } label: {
                 TagLabel(title: "Edit tags")
                     .foregroundColor(Color.blue)
