@@ -166,8 +166,9 @@ struct AddTagView: View {
     
     private func save() -> Void {
         viewModel.saveTag(TagDTO(name: tagName))
-            viewModel.fetchAll()
-        
+        viewModel.fetchAll()
+        tagName = ""
+        saveButtonEnabled = false
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
@@ -175,16 +176,14 @@ struct AddTagView: View {
             let tag = filteredTags[index]
             viewModel.delete(tag: tag)
         }
+
+        do {
+            try viewModel.save()
+        } catch {
+            viewModel.message = "Failed to save changes"
+        }
         
-       
-            do {
-                try viewModel.save()
-            } catch {
-                viewModel.message = "Failed to save changes"
-            }
-            
-            viewModel.fetchAll()
-              
+        viewModel.fetchAll()
     }
 }
 

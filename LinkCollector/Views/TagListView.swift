@@ -54,16 +54,14 @@ struct TagListView: View {
             let tag = viewModel.tags[index]
             viewModel.delete(tag: tag)
         }
+
+        do {
+            try viewModel.save()
+        } catch {
+            message = "Failed to delete the selected tag"
+            showAlert = true
+        }
         
-        
-            do {
-                try viewModel.save()
-            } catch {
-                message = "Failed to delete the selected tag"
-                showAlert = true
-            }
-            
-            viewModel.fetchAll()
-        
+        viewModel.fetchAll()
     }
 }

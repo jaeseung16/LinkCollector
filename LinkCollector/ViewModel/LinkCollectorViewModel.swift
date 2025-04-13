@@ -285,27 +285,25 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     // MARK: - Persistence
     
     func saveTag(_ tagDTO: TagDTO) -> Void {
-        
-            if let tagEntity = getTagEntity(with: tagDTO.name) {
-                if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
-                    if let links = tagEntity.links, !links.contains(linkEntity) {
-                        tagEntity.addToLinks(linkEntity)
-                    }
+        if let tagEntity = getTagEntity(with: tagDTO.name) {
+            if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
+                if let links = tagEntity.links, !links.contains(linkEntity) {
+                    tagEntity.addToLinks(linkEntity)
                 }
-            } else {
-                let entity = TagEntity(context: persistenceHelper.viewContext)
-                entity.id = UUID()
-                entity.name = tagDTO.name
-                entity.created = Date()
             }
-            
-            do {
-                try save()
-            } catch {
-                logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-                self.message = "Cannot save tag: \( tagDTO.name)"
-            }
+        } else {
+            let entity = TagEntity(context: persistenceHelper.viewContext)
+            entity.id = UUID()
+            entity.name = tagDTO.name
+            entity.created = Date()
+        }
         
+        do {
+            try save()
+        } catch {
+            logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save tag: \( tagDTO.name)"
+        }
     }
 
     @Published var links = [LinkEntity]()
@@ -334,24 +332,22 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) -> Void {
+        let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
         
-            let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
-            
-            do {
-                try save()
-            } catch {
-                logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-                self.message = "Cannot save link: \(String(describing: title))"
-            }
-            
-            let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
-            
-            for tag in tags {
-                saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
-            }
-            
-            fetchAll()
+        do {
+            try save()
+        } catch {
+            logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save link: \(String(describing: title))"
+        }
         
+        let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
+        
+        for tag in tags {
+            saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
+        }
+        
+        fetchAll()
     }
     
     func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
@@ -381,20 +377,18 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     func remove(tag: String, from link: LinkDTO) {
+        if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
+            tagEntity.removeFromLinks(linkEntity)
+        }
         
-            if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
-                tagEntity.removeFromLinks(linkEntity)
-            }
-            
-            do {
-                try save()
-            } catch {
-                logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-                self.message = "Cannot save link = \(link.title)"
-            }
-            
-            fetchAll()
+        do {
+            try save()
+        } catch {
+            logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save link = \(link.title)"
+        }
         
+        fetchAll()
     }
     
     func getTagList(of link: LinkEntity) -> [String] {
