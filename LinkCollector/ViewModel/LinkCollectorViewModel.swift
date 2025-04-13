@@ -284,8 +284,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     // MARK: - Persistence
     
-    func saveTag(_ tagDTO: TagDTO) async -> Void {
-        Task {
+    func saveTag(_ tagDTO: TagDTO) -> Void {
+        
             if let tagEntity = getTagEntity(with: tagDTO.name) {
                 if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
                     if let links = tagEntity.links, !links.contains(linkEntity) {
@@ -300,12 +300,12 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             }
             
             do {
-                try await save()
+                try save()
             } catch {
                 logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot save tag: \( tagDTO.name)"
             }
-        }
+        
     }
 
     @Published var links = [LinkEntity]()
@@ -334,11 +334,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) -> Void {
-        Task {
+        
             let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
             
             do {
-                try await save()
+                try save()
             } catch {
                 logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot save link: \(String(describing: title))"
@@ -347,11 +347,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
             
             for tag in tags {
-                await saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
+                saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
             }
             
             fetchAll()
-        }
+        
     }
     
     func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
@@ -360,7 +360,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             return
         }
         
-        Task {
+       
             linkEntity.title = link.title
             linkEntity.note = link.note
             
@@ -370,31 +370,31 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             linkEntity.addToTags(NSSet(array: tags))
             
             do {
-                try await save()
+                try save()
             } catch {
                 logger.log("While updating \(link) with \(tags) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update link: \(link)"
             }
             
             fetchAll()
-        }
+        
     }
     
     func remove(tag: String, from link: LinkDTO) {
-        Task {
+        
             if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
                 tagEntity.removeFromLinks(linkEntity)
             }
             
             do {
-                try await save()
+                try save()
             } catch {
                 logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot save link = \(link.title)"
             }
             
             fetchAll()
-        }
+        
     }
     
     func getTagList(of link: LinkEntity) -> [String] {
@@ -446,8 +446,10 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         persistenceHelper.delete(tag)
     }
     
-    func save() async throws -> Void {
-        try await persistenceHelper.save()
+    func save() throws -> Void {
+        Task {
+            try await persistenceHelper.save()
+        }
     }
     
     // MARK: - Persistence History Request

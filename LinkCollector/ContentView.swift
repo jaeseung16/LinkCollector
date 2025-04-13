@@ -56,14 +56,14 @@ struct ContentView: View {
             if newPhase == .active {
                 viewModel.fetchAll()
             } else {
-                Task {
+                
                     do {
-                        try await viewModel.save()
+                        try  viewModel.save()
                     } catch {
                         // TODO:
                     }
                     viewModel.writeWidgetEntries()
-                }
+                
             }
         }
         .onChange(of: selectedMenu) { oldValue, newValue in

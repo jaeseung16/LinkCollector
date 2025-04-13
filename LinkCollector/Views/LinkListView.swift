@@ -118,21 +118,19 @@ struct LinkListView: View {
     }
     
     private func removeLink(indexSet: IndexSet) -> Void {
-        Task {
-            for index in indexSet {
-                let link = filteredLinks[index]
-                viewModel.delete(link: link)
-            }
-            
-            do {
-                try await viewModel.save()
-            } catch {
-                message = "Failed to delete the selected link"
-                showAlert = true
-            }
-            
-            viewModel.fetchAll()
+        for index in indexSet {
+            let link = filteredLinks[index]
+            viewModel.delete(link: link)
         }
+        
+        do {
+            try viewModel.save()
+        } catch {
+            message = "Failed to delete the selected link"
+            showAlert = true
+        }
+        
+        viewModel.fetchAll()
     }
     
     private func generateBookmarkFile() -> URL {
