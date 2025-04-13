@@ -70,7 +70,7 @@ struct EditLinkView: View {
                     .sheet(isPresented: $editTags) {
                         AddTagView(tags: $tags, isUpdate: true)
                             #if canImport(AppKit)
-                            .frame(height: 0.5 * geometry.size.height)
+                            .frame(height: 0.9 * geometry.size.height)
                             #endif
                             .environmentObject(viewModel)
                     }
