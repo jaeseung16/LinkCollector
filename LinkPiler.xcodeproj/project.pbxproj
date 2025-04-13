@@ -763,8 +763,9 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -790,8 +791,9 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -820,11 +822,11 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -856,11 +858,11 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1017,10 +1019,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1048,10 +1051,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1080,12 +1084,12 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerShareExtensionMac/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerShareExtensionMac;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1113,12 +1117,12 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerShareExtensionMac/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LinkPilerShareExtensionMac;
+				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
