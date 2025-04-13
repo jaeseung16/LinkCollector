@@ -22,6 +22,10 @@ struct LinkPilerApp: App {
             ContentView()
                 .frame(minWidth: 900, minHeight: 600)
                 .environmentObject(appDelegate.viewModel)
+                .onOpenURL { url in
+                    appDelegate.viewModel.set(searchString: url.query?.removingPercentEncoding ?? "",
+                                       selected: UUID(uuidString: url.lastPathComponent)!)
+                }
             #else
             ContentView()
                 .environmentObject(appDelegate.viewModel)
