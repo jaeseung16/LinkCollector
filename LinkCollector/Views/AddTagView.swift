@@ -165,8 +165,10 @@ struct AddTagView: View {
     }
     
     private func save() -> Void {
-        viewModel.saveTag(TagDTO(name: tagName))
-        viewModel.fetchAll()
+        Task {
+            await viewModel.saveTag(TagDTO(name: tagName))
+            viewModel.fetchAll()
+        }
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
@@ -177,13 +179,13 @@ struct AddTagView: View {
         
         Task {
             do {
-                try viewModel.save()
+                try await viewModel.save()
             } catch {
                 viewModel.message = "Failed to save changes"
             }
-        }
-        
-        viewModel.fetchAll()
+            
+            viewModel.fetchAll()
+        }        
     }
 }
 

@@ -31,7 +31,11 @@ final class PersistenceHelper: Sendable {
     }
     
     func save() async throws -> Void {
-        try await persistence.save()
+        if viewContext.hasChanges {
+            viewContext.transactionAuthor = "App"
+            try await persistence.save()
+            viewContext.transactionAuthor = nil
+        }
     }
     
     func delete(_ object: NSManagedObject) -> Void {

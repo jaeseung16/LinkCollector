@@ -50,18 +50,20 @@ struct TagListView: View {
     }
     
     private func removeTag(indexSet: IndexSet) -> Void {
-        for index in indexSet {
-            let tag = viewModel.tags[index]
-            viewModel.delete(tag: tag)
-        }
+        Task {
+            for index in indexSet {
+                let tag = viewModel.tags[index]
+                viewModel.delete(tag: tag)
+            }
         
-        do {
-            try viewModel.save()
-        } catch {
-            message = "Failed to delete the selected tag"
-            showAlert = true
+            do {
+                try await viewModel.save()
+            } catch {
+                message = "Failed to delete the selected tag"
+                showAlert = true
+            }
+            
+            viewModel.fetchAll()
         }
-        
-        viewModel.fetchAll()
     }
 }
