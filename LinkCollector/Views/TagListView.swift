@@ -21,13 +21,14 @@ struct TagListView: View {
                     if let name = tag.name {
                         NavigationLink(value: tag) {
                             TagLabel(title: name)
+                                .foregroundStyle((tag.links?.count ?? 0) > 0 ? .primary : .secondary)
                         }
                     } else {
                         NavigationLink(value: tag) {
                             TagLabel(title: "Tag without name")
+                                .foregroundStyle((tag.links?.count ?? 0) > 0 ? .primary : .secondary)
                         }
                     }
-                    
                 }
                 .onDelete(perform: removeTag)
             }
