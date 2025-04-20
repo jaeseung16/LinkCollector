@@ -28,7 +28,7 @@ struct SelectTagsView: View {
                             Button {
                                selectedTags.remove(tag)
                             } label: {
-                                tagView(for: tag)
+                                tagInfo(for: tag)
                                     .foregroundColor(.primary)
                             }
                         }
@@ -39,7 +39,7 @@ struct SelectTagsView: View {
                             Button {
                                 selectedTags.insert(tag)
                             } label: {
-                                tagView(for: tag)
+                                tagInfo(for: tag)
                                     .foregroundColor(.primary)
                             }
                         }
@@ -74,7 +74,7 @@ struct SelectTagsView: View {
         }
     }
     
-    private func tagView(for tag: TagEntity) -> some View {
+    private func tagInfo(for tag: TagEntity) -> some View {
         HStack {
             Label(tag.name ?? "", systemImage: "tag")
             Spacer()

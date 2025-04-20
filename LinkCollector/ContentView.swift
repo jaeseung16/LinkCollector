@@ -9,34 +9,66 @@ import SwiftUI
 import MapKit
 
 struct ContentView: View {
+    @Environment(\.scenePhase) var scenePhase
+    
     @EnvironmentObject var viewModel: LinkCollectorViewModel
     
-    let calendar = Calendar(identifier: .iso8601)
-    let today = Date()
-
-    private var todayStartOfDay: Date {
-        calendar.startOfDay(for: today)
-    }
-    
-    private var sevenDaysAgo: Date {
-        return calendar.date(byAdding: .day, value: -7, to: today)!
-    }
-    
-    private var firstDayOfMonth: Date {
-        let daysOfMonth = calendar.component(.day, from: today)
-        return calendar.date(byAdding: .day, value: -daysOfMonth, to: today)!
-    }
-    
-    private var thisWeek: DateInterval {
-        return DateInterval(start: sevenDaysAgo, end: todayStartOfDay)
-    }
-    
-    private var thisMonth: DateInterval {
-        return DateInterval(start: firstDayOfMonth, end: sevenDaysAgo)
-    }
+    @State private var selectedMenu: LinkCollectorMenu? = .links
+    @State private var selectedLink: LinkEntity?
+    @State private var selectedTag: TagEntity?
     
     var body: some View {
-        LinkListView()
+        VStack {
+            NavigationSplitView {
+                List(selection: $selectedMenu) {
+                    ForEach(LinkCollectorMenu.allCases) { menu in
+                        NavigationLink(value: menu) {
+                            Text(menu.rawValue)
+                        }
+                    }
+                }
+            } content: {
+                switch selectedMenu {
+                case .links:
+                    LinkListView(selectedLink: $selectedLink)
+                        .navigationTitle("Links")
+                case .tags:
+                    TagListView(selectedTag: $selectedTag)
+                        .navigationTitle("Tags")
+                case nil:
+                    EmptyView()
+                }
+            } detail: {
+                if let selectedLink = selectedLink {
+                    LinkDetailView(entity: selectedLink, tags: selectedLink.getTagList())
+                        .navigationTitle(selectedLink.title ?? "")
+                        .id(selectedLink)
+                } else if let selectedTag = selectedTag {
+                    TagDetailView(entity: selectedTag)
+                        .navigationTitle(selectedTag.name ?? "")
+                        .id(selectedTag)
+                } else {
+                    EmptyView()
+                }
+            }
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            if newPhase == .active {
+                viewModel.fetchAll()
+            } else {
+                do {
+                    try  viewModel.save()
+                } catch {
+                    // TODO:
+                }
+                viewModel.writeWidgetEntries()
+            }
+        }
+        .onChange(of: selectedMenu) { oldValue, newValue in
+            selectedLink = nil
+            selectedTag = nil
+        }
+        
     }
     
 }

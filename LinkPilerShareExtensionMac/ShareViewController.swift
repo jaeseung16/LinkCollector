@@ -1,28 +1,37 @@
 //
 //  ShareViewController.swift
-//  LinkCollectorShareExtension
+//  LinkPilerShareExtensionMac
 //
-//  Created by Jae Seung Lee on 8/8/21.
+//  Created by Jae Seung Lee on 3/25/25.
 //
 
-@preconcurrency import UIKit
-import Social
-import CoreLocation
-import CoreData
-@preconcurrency import FaviconFinder
-import Persistence
+@preconcurrency import Cocoa
 import os
+@preconcurrency import FaviconFinder
+import CoreData
+import Persistence
+import CoreLocation
 
-class ShareViewController: UIViewController {
+class ShareViewController: NSViewController {
     private let logger = Logger()
-
+    
     private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+    
     private var viewContext: NSManagedObjectContext {
         persistenceController.container.viewContext
     }
     
     private let contextName = "share extension"
     private let unknown = "Unknown"
+    
+    @IBOutlet weak var urlTextField: NSTextField!
+    @IBOutlet weak var titleTextField: NSTextField!
+    @IBOutlet weak var locationTextField: NSTextField!
+    @IBOutlet weak var progressIndicator: NSProgressIndicator!
+    
+    private var posted: Date?
+    private var linkEntity: LinkEntity?
+    private var favicon: Data?
     
     private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
@@ -38,29 +47,40 @@ class ShareViewController: UIViewController {
     private var locality: String? {
         didSet {
             DispatchQueue.main.async {
-                self.locationTextField.text = self.locality ?? self.unknown
+                self.locationTextField.stringValue = self.locality ?? self.unknown
             }
         }
     }
     
-    private var posted: Date?
-    private var linkEntity: LinkEntity?
-    private var favicon: Data?
+    private func lookUpCurrentLocation() async -> String {
+        if let lastLocation = location {
+            do {
+                let geocoder = CLGeocoder()
+                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
+                return placemarks.isEmpty ? unknown : placemarks[0].locality ?? unknown
+            } catch {
+                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
+                return unknown
+            }
+        } else {
+            return unknown
+        }
+    }
     
-    @IBOutlet weak var urlLabel: UILabel!
-    @IBOutlet weak var titleTextField: UITextField!
-    @IBOutlet weak var locationTextField: UILabel!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    override var nibName: NSNib.Name? {
+        return NSNib.Name("ShareViewController")
+    }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear() {
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
         locationManager.requestLocation()
     }
+
+    override func loadView() {
+        super.loadView()
     
-    override func viewDidLoad() {
-        self.activityIndicator.stopAnimating()
-        
+        self.progressIndicator.stopAnimation(nil)
         if let extensionContext = extensionContext, !extensionContext.inputItems.isEmpty {
             for inputItem in extensionContext.inputItems {
                 if let item = inputItem as? NSExtensionItem {
@@ -73,20 +93,6 @@ class ShareViewController: UIViewController {
                                                selector: #selector(processNotification),
                                                name: .NSPersistentStoreRemoteChange,
                                                object: persistenceController.container.persistentStoreCoordinator)
-    }
-    
-    private func showAlertAndTerminate() -> Void {
-        self.activityIndicator.stopAnimating()
-        
-        let alert = UIAlertController(title: "Alert", message: "Cannot confirm whether the post is saved. You may want to try it again.", preferredStyle: .alert)
-        alert.addAction(
-            UIAlertAction(title: "Dismiss", style: .default) { _ in
-                if self.extensionContext != nil {
-                    self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-                }
-        })
-        
-        self.present(alert, animated: true)
     }
     
     @objc private func processNotification(_ notification: Notification) -> Void {
@@ -113,7 +119,7 @@ class ShareViewController: UIViewController {
                     if change.changeType == .insert {
                         if let link = self.linkEntity, change.changedObjectID == link.objectID {
                             DispatchQueue.main.async {
-                                self.activityIndicator.stopAnimating()
+                                self.progressIndicator.stopAnimation(nil)
                             }
                             
                             if self.extensionContext != nil {
@@ -127,7 +133,71 @@ class ShareViewController: UIViewController {
             }
         }
     }
+
+    @IBAction func send(_ sender: AnyObject?) {
+        DispatchQueue.main.async {
+            self.progressIndicator.startAnimation(nil)
+        }
+        
+        var favicon: Data?
+        if let url = URL(string: urlTextField.stringValue) {
+            var urlComponents = URLComponents()
+            urlComponents.scheme = url.scheme
+            urlComponents.host = url.host
+            urlComponents.path = "/favicon.ico"
+            
+            if let faviconURL = urlComponents.url {
+                favicon = try? Data(contentsOf: faviconURL)
+            }
+        }
+        
+        posted = Date()
+        linkEntity = LinkEntity.create(title: titleTextField.stringValue,
+                                       url: urlTextField.stringValue,
+                                       favicon: favicon,
+                                       note: "",
+                                       latitude: location?.coordinate.latitude ?? 0.0,
+                                       longitude: location?.coordinate.latitude ?? 0.0,
+                                       locality: self.locality,
+                                       context: persistenceController.container.viewContext)
+        
+        save(with: contextName)
+        
+        // Terminate after 10 sec
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+            self.showAlertAndTerminate()
+        }
+    }
     
+    private func showAlertAndTerminate() -> Void {
+        self.progressIndicator.stopAnimation(nil)
+        
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = "Alert"
+        alert.informativeText = "Cannot confirm whether the post is saved. You may want to try it again."
+        alert.addButton(withTitle: "OK")
+        if alert.runModal() == .OK {
+            if self.extensionContext != nil {
+                self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+            }
+        }
+    }
+
+    private func save(with contextName: String) -> Void {
+        viewContext.name = contextName
+        do {
+            try viewContext.save()
+        } catch {
+            self.logger.log("Cannot save \(self.linkEntity, privacy: .public)")
+        }
+        viewContext.name = nil
+    }
+    
+    @IBAction func cancel(_ sender: AnyObject?) {
+        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+    }
+
     private func accessWebpageProperties(extensionItem: NSExtensionItem) {
         if let userInfo = extensionItem.userInfo, let attachments = userInfo[NSExtensionItemAttachmentsKey] as? [NSItemProvider] {
             for attachment in attachments {
@@ -152,9 +222,10 @@ class ShareViewController: UIViewController {
                         Task {
                             do {
                                 let item = try await attachment.loadItem(forTypeIdentifier: TypeIdentifier.publicURL.rawValue, options: nil)
-                                
-                                if let publicURL = item as? URL {
-                                    self.update(with: publicURL)
+                                if let data = item as? Data,
+                                   let urlString = String(data: data, encoding: .utf8),
+                                   let url = URL(string: urlString) {
+                                    self.update(with: url)
                                 }
                             } catch {
                                 self.showAlert(attachment: attachment, error: error)
@@ -181,31 +252,21 @@ class ShareViewController: UIViewController {
         }
     }
     
-    private func showAlert(attachment: NSItemProvider, error: Error) {
-        let alert = UIAlertController(title: "Link Collector", message: "Cannot read the webpage's properties", preferredStyle: .alert)
-        let action = UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default) { _ in
-            NSLog("Cannot read properties: attachment = \(attachment), \(error)")
-        }
-        
-        alert.addAction(action)
-        self.present(alert, animated: true, completion: nil)
-    }
-    
     private func update(with results: NSDictionary) {
-        urlLabel.text = results["URL"] as? String ?? "http://"
-        titleTextField.text = results["title"] as? String ?? "Enter title"
+        urlTextField.stringValue = results["URL"] as? String ?? "http://"
+        titleTextField.stringValue = results["title"] as? String ?? "Enter title"
     }
     
     private func update(with publicURL: URL) {
         DispatchQueue.main.async {
-            self.urlLabel.text = publicURL.absoluteString
-            self.activityIndicator.startAnimating()
+            self.urlTextField.stringValue = publicURL.absoluteString
+            self.progressIndicator.startAnimation(nil)
         }
         
         process(urlString: publicURL.absoluteString) { url, result in
             DispatchQueue.main.async {
-                self.titleTextField.text = result ?? "Enter title"
-                self.activityIndicator.stopAnimating()
+                self.titleTextField.stringValue = result ?? "Enter title"
+                self.progressIndicator.stopAnimation(nil)
                 
                 if let url = url {
                     self.findFavicon(url: url) { data, error in
@@ -222,14 +283,14 @@ class ShareViewController: UIViewController {
     
     private func update(with plainText: String) {
         DispatchQueue.main.async {
-            self.urlLabel.text = plainText
-            self.activityIndicator.startAnimating()
+            self.urlTextField.stringValue = plainText
+            self.progressIndicator.startAnimation(nil)
         }
         
         process(urlString: plainText) { url, result in
             DispatchQueue.main.async {
-                self.titleTextField.text = result ?? "Enter title"
-                self.activityIndicator.stopAnimating()
+                self.titleTextField.stringValue = result ?? "Enter title"
+                self.progressIndicator.stopAnimation(nil)
                 
                 if let url = url {
                     self.findFavicon(url: url) { data, error in
@@ -241,36 +302,6 @@ class ShareViewController: UIViewController {
                     }
                 }
             }
-        }
-    }
-    
-    private func isValid(urlString: String) -> Bool {
-        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
-            return false
-        }
-        return scheme == "http" || scheme == "https"
-    }
-    
-    private func getURLAndHTML(from urlString: String) -> (URL?, String?) {
-        var url: URL?
-        var html: String?
-        
-        if isValid(urlString: urlString) {
-            (url, html) = tryDownloadHTML(from: urlString)
-        } else {
-            (url, html) = tryDownloadHTML(from: "https://\(urlString)")
-            if html == nil {
-                (url, html) = tryDownloadHTML(from: "http://\(urlString)")
-            }
-        }
-        return (url, html)
-    }
-        
-    private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
-        if let url = URL(string: urlString) {
-            return (url, try? String(contentsOf: url, encoding: .utf8))
-        } else {
-            return (nil, nil)
         }
     }
     
@@ -287,7 +318,36 @@ class ShareViewController: UIViewController {
             let result = await htmlParser.parse(url: url, html: html)
             completionHandler(url, result)
         }
+    }
+    
+    private func getURLAndHTML(from urlString: String) -> (URL?, String?) {
+        var url: URL?
+        var html: String?
         
+        if isValid(urlString: urlString) {
+            (url, html) = tryDownloadHTML(from: urlString)
+        } else {
+            (url, html) = tryDownloadHTML(from: "https://\(urlString)")
+            if html == nil {
+                (url, html) = tryDownloadHTML(from: "http://\(urlString)")
+            }
+        }
+        return (url, html)
+    }
+    
+    private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
+        if let url = URL(string: urlString) {
+            return (url, try? String(contentsOf: url, encoding: .utf8))
+        } else {
+            return (nil, nil)
+        }
+    }
+    
+    private func isValid(urlString: String) -> Bool {
+        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
+            return false
+        }
+        return scheme == "http" || scheme == "https"
     }
     
     private func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
@@ -309,70 +369,16 @@ class ShareViewController: UIViewController {
         }
     }
     
-    @IBAction func cancel(_ sender: UIBarButtonItem) {
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-    }
-    
-    @IBAction func post(_ sender: UIBarButtonItem) {
-        DispatchQueue.main.async {
-            self.activityIndicator.startAnimating()
-        }
-        
-        var favicon: Data?
-        if let urlString = urlLabel.text, let url = URL(string: urlString) {
-            var urlComponents = URLComponents()
-            urlComponents.scheme = url.scheme
-            urlComponents.host = url.host
-            urlComponents.path = "/favicon.ico"
-            
-            if let faviconURL = urlComponents.url {
-                favicon = try? Data(contentsOf: faviconURL)
-            }
-        }
-        
-        posted = Date()
-        linkEntity = LinkEntity.create(title: titleTextField.text,
-                                       url: urlLabel.text,
-                                       favicon: favicon,
-                                       note: "",
-                                       latitude: location?.coordinate.latitude ?? 0.0,
-                                       longitude: location?.coordinate.latitude ?? 0.0,
-                                       locality: self.locality,
-                                       context: persistenceController.container.viewContext)
-        
-        save(with: contextName)
-        
-        // Terminate after 10 sec
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
-            self.showAlertAndTerminate()
+    private func showAlert(attachment: NSItemProvider, error: Error) {
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = "Link Collector"
+        alert.informativeText = "Cannot read the webpage's properties"
+        alert.addButton(withTitle: "OK")
+        if alert.runModal() == .OK {
+            logger.log("Cannot read properties: attachment = \(attachment), \(error)")
         }
     }
-    
-    private func save(with contextName: String) -> Void {
-        viewContext.name = contextName
-        do {
-            try viewContext.save()
-        } catch {
-            self.logger.log("Cannot save \(self.linkEntity, privacy: .public)")
-        }
-        viewContext.name = nil
-    }
-    
-    private func lookUpCurrentLocation() async -> String {
-        if let lastLocation = location {
-            do {
-                let geocoder = CLGeocoder()
-                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
-                return placemarks.isEmpty ? unknown : placemarks[0].locality ?? unknown
-            } catch {
-                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
-                return unknown
-            }
-        } else {
-            return unknown
-        }
-    }
-    
 }
 
 extension ShareViewController: @preconcurrency CLLocationManagerDelegate {

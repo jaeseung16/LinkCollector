@@ -8,14 +8,6 @@
 import SwiftUI
 
 struct LinkLabel: View {
-    private static var dateFormatter: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .none
-        dateFormatter.locale = Locale(identifier: "en_US")
-        return dateFormatter
-    }
-    
     var link: LinkEntity
     
     var body: some View {
@@ -27,6 +19,7 @@ struct LinkLabel: View {
             Spacer()
             
             VStack {
+                #if canImport(UIKit)
                 if let favicon = link.favicon, let uiImage = UIImage(data: favicon) {
                     Spacer()
                     
@@ -35,10 +28,20 @@ struct LinkLabel: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: 24, maxHeight: 24)
                 }
+                #else
+                if let favicon = link.favicon, let nsImage = NSImage(data: favicon) {
+                    Spacer()
+                    
+                    Image(nsImage: nsImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: 24, maxHeight: 24)
+                }
+                #endif
                 
                 Spacer()
                 
-                Text(LinkLabel.dateFormatter.string(from: link.created!))
+                Text(link.created!, format: Date.FormatStyle(date: .numeric, time: .omitted))
                     .font(.callout)
                     .foregroundColor(.secondary)
             }

@@ -47,7 +47,6 @@ struct AddLinkView: View {
             Section(header: Label("URL", systemImage: "link")) {
                 
                 TextField("Insert url", text: $url)
-                    .autocapitalization(.none)
                     .onSubmit {
                         submittedUrl = url
                     }
@@ -62,17 +61,33 @@ struct AddLinkView: View {
                     }
             }
             
+            #if canImport(AppKit)
+            Divider()
+            #endif
+            
             Section(header: TitleLabel(title: "Title")) {
                 TextField("Insert title", text: $title)
             }
+            
+            #if canImport(AppKit)
+            Divider()
+            #endif
             
             Section(header: LocationLabel(title: "Location")) {
                 Text("\(viewModel.userLocality)")
             }
             
+            #if canImport(AppKit)
+            Divider()
+            #endif
+            
             Section(header: NoteLabel(title: "Note")) {
                 TextField("Insert note", text: $note)
             }
+            
+            #if canImport(AppKit)
+            Divider()
+            #endif
             
             Section(header: tagSectionHeader()) {
                 tagSection()
@@ -125,15 +140,11 @@ struct AddLinkView: View {
     }
     
     private func findFavicon() async -> Void {
-        if let url = URL(string: url) {
-            let data = await viewModel.findFavicon(url: url)
-            guard let data = data else {
-                showAlertWhenCannotOpenURL()
-                return
-            }
-            favicon = data
+        guard let data = await viewModel.findFavicon(from: url) else {
+            showAlertWhenCannotOpenURL()
+            return
         }
-        return
+        favicon = data
     }
     
     private func showAlertWhenCannotOpenURL() -> Void {
@@ -160,19 +171,7 @@ struct AddLinkView: View {
     @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
     
     private func tagSection() -> some View {
-        #if targetEnvironment(macCatalyst)
-        ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
-                ForEach(self.tags, id: \.self) { tag in
-                    TagLabel(title: tag.name ?? "")
-                }
-            }
-        }
-        .sheet(isPresented: $addNewTag) {
-            AddTagView(tags: $tags)
-                .environmentObject(viewModel)
-        }
-        #else
+        #if canImport(UIKit)
         List {
             ForEach(self.tags, id: \.self) { tag in
                 TagLabel(title: tag.name ?? "")
@@ -183,6 +182,19 @@ struct AddLinkView: View {
         .sheet(isPresented: $addNewTag) {
             AddTagView(tags: $tags)
                 .environmentObject(viewModel)
+        }
+        #else
+        ScrollView {
+            LazyVGrid(columns: Array(repeating: GridItem.init(.flexible()), count: 3)) {
+                ForEach(self.tags, id: \.self) { tag in
+                    TagLabel(title: tag.name ?? "")
+                }
+            }
+        }
+        .sheet(isPresented: $addNewTag) {
+            AddTagView(tags: $tags)
+                .environmentObject(viewModel)
+                .frame(height: 400.0)
         }
         #endif
     }

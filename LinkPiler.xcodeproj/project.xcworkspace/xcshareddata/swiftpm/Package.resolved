@@ -1,12 +1,13 @@
 {
+  "originHash" : "a3b65650572c69389607c6d01cf44f32118cbaa7dcb478ac84fb15b889b1dc6c",
   "pins" : [
     {
       "identity" : "faviconfinder",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/will-lumley/FaviconFinder",
       "state" : {
-        "revision" : "b8cde6c03b0cf72829b327c2c537bd39c1a8f60b",
-        "version" : "4.1.0"
+        "revision" : "9279f4371f4877ca302ba3bf1015f3f58ae4a56c",
+        "version" : "5.1.4"
       }
     },
     {
@@ -14,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jaeseung16/PersistenceSwift",
       "state" : {
-        "branch" : "main",
-        "revision" : "eed8add6ab861d857dd5b64f6bfa30828c07c3db"
+        "revision" : "8d9a37463003ee4287c198d6ecf8ae7c6a4dc537",
+        "version" : "0.2.15"
       }
     },
     {
@@ -23,10 +24,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup",
       "state" : {
-        "revision" : "41e7c263fb8c277e980ebcb9b0b5f6031d3d4886",
-        "version" : "2.4.2"
+        "revision" : "18ad8b8ff0f03f3c0a5544ffccfa2ea1c051ae6e",
+        "version" : "2.8.0"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

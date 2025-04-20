@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct YouTubeOEmbed: Codable {
+struct YouTubeOEmbed: Codable, Sendable {
     let title: String
     let type: String
     let providerName: String

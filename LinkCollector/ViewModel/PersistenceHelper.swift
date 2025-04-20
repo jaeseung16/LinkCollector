@@ -8,9 +8,9 @@
 import Foundation
 import CoreData
 import os
-import Persistence
+@preconcurrency import Persistence
 
-class PersistenceHelper {
+final class PersistenceHelper: Sendable {
     private static let logger = Logger()
     
     private let persistence: Persistence
@@ -23,13 +23,19 @@ class PersistenceHelper {
     }
     
     func saveContext() throws -> Void {
-        viewContext.transactionAuthor = "App"
-        try viewContext.save()
-        viewContext.transactionAuthor = nil
+        if viewContext.hasChanges {
+            viewContext.transactionAuthor = "App"
+            try viewContext.save()
+            viewContext.transactionAuthor = nil
+        }
     }
     
-    func save(completionHandler: @escaping (Result<Void, Error>) -> Void) -> Void {
-        persistence.save { completionHandler($0) }
+    func save() async throws -> Void {
+        if viewContext.hasChanges {
+            viewContext.transactionAuthor = "App"
+            try await persistence.save()
+            viewContext.transactionAuthor = nil
+        }
     }
     
     func delete(_ object: NSManagedObject) -> Void {
@@ -72,6 +78,10 @@ class PersistenceHelper {
             PersistenceHelper.logger.log("objectID is nil for url=\(url)")
             return nil
         }
+        return viewContext.object(with: objectID)
+    }
+    
+    func find(with objectID: NSManagedObjectID) -> NSManagedObject? {
         return viewContext.object(with: objectID)
     }
     

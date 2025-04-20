@@ -19,8 +19,10 @@ struct MapView: View {
     @State private var region = MKCoordinateRegion()
        
     var body: some View {
-        Map(coordinateRegion: $region, annotationItems: [AnnotationItem(location: location)]) { item in
-            MapPin(coordinate: item.location)
+        Map(initialPosition: MapCameraPosition.region($region.wrappedValue), bounds: MapCameraBounds(centerCoordinateBounds: $region.wrappedValue), interactionModes: .zoom) {
+            UserAnnotation()
+            
+            Marker("", coordinate: location)
         }
         .onAppear {
             setRegion(location)

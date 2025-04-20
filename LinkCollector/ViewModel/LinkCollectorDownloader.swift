@@ -9,12 +9,36 @@ import Foundation
 import os
 import FaviconFinder
 
-class LinkCollectorDownloader {
+actor LinkCollectorDownloader {
     private static let logger = Logger()
     
-    static func download(from urlString: String) async -> (URL?, String?) {
-        guard let url = URL(string: urlString) else {
-            logger.log("Invalid url: \(urlString, privacy: .public)")
+    private static let httpSchemePrefix = "http://"
+    private static let httpsSchemePrefix = "https://"
+    
+    private let urlString: String
+    
+    init(url: String) {
+        self.urlString = url
+    }
+    
+    public func getUrlAndHtml() async -> (URL?, String?) {
+        var url: URL?
+        var html: String?
+        
+        if isValid() {
+            (url, html) = await download()
+        } else {
+            (url, html) = await download(schemePrefix: LinkCollectorDownloader.httpsSchemePrefix)
+            if html == nil {
+                (url, html) = await download(schemePrefix: LinkCollectorDownloader.httpSchemePrefix)
+            }
+        }
+        return (url, html)
+    }
+    
+    private func download(schemePrefix: String? = nil) async -> (URL?, String?) {
+        guard let url = URL(string: "\(schemePrefix ?? "")\(urlString)") else {
+            LinkCollectorDownloader.logger.log("Invalid url: \(self.urlString, privacy: .public)")
             return (nil, nil)
         }
         
@@ -22,24 +46,32 @@ class LinkCollectorDownloader {
             let (data, _) = try await URLSession.shared.data(from: url)
             return (url, String(data: data, encoding: .utf8))
         } catch {
-            logger.log("Error while downloading data from \(url)")
+            LinkCollectorDownloader.logger.log("Error while downloading data from \(self.urlString)")
             return (url, nil)
         }
     }
     
-    static func isValid(urlString: String) -> Bool {
+    public func isValid() -> Bool {
         guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
             return false
         }
         return scheme == "http" || scheme == "https"
     }
     
-    static func findFavicon(url: URL) async -> Data? {
+    public func findFavicon() async -> Data? {
+        guard let url = URL(string: urlString) else {
+            LinkCollectorDownloader.logger.log("Invalid url: \(self.urlString, privacy: .public)")
+            return nil
+        }
+        
         do {
-            let favicon = try await FaviconFinder(url: url).downloadFavicon()
-            return favicon.data
+            let favicon = try await FaviconFinder(url: url, configuration: .init(preferredSource: .ico, acceptHeaderImage: true))
+                .fetchFaviconURLs()
+                .download()
+                .largest()
+            return favicon.image?.data
         } catch {
-            self.logger.log("Cannot find favicon from \(url, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            LinkCollectorDownloader.logger.log("Cannot find favicon from \(self.urlString, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }

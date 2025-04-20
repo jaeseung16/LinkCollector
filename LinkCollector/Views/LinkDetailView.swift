@@ -64,11 +64,14 @@ struct LinkDetailView: View {
                 
                 entity.url.map {
                     WebView(url: $0)
+                        .environmentObject(viewModel)
                         .shadow(color: Color.gray, radius: 1.0)
                         .padding()
                 }
             }
+            #if canImport(UIKit)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .alert(isPresented: $viewModel.showAlert, content: {
                 Alert(title: Text("Unable to Save Data"),
                       message: Text(viewModel.message),
@@ -80,6 +83,7 @@ struct LinkDetailView: View {
                              note: entity.note ?? "",
                              tags: tags)
                     .environmentObject(viewModel)
+                    .frame(height: 0.9 * geometry.size.height)
             }
         }
     }
@@ -88,7 +92,9 @@ struct LinkDetailView: View {
         HStack {
             Spacer()
             
-            #if targetEnvironment(macCatalyst)
+            #if canImport(UIKit)
+            openInBrowser(geometry: geometry)
+            #else
             openInBrowser(geometry: geometry)
                 .onHover(perform: { hovering in
                     if hovering {
@@ -97,13 +103,13 @@ struct LinkDetailView: View {
                         NSCursor.pop()
                     }
                 })
-            #else
-            openInBrowser(geometry: geometry)
             #endif
             
             Spacer()
             
-            #if targetEnvironment(macCatalyst)
+            #if canImport(UIKit)
+            note(geometry: geometry)
+            #else
             note(geometry: geometry)
                 .onHover(perform: { hovering in
                     if hovering {
@@ -112,13 +118,13 @@ struct LinkDetailView: View {
                         NSCursor.pop()
                     }
                 })
-            #else
-            note(geometry: geometry)
             #endif
             
             Spacer()
             
-            #if targetEnvironment(macCatalyst)
+            #if canImport(UIKit)
+            editLinkView()
+            #else
             editLinkView()
                 .onHover(perform: { hovering in
                     if hovering {
@@ -127,8 +133,6 @@ struct LinkDetailView: View {
                         NSCursor.pop()
                     }
                 })
-            #else
-            editLinkView()
             #endif
             
             Spacer()

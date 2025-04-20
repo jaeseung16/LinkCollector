@@ -9,14 +9,15 @@ import Foundation
 import Combine
 import CoreLocation
 import CoreData
-import UserNotifications
 import os
 import Persistence
 import SwiftUI
 import CoreSpotlight
 
+@MainActor
 class LinkCollectorViewModel: NSObject, ObservableObject {
     @AppStorage("spotlightLinkIndexing") private var spotlightLinkIndexing: Bool = false
+    @AppStorage("oldIndexDeleted") private var oldIndexDeleted: Bool = false
     
     static let unknown = "Unknown"
     
@@ -25,9 +26,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     private let contentsJson = "contents.json"
     
     private let persistence: Persistence
-    private var persistenceContainer: NSPersistentCloudKitContainer {
-        persistence.cloudContainer!
-    }
     
     private var subscriptions: Set<AnyCancellable> = []
     
@@ -48,6 +46,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     private let persistenceHelper: PersistenceHelper
+    private let searchHelper: SearchHelper
     
     private(set) var linkIndexer: LinkSpotlightDelegate?
     private var spotlightFoundLinks: [CSSearchableItem] = []
@@ -56,6 +55,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     init(persistence: Persistence) {
         self.persistence = persistence
         self.persistenceHelper = PersistenceHelper(persistence: persistence)
+        
+        self.searchHelper = SearchHelper(persistence: persistence)
         
         super.init()
         
@@ -70,31 +71,50 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
         
-        if let linkIndexer: LinkSpotlightDelegate = self.persistenceHelper.getSpotlightDelegate() {
-            self.linkIndexer = linkIndexer
-            self.toggleIndexing(self.linkIndexer, enabled: true)
-            NotificationCenter.default.addObserver(self, selector: #selector(defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
-        }
+        fetchAll()
         
-        logger.log("spotlightLinkIndexing=\(self.spotlightLinkIndexing, privacy: .public)")
-        if !spotlightLinkIndexing {
-            DispatchQueue.main.async {
-                self.indexLinks()
-                self.spotlightLinkIndexing.toggle()
+        Task {
+            if await self.searchHelper.isReady() {
+                logger.log("init: oldIndexDeleted=\(self.oldIndexDeleted, privacy: .public)")
+                if !self.oldIndexDeleted {
+                    await self.searchHelper.refresh()
+                    self.spotlightLinkIndexing = false
+                    self.oldIndexDeleted = true
+                }
                 
+                logger.log("init: spotlightIndexing=\(self.spotlightLinkIndexing, privacy: .public)")
+                if !spotlightLinkIndexing {
+                    await self.searchHelper.startIndexing()
+                    self.indexLinks()
+                    self.spotlightLinkIndexing = true
+                }
+                
+                $searchString
+                    .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+                    .sink { _ in
+                        self.searchLink()
+                    }
+                    .store(in: &subscriptions)
             }
+            
+            NotificationCenter.default
+                .publisher(for: UserDefaults.didChangeNotification)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in
+                    self?.defaultsChanged()
+                }
+                .store(in: &subscriptions)
+            
         }
         
     }
     
     // MARK: - CoreSpotlight
     @objc private func defaultsChanged() -> Void {
-        if !self.spotlightLinkIndexing {
-            DispatchQueue.main.async {
-                self.toggleIndexing(self.linkIndexer, enabled: false)
-                self.toggleIndexing(self.linkIndexer, enabled: true)
-                self.spotlightLinkIndexing.toggle()
-            }
+        if !spotlightLinkIndexing {
+            toggleIndexing(linkIndexer, enabled: false)
+            toggleIndexing(linkIndexer, enabled: true)
+            spotlightLinkIndexing.toggle()
         }
     }
     
@@ -109,36 +129,20 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     private func indexLinks() -> Void {
         logger.log("Indexing \(self.links.count, privacy: .public) links")
-        index<LinkEntity>(links, indexName: LinkPilerConstants.linkIndexName.rawValue)
-    }
-    
-    private func index<T: NSManagedObject>(_ entities: [T], indexName: String) {
-        let searchableItems: [CSSearchableItem] = entities.compactMap { (entity: T) -> CSSearchableItem? in
-            guard let attributeSet = attributeSet(for: entity) else {
-                self.logger.log("Cannot generate attribute set for \(entity, privacy: .public)")
-                return nil
+        Task {
+            for link in links {
+                await addToIndex(link)
             }
-            return CSSearchableItem(uniqueIdentifier: entity.objectID.uriRepresentation().absoluteString, domainIdentifier: LinkPilerConstants.domainIdentifier.rawValue, attributeSet: attributeSet)
-        }
-        
-        logger.log("Adding \(searchableItems.count) items to index=\(indexName, privacy: .public)")
-        
-        CSSearchableIndex(name: indexName).indexSearchableItems(searchableItems) { error in
-            guard let error = error else {
-                return
-            }
-            self.logger.log("Error while indexing \(T.self): \(error.localizedDescription, privacy: .public)")
         }
     }
     
-    private func attributeSet(for object: NSManagedObject) -> CSSearchableItemAttributeSet? {
-        if let link = object as? LinkEntity {
-            let attributeSet = CSSearchableItemAttributeSet(contentType: .text)
-            attributeSet.title = link.title
-            attributeSet.displayName = link.title
-            return attributeSet
-        }
-        return nil
+    private func addToIndex(_ link: LinkEntity) async -> Void {
+        let attributeSet = SearchAttributeSet(uid: link.objectID.uriRepresentation().absoluteString,
+                                              url: link.url,
+                                              title: link.title,
+                                              note: link.note,
+                                              locality: link.locality)
+        await searchHelper.index(attributeSet)
     }
     
     func searchLink() -> Void {
@@ -151,32 +155,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     private func searchLinks() -> Void {
-        let escapedText = searchString.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
-        let queryString = "(title == \"*\(escapedText)*\"cd)"
-        
-        linkSearchQuery = CSSearchQuery(queryString: queryString, attributes: ["title"])
-        
-        linkSearchQuery?.foundItemsHandler = { items in
-            DispatchQueue.main.async {
-                self.spotlightFoundLinks += items
-            }
+        Task {
+            let items = await searchHelper.search(searchString)
+            fetchLinks(items)
         }
-        
-        linkSearchQuery?.completionHandler = { error in
-            if let error = error {
-                self.logger.log("Searching \(self.searchString) came back with error: \(error.localizedDescription, privacy: .public)")
-            } else {
-                DispatchQueue.main.async {
-                    self.fetchLinks(self.spotlightFoundLinks)
-                    self.spotlightFoundLinks.removeAll()
-                }
-            }
-        }
-        
-        linkSearchQuery?.start()
     }
-    
-    private func fetchLinks(_ items: [CSSearchableItem]) {
+        
+    private func fetchLinks(_ items: [String]) {
         logger.log("Fetching \(items.count) links")
         let fetched = fetch(LinkEntity.self, items)
         logger.log("fetched.count=\(fetched.count)")
@@ -190,6 +175,16 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             return lastupd1 > lastupd2
         })
         logger.log("Found \(self.links.count) links")
+    }
+    
+    private func fetch<Element>(_ type: Element.Type, _ items: [String]) -> [Element] where Element: NSManagedObject {
+        return items.compactMap { (item: String) -> Element? in
+            guard let url = URL(string: item) else {
+                self.logger.log("url is nil for item=\(item)")
+                return nil
+            }
+            return persistenceHelper.find(for: url) as? Element
+        }
     }
     
     private func fetch<Element>(_ type: Element.Type, _ items: [CSSearchableItem]) -> [Element] where Element: NSManagedObject {
@@ -265,17 +260,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     // MARK: - Download
     
     private func getUrlAndHtml(from urlString: String) async -> (URL?, String?) {
-        var url: URL?
-        var html: String?
-        if LinkCollectorDownloader.isValid(urlString: urlString) {
-            (url, html) = await LinkCollectorDownloader.download(from: urlString)
-        } else {
-            (url, html) = await LinkCollectorDownloader.download(from: "https://\(urlString)")
-            if html == nil {
-                (url, html) = await LinkCollectorDownloader.download(from: "http://\(urlString)")
-            }
-        }
-        return (url, html)
+        let downloader = LinkCollectorDownloader(url: urlString)
+        return await downloader.getUrlAndHtml()
     }
 
     func process(urlString: String) async -> (URL?, String?) {
@@ -291,32 +277,32 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         return (url, title)
     }
     
-    func findFavicon(url: URL) async -> Data? {
-        return await LinkCollectorDownloader.findFavicon(url: url)
+    func findFavicon(from urlString: String) async -> Data? {
+        let downloader = LinkCollectorDownloader(url: urlString)
+        return await downloader.findFavicon()
     }
     
     // MARK: - Persistence
-    var tagDTO = TagDTO(name: "", link: nil) {
-        didSet {
-            if let tagEntity = getTagEntity(with: tagDTO.name) {
-                if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
-                    if let links = tagEntity.links, !links.contains(linkEntity) {
-                        tagEntity.addToLinks(linkEntity)
-                    }
-                }
-            } else {
-                let entity = TagEntity(context: persistenceContainer.viewContext)
-                entity.id = UUID()
-                entity.name = tagDTO.name
-                entity.created = Date()
-            }
-            
-            saveContext { error in
-                self.logger.log("While saving \(String(describing: self.tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-                DispatchQueue.main.async {
-                    self.message = "Cannot save tag: \(self.tagDTO.name)"
+    
+    func saveTag(_ tagDTO: TagDTO) -> Void {
+        if let tagEntity = getTagEntity(with: tagDTO.name) {
+            if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
+                if let links = tagEntity.links, !links.contains(linkEntity) {
+                    tagEntity.addToLinks(linkEntity)
                 }
             }
+        } else {
+            let entity = TagEntity(context: persistenceHelper.viewContext)
+            entity.id = UUID()
+            entity.name = tagDTO.name
+            entity.created = Date()
+        }
+        
+        do {
+            try save()
+        } catch {
+            logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save tag: \( tagDTO.name)"
         }
     }
 
@@ -324,8 +310,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var tags = [TagEntity]()
     
     func fetchAll() {
+        searchString = ""
         fetchLinks()
         fetchTags()
+    }
+    
+    var firstDate: Date {
+        return links.last?.created ?? Date()
     }
     
     private func fetchLinks() -> Void {
@@ -343,18 +334,20 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) -> Void {
         let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
         
-        saveContext { error in
-            self.logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-            DispatchQueue.main.async {
-                self.message = "Cannot save link: \(String(describing: title))"
-            }
+        do {
+            try save()
+        } catch {
+            logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save link: \(String(describing: title))"
         }
         
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
         for tag in tags {
-            self.tagDTO = TagDTO(name: tag.name ?? "", link: linkDTO)
+            saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
         }
+        
+        fetchAll()
     }
     
     func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
@@ -363,20 +356,24 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             return
         }
         
-        linkEntity.title = link.title
-        linkEntity.note = link.note
-        
-        if let tagEntites = linkEntity.tags {
-            linkEntity.removeFromTags(tagEntites)
-        }
-        linkEntity.addToTags(NSSet(array: tags))
        
-        saveContext { error in
-            self.logger.log("While updating \(link) with \(tags) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-            DispatchQueue.main.async {
+            linkEntity.title = link.title
+            linkEntity.note = link.note
+            
+            if let tagEntites = linkEntity.tags {
+                linkEntity.removeFromTags(tagEntites)
+            }
+            linkEntity.addToTags(NSSet(array: tags))
+            
+            do {
+                try save()
+            } catch {
+                logger.log("While updating \(link) with \(tags) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update link: \(link)"
             }
-        }
+            
+            fetchAll()
+        
     }
     
     func remove(tag: String, from link: LinkDTO) {
@@ -384,12 +381,14 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             tagEntity.removeFromLinks(linkEntity)
         }
         
-        saveContext { error in
-            self.logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
-            DispatchQueue.main.async {
-                self.message = "Cannot save link = \(link.title)"
-            }
+        do {
+            try save()
+        } catch {
+            logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save link = \(link.title)"
         }
+        
+        fetchAll()
     }
     
     func getTagList(of link: LinkEntity) -> [String] {
@@ -441,35 +440,41 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         persistenceHelper.delete(tag)
     }
     
-    func saveContext(completionHandler: ((Error) -> Void)? = nil) -> Void {
-        do {
-            try persistenceHelper.saveContext()
-        } catch {
-            completionHandler?(error)
-        }
-        
-        DispatchQueue.main.async {
-            self.fetchAll()
+    func save() throws -> Void {
+        Task {
+            try await persistenceHelper.save()
         }
     }
     
     // MARK: - Persistence History Request
     private func fetchUpdates(_ notification: Notification) -> Void {
-        persistence.fetchUpdates(notification) { result in
-            switch result {
-            case .success(_):
-                return
-            case .failure(let error):
-                self.logger.log("Error while updating history: \(error.localizedDescription, privacy: .public) \(Thread.callStackSymbols, privacy: .public)")
-                
-                if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-                    self.logger.log("version=\(version, privacy: .public)")
-                    if version == "1.4.1" {
-                        self.logger.log("try to invalidate token")
-                        self.persistence.invalidateHistoryToken()
-                    }
+        Task {
+            do {
+                let objectIDs = try await persistence.fetchUpdates()
+                for objectId in objectIDs {
+                    await addToIndex(objectId)
                 }
+            } catch {
+                logger.log("Error while updating history: notification=\(notification)\n\(error.localizedDescription, privacy: .public)\n\(Thread.callStackSymbols, privacy: .public)")
             }
+        }
+    }
+    
+    private func addToIndex(_ objectID: NSManagedObjectID) async -> Void {
+        guard let linkEntity = persistenceHelper.find(with: objectID) as? LinkEntity else {
+            remove(with: objectID.uriRepresentation().absoluteString)
+            logger.log("Removed from index: \(objectID)")
+            return
+        }
+        
+        await addToIndex(linkEntity)
+    }
+    
+    private func remove(with identifier: String) {
+        guard let linkIndexer = linkIndexer, let indexName = linkIndexer.indexName() else { return }
+        
+        CSSearchableIndex(name: indexName).deleteSearchableItems(withIdentifiers: [identifier]) { error in
+            self.logger.log("Can't delete an item with identifier=\(identifier, privacy: .public)")
         }
     }
     
@@ -504,9 +509,24 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
     }
     
+    // MARK: - Export links as a bookmark file
+    private let bookmarksFileName = "bookmarks.html"
+    
+    func generateBookmarkFile(_ links: [LinkEntity]) -> URL {
+        let bookmarkGenerator = BookmarkGenerator(links: links)
+        let url = URL.documentsDirectory.appending(path: bookmarksFileName)
+        do {
+            try bookmarkGenerator.getBookmarkFile()
+                .write(to: url, atomically: true, encoding: .utf8)
+        } catch {
+            logger.log("Error while writing bookmark file: \(error.localizedDescription, privacy: .public)")
+        }
+        return url
+    }
+    
 }
 
-extension LinkCollectorViewModel: CLLocationManagerDelegate {
+extension LinkCollectorViewModel: @preconcurrency CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
       guard let location = locations.last else { return }
       userLatitude = location.coordinate.latitude

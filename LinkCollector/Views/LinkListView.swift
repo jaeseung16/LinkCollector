@@ -6,71 +6,93 @@
 //
 
 import SwiftUI
-import CoreSpotlight
 
 struct LinkListView: View {
     @EnvironmentObject private var viewModel: LinkCollectorViewModel
     
     @State private var showAddLinkView = false
-    @State private var showTagListView = false
     @State private var showAlert = false
     @State private var message = ""
     @State private var searchString = ""
     @State private var selected: UUID?
-    @State private var showDateRangePickerView = false
+    @State private var presentFilterItemsView = false
     
     @State private var selectedTags = Set<TagEntity>()
     @State private var dateInterval: DateInterval?
     
     var filteredLinks: [LinkEntity] {
         viewModel.links.filter { link in
-            var filter = true
-            if let tags = link.tags as? Set<TagEntity>, !selectedTags.isEmpty && selectedTags.intersection(tags).isEmpty {
-                filter = false
+            if link.created == nil {
+                return false
             }
-            return filter
-        }
-        .filter { link in
-            var filter = true
+            
+            var filterByTag = true
+            if let tags = link.tags as? Set<TagEntity> {
+                filterByTag = selectedTags.isEmpty || !selectedTags.intersection(tags).isEmpty
+            }
+            
+            var filterByDateInterval = true
             if let dateInterval = dateInterval, let created = link.created {
-                filter = dateInterval.contains(created)
+                filterByDateInterval = dateInterval.contains(created)
             }
-            return filter
+            
+            return filterByTag && filterByDateInterval
         }
     }
     
+    @Binding var selectedLink: LinkEntity?
+    
     var body: some View {
-        NavigationView {
-            VStack(alignment: .center) {
-                List {
-                    ForEach(filteredLinks, id: \.id) { link in
-                        if link.created != nil {
-                            NavigationLink(tag: link.id!, selection: $selected) {
-                                LinkDetailView(entity: link, tags: link.getTagList())
-                                    .navigationTitle(link.title ?? "")
-                            } label: {
-                                LinkLabel(link: link)
-                            }
-                        }
+        GeometryReader { geometry in
+            List(selection: $selectedLink) {
+                // .onDelete works better with id: \.self ?
+                ForEach(filteredLinks, id: \.self) { link in
+                    NavigationLink(value: link) {
+                        LinkLabel(link: link)
                     }
-                    .onDelete(perform: self.removeLink)
                 }
-                .listStyle(GroupedListStyle())
+                .onDelete(perform: removeLink)
             }
-            .navigationBarTitle("Links")
-            .navigationBarItems(trailing: navigationBarItems())
+            #if canImport(UIKit)
+            .listStyle(GroupedListStyle())
+            #else
+            .listStyle(DefaultListStyle())
+            #endif
+            .toolbar {
+                ToolbarItemGroup {
+                    Button {
+                        showAddLinkView = true
+                    } label: {
+                        Label("Add", systemImage: "plus")
+                    }
+                    .foregroundColor(Color.blue)
+                    
+                    Button  {
+                        presentFilterItemsView = true
+                    } label: {
+                        Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
+                    }
+                    
+                    ShareLink("Export Links", item: generateBookmarkFile())
+                }
+            }
             .sheet(isPresented: $showAddLinkView) {
                 AddLinkView()
                     .environmentObject(viewModel)
             }
-            .sheet(isPresented: $showTagListView) {
-                SelectTagsView(selectedTags: $selectedTags)
-            }
-            .sheet(isPresented: $showDateRangePickerView) {
+            .sheet(isPresented: $presentFilterItemsView) {
                 if let start = dateInterval?.start, let end = dateInterval?.end {
-                    DateRangePickerView(dateInterval: $dateInterval, start: start, end: end)
+                    FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval, start: start, end: end)
+                        .environmentObject(viewModel)
+                        #if canImport(AppKit)
+                        .frame(minHeight: 0.7 * geometry.size.height, maxHeight: 0.8 * geometry.size.height)
+                        #endif
                 } else {
-                    DateRangePickerView(dateInterval: $dateInterval)
+                    FilterView(selectedTags: $selectedTags, dateInterval: $dateInterval, start: viewModel.firstDate, end: Date())
+                        .environmentObject(viewModel)
+                        #if canImport(AppKit)
+                        .frame(minHeight: 0.7 * geometry.size.height, maxHeight: 0.8 * geometry.size.height)
+                        #endif
                 }
             }
             .alert("Unable to Save Data", isPresented: $showAlert) {
@@ -86,12 +108,12 @@ struct LinkListView: View {
             .refreshable {
                 viewModel.fetchAll()
             }
-        }
-        .onChange(of: viewModel.selected) { newValue in
-            selected = newValue
-        }
-        .onChange(of: viewModel.searchString) { _ in
-            viewModel.searchLink()
+            .onChange(of: viewModel.selected) {
+                selected = viewModel.selected
+            }
+            .onChange(of: viewModel.searchString) {
+                viewModel.searchLink()
+            }
         }
     }
     
@@ -101,36 +123,18 @@ struct LinkListView: View {
             viewModel.delete(link: link)
         }
         
-        viewModel.saveContext { _ in
-            DispatchQueue.main.async {
-                message = "Failed to delete the selected link"
-                showAlert = true
-            }
+        do {
+            try viewModel.save()
+        } catch {
+            message = "Failed to delete the selected link"
+            showAlert = true
         }
+        
+        viewModel.fetchAll()
     }
     
-    private func navigationBarItems() -> some View {
-        HStack {
-            Button(action: {
-                self.showDateRangePickerView = true
-            }, label: {
-                Label("Date Range", systemImage: "calendar")
-            })
-            .foregroundColor(Color.blue)
-            
-            Button(action: {
-                self.showTagListView = true
-            }, label: {
-                TagLabel(title: "Tags")
-            })
-            .foregroundColor(Color.blue)
-            
-            Button(action: {
-                self.showAddLinkView = true
-            }, label: {
-                Label("Add", systemImage: "plus")
-            })
-            .foregroundColor(Color.blue)
-        }
+    private func generateBookmarkFile() -> URL {
+        return viewModel.generateBookmarkFile(filteredLinks)
     }
+    
 }
