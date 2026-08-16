@@ -766,7 +766,7 @@
 				CURRENT_PROJECT_VERSION = 51;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -794,7 +794,7 @@
 				CURRENT_PROJECT_VERSION = 51;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1199,7 +1199,7 @@
 			repositoryURL = "https://github.com/jaeseung16/PersistenceSwift";
 			requirement = {
 				kind = exactVersion;
-				version = 0.2.15;
+				version = 0.2.18;
 			};
 		};
 		90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
@@ -1207,7 +1207,7 @@
 			repositoryURL = "https://github.com/scinfu/SwiftSoup";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.0;
+				minimumVersion = 2.13.7;
 			};
 		};
 		90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */ = {
@@ -1215,7 +1215,7 @@
 			repositoryURL = "https://github.com/will-lumley/FaviconFinder";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 5.1.0;
+				minimumVersion = 5.1.5;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

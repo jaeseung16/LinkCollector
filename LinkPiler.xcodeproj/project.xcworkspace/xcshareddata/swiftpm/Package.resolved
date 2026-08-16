@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/will-lumley/FaviconFinder",
       "state" : {
-        "revision" : "9279f4371f4877ca302ba3bf1015f3f58ae4a56c",
-        "version" : "5.1.4"
+        "revision" : "11c2b27fbdc5fdfe0bf3addac01d27c40299a819",
+        "version" : "5.1.5"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jaeseung16/PersistenceSwift",
       "state" : {
-        "revision" : "8d9a37463003ee4287c198d6ecf8ae7c6a4dc537",
-        "version" : "0.2.15"
+        "revision" : "097fbf921b47f63dc2960f1f2ad807372e5b34d9",
+        "version" : "0.2.18"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup",
       "state" : {
-        "revision" : "18ad8b8ff0f03f3c0a5544ffccfa2ea1c051ae6e",
-        "version" : "2.8.0"
+        "revision" : "8d6ad267714cac3ae747cefdd21f7a6665006e1f",
+        "version" : "2.13.7"
       }
     }
   ],
