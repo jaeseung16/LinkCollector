@@ -41,6 +41,7 @@
 		905E9C4D25897B870090BFC6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4C25897B870090BFC6 /* ContentView.swift */; };
 		905E9C5025897B870090BFC6 /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		905E9C5225897B890090BFC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5125897B890090BFC6 /* Assets.xcassets */; };
+		90AC10012026081600000002 /* AppIcon_iOS26.icon in Resources */ = {isa = PBXBuildFile; fileRef = 90AC10012026081600000001 /* AppIcon_iOS26.icon */; };
 		905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 905E9C5425897B890090BFC6 /* Preview Assets.xcassets */; };
 		905E9C6325897DE00090BFC6 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		9078D06D2A9A5DDE0089CA21 /* HTMLParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */; };
@@ -175,6 +176,7 @@
 		905E9C4C25897B870090BFC6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		905E9C4F25897B870090BFC6 /* LinkCollector.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LinkCollector.xcdatamodel; sourceTree = "<group>"; };
 		905E9C5125897B890090BFC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		90AC10012026081600000001 /* AppIcon_iOS26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon_iOS26.icon; sourceTree = "<group>"; };
 		905E9C5425897B890090BFC6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		905E9C5925897B890090BFC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		905E9C6025897D960090BFC6 /* LinkCollector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LinkCollector.entitlements; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 				90CFB3372D7DDDE100ED620E /* LinkPilerApp.swift */,
 				900EA7BA28305A380055CBC4 /* LinkPilerConstants.swift */,
 				905E9C5125897B890090BFC6 /* Assets.xcassets */,
+				90AC10012026081600000001 /* AppIcon_iOS26.icon */,
 				905E9C5925897B890090BFC6 /* Info.plist */,
 				905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */,
 				905E9C5325897B890090BFC6 /* Preview Content */,
@@ -604,6 +607,7 @@
 				90BAF1602D90BBDA009C9E8B /* LaunchScreen.storyboard in Resources */,
 				905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */,
 				905E9C5225897B890090BFC6 /* Assets.xcassets in Resources */,
+				90AC10012026081600000002 /* AppIcon_iOS26.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1017,7 +1021,7 @@
 		905E9C5D25897B890090BFC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_iOS26;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -1049,7 +1053,7 @@
 		905E9C5E25897B890090BFC6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_iOS26;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
