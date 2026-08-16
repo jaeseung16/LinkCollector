@@ -1027,12 +1027,12 @@
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1059,12 +1059,12 @@
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";

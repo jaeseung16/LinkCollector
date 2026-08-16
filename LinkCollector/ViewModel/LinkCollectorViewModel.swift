@@ -7,8 +7,8 @@
 
 import Foundation
 import Combine
-import CoreLocation
 import CoreData
+import MapKit
 import os
 import Persistence
 import SwiftUI
@@ -228,31 +228,22 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     // MARK: - LocationManager
     func lookUpCurrentLocation() {
-        if let lastLocation = locationManager.location {
-            let geocoder = CLGeocoder()
-            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
-                if error == nil {
-                    self.userLocality = placemarks?[0].locality ?? LinkCollectorViewModel.unknown
-                } else {
-                    self.userLocality = LinkCollectorViewModel.unknown
-                }
-            }
-        } else {
-            self.userLocality = LinkCollectorViewModel.unknown
+        Task {
+            self.userLocality = await lookUpCurrentLocation()
         }
     }
-    
+
     func lookUpCurrentLocation() async -> String {
-        if let lastLocation = locationManager.location {
-            do {
-                let geocoder = CLGeocoder()
-                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
-                return placemarks.isEmpty ? LinkCollectorViewModel.unknown : placemarks[0].locality ?? LinkCollectorViewModel.unknown
-            } catch {
-                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
-                return LinkCollectorViewModel.unknown
-            }
-        } else {
+        guard let lastLocation = locationManager.location,
+              let request = MKReverseGeocodingRequest(location: lastLocation) else {
+            return LinkCollectorViewModel.unknown
+        }
+
+        do {
+            let mapItems = try await request.mapItems
+            return mapItems.first?.addressRepresentations?.cityName ?? LinkCollectorViewModel.unknown
+        } catch {
+            logger.log("Cannot find any descriptions for the location: \(lastLocation)")
             return LinkCollectorViewModel.unknown
         }
     }
