@@ -10,7 +10,7 @@ import os
 @preconcurrency import FaviconFinder
 import CoreData
 import Persistence
-import CoreLocation
+import MapKit
 
 class ShareViewController: NSViewController {
     private let logger = Logger()
@@ -52,17 +52,23 @@ class ShareViewController: NSViewController {
         }
     }
     
+    private func lookUpCurrentLocation() {
+        Task {
+            self.locality = await lookUpCurrentLocation()
+        }
+    }
+
     private func lookUpCurrentLocation() async -> String {
-        if let lastLocation = location {
-            do {
-                let geocoder = CLGeocoder()
-                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
-                return placemarks.isEmpty ? unknown : placemarks[0].locality ?? unknown
-            } catch {
-                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
-                return unknown
-            }
-        } else {
+        guard let lastLocation = locationManager.location,
+              let request = MKReverseGeocodingRequest(location: lastLocation) else {
+            return unknown
+        }
+
+        do {
+            let mapItems = try await request.mapItems
+            return mapItems.first?.addressRepresentations?.cityName ?? unknown
+        } catch {
+            logger.log("Cannot find any descriptions for the location: \(lastLocation)")
             return unknown
         }
     }
