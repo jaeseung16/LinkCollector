@@ -68,6 +68,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         NotificationCenter.default
           .publisher(for: .NSPersistentStoreRemoteChange)
+          .receive(on: DispatchQueue.main)
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
         
