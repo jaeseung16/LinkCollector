@@ -56,7 +56,7 @@ There is no shared framework. Code used by more than one target is given multipl
 
 **Platform branching** is done inline with `#if canImport(UIKit)` / `#else` (AppKit) throughout views, `AppDelegate`, `WebView`, and the widget provider — not with separate files.
 
-**Concurrency:** `SWIFT_STRICT_CONCURRENCY = complete` while still on Swift 5 language mode. `LinkCollectorViewModel` and `AppDelegate` are `@MainActor`; `HTMLParser`, `LinkCollectorDownloader`, and `SearchHelper` are actors; several imports are `@preconcurrency`. Preserve these annotations when editing — moving to Swift 6 language mode is planned but not done.
+**Concurrency:** all four targets are on **Swift 6 language mode** with `SWIFT_STRICT_CONCURRENCY = complete`. `LinkCollectorViewModel` and `AppDelegate` are `@MainActor`; `HTMLParser`, `LinkCollectorDownloader`, and `SearchHelper` are actors; several imports are `@preconcurrency`. Preserve these annotations when editing.
 
 ## Conventions
 
@@ -72,5 +72,5 @@ After completing each step or major task, append a summary of it to `docs/worklo
 
 ## Notes
 
-- `2026.md` (on the `2026` branch) is the working plan for the 2.0 release: Liquid Glass adoption, `NavigationSplitView` vs. adaptive `TabView`, Apple Intelligence link summarization, Swift 6 language mode, and an eventual SwiftData migration. Read it before starting work in those areas.
+- `2026.md` (on the `2026` branch) is the working plan for the 2.0 release: Liquid Glass adoption, `NavigationSplitView` vs. adaptive `TabView`, Apple Intelligence link summarization, and an eventual SwiftData migration (its toolchain/deployment-target and Swift 6 items are done). Read it before starting work in those areas.
 - `README.md` is stale (it references `LinkCollector.xcodeproj` and Xcode 12.5.1); the "How to Use" section still describes current app behavior.
