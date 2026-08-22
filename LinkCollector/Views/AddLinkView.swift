@@ -102,7 +102,6 @@ struct AddLinkView: View {
             },
             label: {
                 Label("Cancel", systemImage: "chevron.backward")
-                    .foregroundColor(.blue)
             })
             
             Spacer()
@@ -117,7 +116,6 @@ struct AddLinkView: View {
             },
             label: {
                 Label("Save", systemImage: "square.and.arrow.down")
-                    .foregroundColor(.blue)
             })
         }
     }
@@ -163,7 +161,6 @@ struct AddLinkView: View {
                 addNewTag.toggle()
             } label: {
                 Label("Add tags", systemImage: "plus")
-                    .foregroundColor(.blue)
             }
         }
     }

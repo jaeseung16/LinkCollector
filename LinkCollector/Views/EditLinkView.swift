@@ -103,7 +103,6 @@ struct EditLinkView: View {
                 editTags = true
             } label: {
                 TagLabel(title: "Edit tags")
-                    .foregroundColor(Color.blue)
             }
         }
     }
@@ -115,7 +114,6 @@ struct EditLinkView: View {
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
             })
-            .foregroundColor(Color.blue)
             
             Spacer()
             

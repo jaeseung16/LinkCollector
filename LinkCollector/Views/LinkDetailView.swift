@@ -45,7 +45,7 @@ struct LinkDetailView: View {
                     .frame(width: geometry.size.width, height: 30, alignment: .center)
                     .scaledToFit()
                 
-                tagsView(geometry: geometry)
+                tagsView()
                     .padding()
                 
                 entity.created.map {
@@ -65,7 +65,6 @@ struct LinkDetailView: View {
                 entity.url.map {
                     WebView(url: $0)
                         .environmentObject(viewModel)
-                        .shadow(color: Color.gray, radius: 1.0)
                         .padding()
                 }
             }
@@ -144,7 +143,6 @@ struct LinkDetailView: View {
             Link(destination: $0) {
                 Label("Open in Browser", systemImage: "link")
             }
-            .foregroundColor(.blue)
         }
     }
     
@@ -154,7 +152,6 @@ struct LinkDetailView: View {
         } label: {
             NoteLabel(title: "note")
         }
-        .foregroundColor(.blue)
         .popover(isPresented: $showNote) {
             VStack {
                 Spacer()
@@ -177,29 +174,22 @@ struct LinkDetailView: View {
                     showNote = false
                 } label: {
                     Text("Dismiss")
-                        .foregroundColor(.blue)
                 }
             }
             .padding()
         }
     }
     
-    @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
-    
-    private func tagsView(geometry: GeometryProxy) -> some View {
-        VStack {
+    private func tagsView() -> some View {
+        VStack(alignment: .leading) {
             if !self.tags.isEmpty {
-                List {
-                    ForEach(self.tags, id: \.id) { tag in
-                        if let name = tag.name {
-                            TagLabel(title: name)
-                                .font(.body)
-                                .foregroundColor(.primary)
-                        }
+                ForEach(self.tags, id: \.id) { tag in
+                    if let name = tag.name {
+                        TagLabel(title: name)
+                            .font(.body)
+                            .foregroundColor(.primary)
                     }
                 }
-                .listStyle(PlainListStyle())
-                .frame(height: bodyTextHeight * CGFloat(self.tags.count))
             } else {
                 Text("No tags added")
                     .font(.body)
@@ -214,6 +204,5 @@ struct LinkDetailView: View {
         } label: {
             Label("EDIT", systemImage: "pencil.circle")
         }
-        .foregroundColor(.blue)
     }
 }

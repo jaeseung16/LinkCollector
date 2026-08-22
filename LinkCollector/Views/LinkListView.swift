@@ -65,7 +65,6 @@ struct LinkListView: View {
                     } label: {
                         Label("Add", systemImage: "plus")
                     }
-                    .foregroundColor(Color.blue)
                     
                     Button  {
                         presentFilterItemsView = true

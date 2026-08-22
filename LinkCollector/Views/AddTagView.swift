@@ -54,7 +54,6 @@ struct AddTagView: View {
                 dismiss.callAsFunction()
             }, label: {
                 Label("Done", systemImage: "chevron.backward")
-                    .foregroundColor(.blue)
             })
             .frame(width: geometry.size.width, alignment: .leading)
             #else
@@ -62,7 +61,6 @@ struct AddTagView: View {
                 dismiss.callAsFunction()
             }, label: {
                 Label("Done", systemImage: "chevron.backward")
-                    .foregroundColor(.blue)
             })
             .frame(width: geometry.size.width, alignment: .leading)
             .onHover(perform: { hovering in
