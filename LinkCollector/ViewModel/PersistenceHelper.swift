@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 import os
-@preconcurrency import Persistence
+import Persistence
 
 final class PersistenceHelper: Sendable {
     private static let logger = Logger()

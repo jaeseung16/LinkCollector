@@ -5,9 +5,9 @@
 //  Created by Jae Seung Lee on 3/25/25.
 //
 
-@preconcurrency import Cocoa
+import Cocoa
 import os
-@preconcurrency import FaviconFinder
+import FaviconFinder
 import CoreData
 import Persistence
 import MapKit
@@ -33,7 +33,6 @@ class ShareViewController: NSViewController {
     private var linkEntity: LinkEntity?
     private var favicon: Data?
     
-    private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
     private var location: CLLocation? {
         didSet {

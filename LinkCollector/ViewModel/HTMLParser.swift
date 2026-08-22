@@ -22,47 +22,6 @@ actor HTMLParser {
         return !ogTitle.isEmpty ? ogTitle : (!title.isEmpty ? title : HTMLParser.emptyString)
     }
     
-    func parse(url: URL, html: String, completionHandler: @escaping (_ result: String?) -> Void) -> Void {
-        if !populateDocument(url: url, html: html) {
-            completionHandler(nil)
-        }
-        
-        if let document = document {
-            populateTitle(document: document)
-            populateOgTitle(document: document)
-        }
-        
-        Task {
-            if let host = url.host {
-                if host.contains("youtube.com") {
-                    await populateOgTitle(url)
-                    completionHandler(titleToUse)
-                } else {
-                    completionHandler(titleToUse)
-                }
-            } else {
-                completionHandler(titleToUse)
-            }
-        }
-    }
-    
-    func parseTitle(url: URL, html: String) async -> String? {
-        if !populateDocument(url: url, html: html) {
-            return nil
-        }
-        
-        if let document = document {
-            populateTitle(document: document)
-            populateOgTitle(document: document)
-        }
-        
-        if let host = url.host, host.contains("youtube.com") {
-            await populateOgTitle(url)
-        }
-        
-        return titleToUse
-    }
-    
     private func populateDocument(url: URL, html: String) -> Bool {
         do {
             self.document = try SwiftSoup.parse(html)
@@ -129,37 +88,6 @@ actor HTMLParser {
         }
         
         return titleToUse
-    }
-    
-    private func findYouTubeTitle(_ youTubeUrl: URL, completionHandler: @escaping (_ result: YouTubeOEmbed) -> Void) {
-        guard
-            let escapedString = youTubeUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-            let url = URL(string: "https://www.youtube.com/oembed?url=\(escapedString)")
-        else {
-            logger.log("Check if url belongs to YouTube: \(youTubeUrl, privacy: .public)")
-            return
-        }
-        
-        logger.log("url = \(url, privacy: .public)")
-        
-        Task {
-            do {
-                let (data, response) = try await URLSession.shared.data(from: url)
-                self.logger.log("data = \(data, privacy: .public)")
-                
-                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                    let statusCode = (response as? HTTPURLResponse)!.statusCode
-                    self.logger.log("The status code was not between 200 and 299: \(statusCode, privacy: .public)")
-                    throw HTMLParserError.invalidServerResponse
-                }
-                
-                let youTubeOMebed = try JSONDecoder().decode(YouTubeOEmbed.self, from: data)
-                    
-                completionHandler(youTubeOMebed)
-            } catch {
-                self.logger.log("Error while finding youtube title for url=\(url): \(error.localizedDescription, privacy: .public)")
-            }
-        }
     }
     
     private func findTitle(youTubeUrl: URL) async throws -> String {

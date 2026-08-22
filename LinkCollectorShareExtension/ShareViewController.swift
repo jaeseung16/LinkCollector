@@ -5,11 +5,11 @@
 //  Created by Jae Seung Lee on 8/8/21.
 //
 
-@preconcurrency import UIKit
+import UIKit
 import Social
 import CoreData
 import MapKit
-@preconcurrency import FaviconFinder
+import FaviconFinder
 import Persistence
 import os
 
@@ -24,7 +24,6 @@ class ShareViewController: UIViewController {
     private let contextName = "share extension"
     private let unknown = "Unknown"
     
-    private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
     private var location: CLLocation? {
         didSet {

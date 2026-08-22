@@ -217,11 +217,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     func set(searchString: String, selected: UUID) -> Void {
-        DispatchQueue.main.async {
-            self.searchString = ""
-            self.selected = UUID()
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        self.searchString = ""
+        self.selected = UUID()
+        
+        Task {
+            try? await Task.sleep(for: .seconds(0.5))
             self.searchString = searchString
             self.selected = selected
         }
@@ -404,9 +404,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                                                              predicate: NSPredicate(format: "id == %@", argumentArray: [id]))
         let fetchedLinks = persistenceHelper.fetch(fetchRequest)
         if fetchedLinks.isEmpty {
-            DispatchQueue.main.async {
-                self.message = "Cannot find a link with id=\(id)"
-            }
+            self.message = "Cannot find a link with id=\(id)"
         }
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
@@ -417,9 +415,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                                                              predicate: NSPredicate(format: "name == %@", argumentArray: [name]))
         let fetchedTags = persistenceHelper.fetch(fetchRequest)
         if fetchedTags.isEmpty {
-            DispatchQueue.main.async {
-                self.message = "Cannot find a tag: \(name)"
-            }
+            self.message = "Cannot find a tag: \(name)"
         }
         return fetchedTags.isEmpty ? nil : fetchedTags[0]
     }
