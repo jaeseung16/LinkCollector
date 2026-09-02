@@ -111,7 +111,9 @@ struct AddLinkView: View {
             Spacer()
             
             Button(action: {
-                saveLinkAndTags()
+                Task {
+                    await saveLinkAndTags()
+                }
                 dismiss.callAsFunction()
             },
             label: {
@@ -196,8 +198,8 @@ struct AddLinkView: View {
         #endif
     }
     
-    private func saveLinkAndTags() -> Void {
-        viewModel.saveLinkAndTags(title: title, url: url, favicon: favicon, note: note, latitude: viewModel.userLatitude, longitude: viewModel.userLongitude, locality: viewModel.userLocality, tags: tags)
+    private func saveLinkAndTags() async -> Void {
+        await viewModel.saveLinkAndTags(title: title, url: url, favicon: favicon, note: note, latitude: viewModel.userLatitude, longitude: viewModel.userLongitude, locality: viewModel.userLocality, tags: tags)
     }
     
 }

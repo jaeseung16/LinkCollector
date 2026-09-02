@@ -54,10 +54,12 @@ struct ContentView: View {
             if newPhase == .active {
                 viewModel.fetchAll()
             } else {
-                do {
-                    try  viewModel.save()
-                } catch {
-                    // TODO:
+                Task {
+                    do {
+                        try await viewModel.save()
+                    } catch {
+                        viewModel.message = "Failed to save changes"
+                    }
                 }
                 viewModel.writeWidgetEntries()
             }

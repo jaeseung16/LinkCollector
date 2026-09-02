@@ -51,7 +51,11 @@ struct LinkListView: View {
                         LinkLabel(link: link)
                     }
                 }
-                .onDelete(perform: removeLink)
+                .onDelete { indexSet in
+                    Task {
+                        await removeLink(indexSet: indexSet)
+                    }
+                }
             }
             #if canImport(UIKit)
             .listStyle(GroupedListStyle())
@@ -116,14 +120,14 @@ struct LinkListView: View {
         }
     }
     
-    private func removeLink(indexSet: IndexSet) -> Void {
+    private func removeLink(indexSet: IndexSet) async -> Void {
         for index in indexSet {
             let link = filteredLinks[index]
             viewModel.delete(link: link)
         }
         
         do {
-            try viewModel.save()
+            try await viewModel.save()
         } catch {
             message = "Failed to delete the selected link"
             showAlert = true
