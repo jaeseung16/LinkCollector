@@ -69,6 +69,7 @@
 		90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90AB10022E6A0F0100AA0002 /* LinkSummarizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10012E6A0F0100AA0001 /* LinkSummarizer.swift */; };
 		90AB10042E6A0F0100AA0004 /* LinkSummarizerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10032E6A0F0100AA0003 /* LinkSummarizerError.swift */; };
+		90AB10062E6A0F0100AA0006 /* SummaryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10052E6A0F0100AA0005 /* SummaryLabel.swift */; };
 		90A290AB258FB695004988D9 /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290AA258FB695004988D9 /* Title.swift */; };
 		90A5BB8E26C4776E0044A0EA /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 905E9C6225897DE00090BFC6 /* CloudKit.framework */; };
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
@@ -194,6 +195,7 @@
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90AB10012E6A0F0100AA0001 /* LinkSummarizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSummarizer.swift; sourceTree = "<group>"; };
 		90AB10032E6A0F0100AA0003 /* LinkSummarizerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSummarizerError.swift; sourceTree = "<group>"; };
+		90AB10052E6A0F0100AA0005 /* SummaryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryLabel.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
 		90BAF15F2D90BBDA009C9E8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 				900F3FFA26D86AA500C63590 /* TitleLabel.swift */,
 				900F3FFC26D86B6300C63590 /* LocationLabel.swift */,
 				90C30D372829CC9500061A5F /* LinkLabel.swift */,
+				90AB10052E6A0F0100AA0005 /* SummaryLabel.swift */,
 			);
 			path = Labels;
 			sourceTree = "<group>";
@@ -683,6 +686,7 @@
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
 				90D332042DA091B200045ED6 /* TagListView.swift in Sources */,
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
+				90AB10062E6A0F0100AA0006 /* SummaryLabel.swift in Sources */,
 				9078D0702A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
 				90C97D712D7CAA51006195A8 /* BookmarkGenerator.swift in Sources */,

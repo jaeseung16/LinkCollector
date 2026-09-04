@@ -15,6 +15,9 @@ struct LinkDetailView: View {
     @State var showNote = false
     @State var showTags = false
     @State var showEditLinkView = false
+    @State private var showSummary = false
+    // Held here rather than read from the entity, which the view doesn't observe
+    @State private var summary = ""
     
     var entity: LinkEntity
     
@@ -84,6 +87,9 @@ struct LinkDetailView: View {
                     .environmentObject(viewModel)
                     .frame(height: 0.9 * geometry.size.height)
             }
+            .onAppear {
+                summary = entity.summary ?? ""
+            }
         }
     }
     
@@ -110,6 +116,21 @@ struct LinkDetailView: View {
             note(geometry: geometry)
             #else
             note(geometry: geometry)
+                .onHover(perform: { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                })
+            #endif
+            
+            Spacer()
+            
+            #if canImport(UIKit)
+            summaryView(geometry: geometry)
+            #else
+            summaryView(geometry: geometry)
                 .onHover(perform: { hovering in
                     if hovering {
                         NSCursor.pointingHand.push()
@@ -177,6 +198,90 @@ struct LinkDetailView: View {
                 }
             }
             .padding()
+        }
+    }
+    
+    private func summaryView(geometry: GeometryProxy) -> some View {
+        Button {
+            showSummary = true
+        } label: {
+            SummaryLabel(title: "summary")
+        }
+        .popover(isPresented: $showSummary) {
+            VStack {
+                Spacer()
+                
+                if viewModel.isSummarizing(entity) {
+                    ProgressView()
+                    
+                    Text("Summarizing this page may take a while")
+                        .font(.callout)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 0.5 * geometry.size.width)
+                } else if !summary.isEmpty {
+                    ScrollView {
+                        Text(summary)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                    }
+                    .frame(minWidth: 0.5 * geometry.size.width)
+                } else {
+                    Text("No summary added")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 0.5 * geometry.size.width)
+                }
+                
+                summaryModelUnavailable.map {
+                    Text($0)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 0.5 * geometry.size.width)
+                }
+                
+                Spacer()
+                
+                HStack {
+                    Button {
+                        Task {
+                            if let generated = await viewModel.summarize(link: entity) {
+                                summary = generated
+                            }
+                        }
+                    } label: {
+                        Text(summary.isEmpty ? "Summarize" : "Summarize Again")
+                    }
+                    .disabled(entity.url == nil || viewModel.isSummarizing(entity))
+                    
+                    Spacer()
+                    
+                    Button {
+                        showSummary = false
+                    } label: {
+                        Text("Dismiss")
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+    
+    // The summary falls back to the page's own description when the on-device model can't run, so
+    // an unavailable model is explained rather than used to disable the button.
+    private var summaryModelUnavailable: String? {
+        guard case .unavailable(let reason) = viewModel.summaryModelAvailability else {
+            return nil
+        }
+        
+        switch reason {
+        case .deviceNotEligible:
+            return "This device doesn't support Apple Intelligence, so the page's own description is used."
+        case .appleIntelligenceNotEnabled:
+            return "Apple Intelligence is turned off, so the page's own description is used."
+        case .modelNotReady:
+            return "The on-device model isn't ready yet, so the page's own description is used."
+        @unknown default:
+            return "On-device summarization isn't available, so the page's own description is used."
         }
     }
     

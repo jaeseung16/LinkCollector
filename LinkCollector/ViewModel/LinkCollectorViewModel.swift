@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import CoreData
+import FoundationModels
 import MapKit
 import os
 import Persistence
@@ -272,6 +273,85 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     func findFavicon(from urlString: String) async -> Data? {
         let downloader = LinkCollectorDownloader(url: urlString)
         return await downloader.findFavicon()
+    }
+    
+    // MARK: - Summary
+    
+    private let summarizer = LinkSummarizer()
+    
+    // Summarizing a page takes tens of seconds, so a view needs to know which links are busy
+    @Published private(set) var summarizingLinks = Set<UUID>()
+    
+    var summaryModelAvailability: SystemLanguageModel.Availability {
+        SystemLanguageModel.default.availability
+    }
+    
+    func isSummarizing(_ link: LinkEntity) -> Bool {
+        guard let id = link.id else {
+            return false
+        }
+        return summarizingLinks.contains(id)
+    }
+    
+    // Downloads the page again rather than summarizing what is stored: nothing keeps the page text,
+    // and a link saved long ago should be summarized as it reads now. Returns the summary so that a
+    // view can show it without observing the managed object.
+    func summarize(link: LinkEntity) async -> String? {
+        guard let id = link.id, let url = link.url else {
+            logger.log("Cannot summarize a link without an id and a url: \(link, privacy: .public)")
+            self.message = "Cannot summarize this link"
+            return nil
+        }
+        
+        guard !summarizingLinks.contains(id) else {
+            return nil
+        }
+        
+        summarizingLinks.insert(id)
+        defer { summarizingLinks.remove(id) }
+        
+        let (downloadedUrl, html) = await getUrlAndHtml(from: url.absoluteString)
+        
+        guard let downloadedUrl = downloadedUrl, let html = html else {
+            logger.log("Cannot download html from \(url, privacy: .public)")
+            self.message = "Cannot download the page: \(url.absoluteString)"
+            return nil
+        }
+        
+        let htmlParser = HTMLParser()
+        var summary: String?
+        
+        if let bodyText = await htmlParser.parseBodyText(url: downloadedUrl, html: html) {
+            do {
+                summary = try await summarizer.summarize(text: bodyText)
+            } catch {
+                logger.log("Cannot summarize \(url, privacy: .public): \(String(describing: error), privacy: .public)")
+            }
+        } else {
+            logger.log("Cannot extract any body text from \(url, privacy: .public)")
+        }
+        
+        // Whether the model is unavailable on this device or refused this particular page, what the
+        // page says about itself is better than showing nothing.
+        if summary == nil {
+            summary = await htmlParser.parseDescription(url: downloadedUrl, html: html)
+        }
+        
+        guard let summary = summary, !summary.isEmpty else {
+            self.message = "Cannot summarize: \(link.title ?? url.absoluteString)"
+            return nil
+        }
+        
+        link.summary = summary
+        
+        do {
+            try await save()
+        } catch {
+            logger.log("While saving a summary of \(url, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save the summary: \(link.title ?? url.absoluteString)"
+        }
+        
+        return summary
     }
     
     // MARK: - Persistence

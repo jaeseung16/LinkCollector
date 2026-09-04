@@ -25,10 +25,18 @@ actor HTMLParser {
     private var document: Document?
     private var title = HTMLParser.emptyString
     private var ogTitle = HTMLParser.emptyString
+    private var ogDescription = HTMLParser.emptyString
+    private var metaDescription = HTMLParser.emptyString
     private var bodyText = HTMLParser.emptyString
     
     private var titleToUse: String {
         return !ogTitle.isEmpty ? ogTitle : (!title.isEmpty ? title : HTMLParser.emptyString)
+    }
+    
+    // og:description is what a page says about itself; <meta name="description"> is the older form
+    // of the same thing, and plenty of pages still ship only that one.
+    private var descriptionToUse: String {
+        return !ogDescription.isEmpty ? ogDescription : metaDescription
     }
     
     private func populateDocument(url: URL, html: String) -> Bool {
@@ -82,6 +90,25 @@ actor HTMLParser {
         }
     }
     
+    private func populateDescription(document: Document) -> Void {
+        do {
+            let metaTags = try document.select("meta")
+            
+            for metaTag in metaTags {
+                let property = try metaTag.attr("property")
+                let name = try metaTag.attr("name")
+                
+                if property == "og:description" {
+                    self.ogDescription = try metaTag.attr("content")
+                } else if name == "description" {
+                    self.metaDescription = try metaTag.attr("content")
+                }
+            }
+        } catch {
+            logger.log("Cannot find any meta tags")
+        }
+    }
+    
     private func populateBodyText(document: Document) -> Void {
         do {
             try document.select(HTMLParser.noiseSelector).remove()
@@ -132,6 +159,21 @@ actor HTMLParser {
         }
         
         return bodyText.isEmpty ? nil : bodyText
+    }
+    
+    // The description the page publishes about itself, used as a summary when the on-device model
+    // is unavailable or won't summarize the page.
+    func parseDescription(url: URL, html: String) -> String? {
+        if !populateDocument(url: url, html: html) {
+            return nil
+        }
+        
+        if let document = document {
+            populateDescription(document: document)
+        }
+        
+        let description = descriptionToUse.trimmingCharacters(in: .whitespacesAndNewlines)
+        return description.isEmpty ? nil : description
     }
     
     private func findTitle(youTubeUrl: URL) async throws -> String {
