@@ -12,11 +12,20 @@ import os
 actor HTMLParser {
     private static let emptyString = ""
     
+    // Elements that never contribute to the readable content of a page. The landmark roles cover
+    // the site chrome of pages that mark it up with divs instead of nav/aside/header/footer tags.
+    private static let noiseSelector = "script, style, noscript, template, nav, aside, form, iframe, svg, [role=navigation], [role=banner], [role=complementary], [role=contentinfo], [role=search]"
+    // Containers that, when present, usually hold the article body itself
+    private static let contentSelector = "article, main, [role=main]"
+    // Below this length a candidate container is treated as boilerplate and the whole body is used instead
+    private static let minimumContentLength = 200
+    
     private let logger = Logger()
     
     private var document: Document?
     private var title = HTMLParser.emptyString
     private var ogTitle = HTMLParser.emptyString
+    private var bodyText = HTMLParser.emptyString
     
     private var titleToUse: String {
         return !ogTitle.isEmpty ? ogTitle : (!title.isEmpty ? title : HTMLParser.emptyString)
@@ -73,6 +82,26 @@ actor HTMLParser {
         }
     }
     
+    private func populateBodyText(document: Document) -> Void {
+        do {
+            try document.select(HTMLParser.noiseSelector).remove()
+            
+            let candidates = try document.select(HTMLParser.contentSelector).map { try $0.text() }
+            
+            if let content = candidates.max(by: { $0.count < $1.count }), content.count >= HTMLParser.minimumContentLength {
+                self.bodyText = content
+            } else if let body = document.body() {
+                self.bodyText = try body.text()
+            } else {
+                logger.log("Cannot find a body tag")
+            }
+        } catch Exception.Error(let type, let message) {
+            logger.log("Caught an error: \(String(describing: type), privacy: .public) - \(String(describing: message), privacy: .public)")
+        } catch {
+            logger.log("Cannot extract the body text")
+        }
+    }
+    
     func parse(url: URL, html: String) async -> String? {
         if !populateDocument(url: url, html: html) {
             return nil
@@ -88,6 +117,21 @@ actor HTMLParser {
         }
         
         return titleToUse
+    }
+    
+    // Extracts the readable text of the page to feed a summarizer. Parses the html again
+    // rather than reusing any document left over from parse(url:html:), since the noise
+    // elements are stripped from the document in place.
+    func parseBodyText(url: URL, html: String) -> String? {
+        if !populateDocument(url: url, html: html) {
+            return nil
+        }
+        
+        if let document = document {
+            populateBodyText(document: document)
+        }
+        
+        return bodyText.isEmpty ? nil : bodyText
     }
     
     private func findTitle(youTubeUrl: URL) async throws -> String {
