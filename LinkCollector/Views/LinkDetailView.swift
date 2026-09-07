@@ -223,8 +223,9 @@ struct LinkDetailView: View {
                         Text(summary)
                             .font(.body)
                             .foregroundColor(.primary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    .frame(minWidth: 0.5 * geometry.size.width)
+                    .frame(minWidth: 0.5 * geometry.size.width, maxWidth: geometry.size.width, minHeight: 0.2 * geometry.size.height, maxHeight: 0.8 * geometry.size.height)
                 } else {
                     Text("No summary added")
                         .font(.body)
