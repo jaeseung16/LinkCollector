@@ -463,3 +463,45 @@ main thread when the user submits, and ignore the `favicon` the download path al
 Left alone deliberately — out of scope for this change.
 
 Verified: `** BUILD SUCCEEDED **` with zero warnings for macOS and the iOS simulator.
+
+---
+
+# Follow-up 8: the favicon fetch on submit
+
+Not purely redundant, as it turned out — checking before deleting was worth it.
+
+`send(_:)` / `post(_:)` declared a **local** `var favicon: Data?` that shadowed the property of
+the same name, then filled it with a synchronous `try? Data(contentsOf:)` of
+`<scheme>://<host>/favicon.ico`. Two consequences:
+
+- The favicon the download path had already stored in `self.favicon` — found by `FaviconFinder`,
+  which reads the page's `<link rel="icon">` and picks the largest — was never saved. Every link
+  got the crude root-`/favicon.ico` guess instead.
+- The fetch blocked the main thread at the moment the user submitted.
+
+But a blind deletion would have regressed one path. Both extensions declare
+`NSExtensionJavaScriptPreprocessingFile` in their Info.plist and both bundle
+`LinkCollectorShareExtension.js` (verified against the Resources build phases), so the
+`.propertyList` branch is live on each. That branch — `update(with results: NSDictionary)` —
+takes the URL and title straight from the JavaScript results and does no network at all, so
+`self.favicon` is nil there and the submit-time fetch was the only favicon source.
+
+So: drop the local shadow and the synchronous fetch, use the property, and fall back to the
+downloader actor only when it is nil.
+
+```swift
+if favicon == nil {
+    favicon = await LinkCollectorDownloader(url: urlTextField.stringValue).findFavicon()
+}
+```
+
+Net effect: no main-thread network on submit; one favicon request instead of two on the
+`publicURL`/`plainText` paths, and a better-quality icon saved; still exactly one on the
+`propertyList` path, now asynchronous and via `FaviconFinder` rather than a root-path guess.
+
+The body of `send(_:)` / `post(_:)` moved inside a `Task`, so `posted` is now set after the
+favicon resolves rather than before — it is only ever compared against the timestamps of the save
+that follows it, which still happens later. The 10s `showAlertAndTerminate()` fallback likewise
+now starts after the fetch instead of racing it.
+
+Verified: `** BUILD SUCCEEDED **` with zero warnings for macOS and the iOS simulator.

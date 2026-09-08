@@ -237,37 +237,31 @@ class ShareViewController: UIViewController {
     }
     
     @IBAction func post(_ sender: UIBarButtonItem) {
-        DispatchQueue.main.async {
-            self.activityIndicator.startAnimating()
-        }
-        
-        var favicon: Data?
-        if let urlString = urlLabel.text, let url = URL(string: urlString) {
-            var urlComponents = URLComponents()
-            urlComponents.scheme = url.scheme
-            urlComponents.host = url.host
-            urlComponents.path = "/favicon.ico"
-            
-            if let faviconURL = urlComponents.url {
-                favicon = try? Data(contentsOf: faviconURL)
+        activityIndicator.startAnimating()
+
+        Task {
+            // The download path already found one, unless the item arrived through JavaScript
+            // preprocessing, which does no network of its own.
+            if favicon == nil, let urlString = urlLabel.text {
+                favicon = await LinkCollectorDownloader(url: urlString).findFavicon()
             }
-        }
-        
-        posted = Date()
-        linkEntity = LinkEntity.create(title: titleTextField.text,
-                                       url: urlLabel.text,
-                                       favicon: favicon,
-                                       note: "",
-                                       latitude: location?.coordinate.latitude ?? 0.0,
-                                       longitude: location?.coordinate.longitude ?? 0.0,
-                                       locality: self.locality,
-                                       context: persistenceController.container.viewContext)
-        
-        save(with: contextName)
-        
-        // Terminate after 10 sec
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
-            self.showAlertAndTerminate()
+
+            posted = Date()
+            linkEntity = LinkEntity.create(title: titleTextField.text,
+                                           url: urlLabel.text,
+                                           favicon: favicon,
+                                           note: "",
+                                           latitude: location?.coordinate.latitude ?? 0.0,
+                                           longitude: location?.coordinate.longitude ?? 0.0,
+                                           locality: self.locality,
+                                           context: persistenceController.container.viewContext)
+
+            save(with: contextName)
+
+            // Terminate after 10 sec
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+                self.showAlertAndTerminate()
+            }
         }
     }
     
