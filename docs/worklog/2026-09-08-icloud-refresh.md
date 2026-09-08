@@ -148,3 +148,34 @@ Verified: `** BUILD SUCCEEDED **` for both `-destination 'platform=macOS'` and
 Runtime checks worth making: a summary generated on one device appearing on another
 without re-selecting the link; tag order staying put across redraws; and Summarize still
 filling in the popover on the device that ran it.
+
+## Step 4 — done: searchString hygiene
+
+`LinkCollector/ViewModel/LinkCollectorViewModel.swift`
+
+- Added `.removeDuplicates()` after the `debounce` on the `$searchString` sink. `@Published`
+  emits on every assignment regardless of equality, and `searchLink()` calls `fetchAll()`,
+  which assigns `searchString` again — so in principle the first `fetchAll()` after the sink
+  is installed starts a self-sustaining 0.3s re-fetch cycle. Placing it after the debounce is
+  deliberate: a search that changes and changes back within the debounce window needs no
+  re-search, and `set(searchString:selected:)` already clears to "" before assigning, so a
+  deep link to the currently-searched term still gets through.
+- `fetchAll()` only assigns `searchString = ""` when it is not already empty, so the
+  redundant emission never happens in the first place.
+- Added log lines on both branches of `searchHelper.isReady()` in `init`, so it is visible
+  whether the sink is installed at all — the open question from the investigation, since the
+  author's observation (a window switch was needed) argued the cycle was not actually firing.
+
+Verified: `** BUILD SUCCEEDED **` for both `-destination 'platform=macOS'` and
+`-destination 'platform=iOS Simulator,name=iPhone 17'`.
+
+## Status
+
+All four planned steps are done and committed:
+
+- `a2622eb` fix: Refresh views when iCloud changes arrive
+- `3e5db18` feature: Add a manual refresh for macOS
+- `f6e9599` fix: Observe the link entity in LinkDetailView
+- (this step) fix: Stop searchString from re-triggering its own fetch
+
+Step 1 confirmed working at runtime by the author. Steps 2–4 are build-verified only.

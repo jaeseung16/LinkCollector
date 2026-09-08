@@ -89,12 +89,20 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     self.spotlightLinkIndexing = true
                 }
                 
+                // removeDuplicates() matters: @Published emits on every assignment, equal or not,
+                // and searchLink() calls fetchAll(), which assigns searchString again. Without it
+                // the first fetchAll() starts a self-sustaining 0.3s re-fetch cycle.
                 $searchString
                     .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+                    .removeDuplicates()
                     .sink { _ in
                         self.searchLink()
                     }
                     .store(in: &subscriptions)
+                
+                logger.log("init: search is ready and the searchString sink is installed")
+            } else {
+                logger.log("init: searchHelper is not ready — search is unavailable this launch")
             }
             
             NotificationCenter.default
@@ -381,7 +389,9 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var tags = [TagEntity]()
     
     func fetchAll() {
-        searchString = ""
+        if !searchString.isEmpty {
+            searchString = ""
+        }
         fetchLinks()
         fetchTags()
     }
