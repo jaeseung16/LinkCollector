@@ -113,3 +113,215 @@ runtime — needs a share-sheet run on device.
 - Synchronous network on the main thread (`String(contentsOf:)`, `Data(contentsOf:)`) — the
   freeze described above. Untouched.
 - `longitude:` receiving `coordinate.latitude` in both extensions. Untouched.
+
+---
+
+# Follow-up: macOS share extension saves nothing (post-fix testing)
+
+Author's report after the crash fix: iOS works; on macOS the sheet appears and accepts a
+link, but the link never shows up in the app. The crash fix itself is therefore confirmed —
+the extension now lives long enough to present its UI.
+
+## Cause — the mac extension is entitled to the wrong iCloud container
+
+`LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements` declares:
+
+```xml
+<key>com.apple.developer.icloud-container-identifiers</key>
+<array>
+    <string>iCloud.com.resonance.SpendingKeeper</string>
+</array>
+```
+
+That is a different app's container (copy-paste from SpendingKeeper). The code asks for
+`LinkPilerConstants.containerIdentifier` = `iCloud.com.resonance.jaeseung.LinkCollector`,
+which this extension has no entitlement for, so CloudKit mirroring cannot start.
+
+Confirmed in the shipped build, not just the source:
+
+```
+$ codesign -d --entitlements - /Applications/LinkPiler.app/Contents/PlugIns/LinkPilerShareExtensionMac.appex
+com.apple.developer.icloud-container-identifiers = ['iCloud.com.resonance.SpendingKeeper']
+
+$ codesign -d --entitlements - /Applications/LinkPiler.app
+com.apple.developer.icloud-container-identifiers = ['iCloud.com.resonance.jaeseung.LinkCollector']
+```
+
+The iOS extension's entitlements file has the correct container, which is why iOS works.
+
+## Why this produces exactly this symptom
+
+`Persistence` (package source) never touches the app group — it uses
+`NSPersistentContainer.defaultDirectoryURL()`, i.e. each process's own container, and sets
+`cloudKitContainerOptions` from the passed identifier. The extensions and the app therefore
+share data *only* through CloudKit. So on macOS the save succeeds locally, into the
+extension's private store, and then has nowhere to go: the app never sees it, and the
+`.NSPersistentStoreRemoteChange` confirmation `handleRemoteChange()` waits for never arrives
+(the 10s `showAlertAndTerminate()` fallback fires instead).
+
+Note the mac extension also lacks `com.apple.security.application-groups`, but that is
+harmless — the app group is only used by the widget's `contents.json`.
+
+## Fix (not yet applied)
+
+Change the container identifier in the mac extension's entitlements to
+`iCloud.com.resonance.jaeseung.LinkCollector`. The App ID
+`com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac` also needs that container
+enabled in the developer portal; automatic signing normally handles it once the entitlements
+file is right.
+
+---
+
+# Follow-up 2: CloudKit export fails from the mac extension's store
+
+After the entitlement fix shipped (build installed 13:26 today, `codesign` confirms
+`iCloud.com.resonance.jaeseung.LinkCollector` / Production), sharing still does not reach the
+app. Console shows a `_EXSinkLoadOperator … nil expectedValueClass` fault and
+`CKErrorDomain Code=2` on export.
+
+## The two log lines
+
+- `_EXSinkLoadOperator … nil expectedValueClass allowing {…}` — benign. `ExtensionKit` logs it
+  whenever `loadItem(forTypeIdentifier:options:)` is called without an expected class, which is
+  what `accessWebpageProperties` does on both platforms. Fault level, but informational.
+- `CKErrorDomain Code=2` is `CKError.partialFailure` — per-record failures inside
+  `CKPartialErrors`, all `<private>`. This one is the blocker.
+
+## Evidence — the mirroring event log
+
+`NSPersistentCloudKitContainer` persists its event history in `ANSCKEVENT` in each store
+(type 0 = setup, 1 = import, 2 = export). Reading both stores (copied with their `-wal` first;
+`immutable=1` alone hides recent events):
+
+Extension store — `~/Library/Containers/…LinkPilerShareExtensionMac/Data/Library/Application
+Support/LinkPilerShareExtensionMac/LinkCollector.sqlite`:
+
+```
+type ok  domain         code  started
+2    0   CKErrorDomain  2     2026-09-08 13:31:14   <- after the entitlement fix
+0    1                  0     2026-09-08 13:31:14   <- setup now succeeds
+…
+2    0   CKErrorDomain  2     2026-05-17 13:51:55   <- first failure
+2    1                  0     2026-05-17 13:50:00   <- last success
+```
+
+Every export has failed since 2026-05-17 13:51. Setup succeeds; only export fails.
+
+App store — same query, today: every setup, import and export `ok = 1`. So the iCloud account,
+the container, the Production schema and the network are all fine. The failure is specific to
+the extension's local store.
+
+## Cause
+
+That store was created in April 2025 and mirrored for ~14 months against
+`iCloud.com.resonance.SpendingKeeper`, the container the extension was (wrongly) entitled to.
+It holds 1056 `ZLINKENTITY` rows and 1116 `ANSCKRECORDMETADATA` rows whose encoded system
+fields — record names and change tags — belong to that container's zone. Changing the
+entitlement repoints the store at a different container but does not reset any of that
+metadata, and there is no API that does; so every export still offers the server records it
+has never seen, and comes back as a partial failure.
+
+The 2026-05-17 inflection fits: before it, exports "succeeded" into the SpendingKeeper
+container under a development build, which is why the mac extension never delivered anything
+to the app even while reporting success. From the first Production/TestFlight build the
+SpendingKeeper container had no `CD_LinkEntity` schema and could not create one, so exports
+started failing outright.
+
+Note the inner `CKInternalErrorDomain Code=1011` is not a documented public value, and the
+useful content stays redacted; the event log is what makes the diagnosis without unmasking.
+
+## Data stranded in that store
+
+18 rows exist in the extension's store and not the app's — 10 distinct URLs (9 real pages from
+2026-05-10 to 2026-08-08, plus today's repeated test of the same arXiv page). These are exactly
+the links shared from the Mac that never got out. Listed in the conversation; they need
+re-adding by hand after the reset.
+
+## Remedy (not yet applied — destroys the extension's local store)
+
+Quit the app and any process hosting the extension, then remove
+`~/Library/Containers/com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac/Data/Library/Application Support/LinkPilerShareExtensionMac/`
+(`LinkCollector.sqlite*`, `.LinkCollector_SUPPORT`, `LinkCollector_ckAssets`). The extension
+rebuilds the store on next use, does a clean setup and import against the correct container,
+and exports should then succeed.
+
+## Worth doing in code
+
+Neither the app nor the extensions observe
+`NSPersistentCloudKitContainer.eventChangedNotification`. Logging `event.type`,
+`event.succeeded` and `event.error` with `privacy: .public` would have surfaced this from the
+TestFlight logs directly instead of requiring sqlite forensics.
+
+---
+
+# Follow-up 3: correction to the diagnosis, and how to clean up on users' Macs
+
+## Correction
+
+Follow-up 2 said the extension's store had been mirroring a foreign container and that its
+metadata was therefore stale/bound to SpendingKeeper. Further evidence contradicts that:
+
+```
+-- ext store, last import (type 1) events:      -- ext links also present in the app's store:
+1  2026-05-17 13:50:00                          2026-05-17 13:49:56  GitHub - waltheri/go-libraries
+1  2026-05-17 13:49:56                          2026-05-13 19:49:02  PUG REST
+1  2026-05-13 19:49:01                          2026-05-10 17:18:29  Building Effective AI Agents
+```
+
+The extension's store was importing the user's real library — links created on other devices —
+right up to 2026-05-17 13:49:56. It could only have got those from
+`iCloud.com.resonance.jaeseung.LinkCollector`. So the SpendingKeeper entitlement was evidently
+not enforced before that date, and the store's mirroring metadata belongs to the *correct*
+container.
+
+What is established: at 2026-05-17 13:51 imports stopped and exports began failing, and the
+store has been wedged ever since — 1056 records carrying four-month-old change tags, re-offered
+on every export. The per-record errors stay `<private>`, so "stale change tags →
+`serverRecordChanged` → the whole batch fails, new link included" is inference. What is not
+inference: the failure is local to this store. The app's store on the same Mac, same account,
+same container, exported and imported successfully minutes either side of the extension's
+failures.
+
+The entitlement was still genuinely wrong and worth fixing; it just was not what blocked export.
+
+Also ruled out: the `summary` attribute. The app has 15 links with summaries and exported them
+successfully today, so the Production schema has the field. And the breakage predates the
+attribute by four months.
+
+## Cleaning up on users' machines
+
+Every macOS user upgrading into the fixed build carries the same wedged store, and cannot be
+asked to delete container files. The cleanup has to run inside the extension process — the app
+cannot reach the extension's container (separate sandbox, and the extensions hold no app-group
+entitlement).
+
+Near-term, version-gated one-time reset in both extensions, before `Persistence` is constructed
+(`persistenceController` has to become lazy, or the reset has to run from a type-level
+initialiser):
+
+1. Salvage — open the existing store as a plain `NSPersistentContainer` with no
+   `cloudKitContainerOptions`, fetch every `LinkEntity`, write id/url/title/created/note/
+   locality/coordinates/summary/tag-names to JSON in the extension's Application Support.
+2. Destroy — `NSPersistentStoreCoordinator.destroyPersistentStore(at:type:.sqlite)`, then remove
+   `.LinkCollector_SUPPORT` and `LinkCollector_ckAssets`.
+3. Rebuild — the new `Persistence` creates a fresh store and does a clean setup + import.
+4. Re-insert — on this and subsequent launches, insert salvaged links whose `id` is not already
+   present, then delete the salvage file. Dedupe by `id` works because CloudKit re-imports the
+   same UUIDs; only the genuinely stranded links survive it. It takes more than one launch
+   because the extension lives only as long as the share sheet.
+
+Gate on `UserDefaults` in the extension's own domain (`shareExtensionStoreResetVersion`), so it
+runs once per user.
+
+**Validate before shipping.** Reset this Mac's extension store by hand first and confirm a share
+exports. Everything above rests on the failure being store-local; if a fresh store fails the
+same way, the migration would destroy data for nothing.
+
+## The structural fix
+
+Point the extensions at a store in the app group shared with the app, instead of each keeping a
+private mirror. Needs `com.apple.security.application-groups` on both extensions, a `Persistence`
+change to accept a store URL (`defaultDirectoryURL()` is hardcoded), and a migration of the app's
+existing store into the group container. It removes the second and third mirrors entirely — no
+divergence, no duplicated 17 MB, and a shared link is visible to the app immediately instead of
+via a CloudKit round-trip, which would also retire the `handleRemoteChange` confirmation dance.
