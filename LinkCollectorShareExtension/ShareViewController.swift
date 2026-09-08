@@ -88,37 +88,47 @@ class ShareViewController: UIViewController {
         self.present(alert, animated: true)
     }
     
-    @objc private func processNotification(_ notification: Notification) -> Void {
+    // Core Data posts .NSPersistentStoreRemoteChange on its own private queue. This class is
+    // @MainActor by inheritance, so under Swift 6 the @objc thunk asserts main-actor isolation
+    // before entering the body and traps. Take the callback nonisolated and hop explicitly.
+    @objc private nonisolated func processNotification(_ notification: Notification) -> Void {
+        Task { @MainActor in
+            self.handleRemoteChange()
+        }
+    }
+
+    private func handleRemoteChange() -> Void {
         guard let posted = posted else {
             return
         }
-        
+
         let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: posted)
         let context = persistenceController.container.newBackgroundContext()
-        
-        guard let historyResult = try? context.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
-              let history = historyResult.result as? [NSPersistentHistoryTransaction] else {
-            DispatchQueue.main.async {
-                self.showAlertAndTerminate()
-            }
+
+        // execute() has to run on the context's own queue.
+        var history: [NSPersistentHistoryTransaction]?
+        context.performAndWait {
+            history = (try? context.execute(fetchHistoryRequest) as? NSPersistentHistoryResult)?.result as? [NSPersistentHistoryTransaction]
+        }
+
+        guard let history else {
+            showAlertAndTerminate()
             return
         }
-        
+
         for transaction in history {
             if transaction.timestamp > posted && transaction.contextName == contextName {
                 guard let changes = transaction.changes else { continue }
-                
+
                 for change in changes {
                     if change.changeType == .insert {
                         if let link = self.linkEntity, change.changedObjectID == link.objectID {
-                            DispatchQueue.main.async {
-                                self.activityIndicator.stopAnimating()
-                            }
-                            
+                            self.activityIndicator.stopAnimating()
+
                             if self.extensionContext != nil {
                                 self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
                             }
-                            
+
                             return
                         }
                     }
