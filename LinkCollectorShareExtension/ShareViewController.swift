@@ -102,13 +102,13 @@ class ShareViewController: UIViewController {
             return
         }
 
-        let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: posted)
         let context = persistenceController.container.newBackgroundContext()
 
-        // execute() has to run on the context's own queue.
-        var history: [NSPersistentHistoryTransaction]?
-        context.performAndWait {
-            history = (try? context.execute(fetchHistoryRequest) as? NSPersistentHistoryResult)?.result as? [NSPersistentHistoryTransaction]
+        // execute() has to run on the context's own queue, and the request is built in there
+        // too: it is not Sendable, and performAndWait's closure is.
+        let history = context.performAndWait {
+            let request = NSPersistentHistoryChangeRequest.fetchHistory(after: posted)
+            return (try? context.execute(request) as? NSPersistentHistoryResult)?.result as? [NSPersistentHistoryTransaction]
         }
 
         guard let history else {

@@ -365,3 +365,39 @@ nothing followed by the normal first import. The unavoidable cost is that every 
 share is slow while the library downloads, and may still hit the 10s "cannot confirm" alert once.
 
 Verified: `** BUILD SUCCEEDED **` for macOS and the iOS simulator. Not yet verified at runtime.
+
+---
+
+# Follow-up 5: confirmed working, and the warnings cleaned up
+
+The author confirms the macOS share extension works after pushing the build with the store reset
+through TestFlight. The whole chain — crash fix, iCloud container, store reset — is verified at
+runtime on macOS; iOS was verified earlier.
+
+Four warnings remained in both extensions, all introduced by the `performAndWait` wrapper in the
+crash fix:
+
+```
+capture of 'history' with non-Sendable type '[NSPersistentHistoryTransaction]?' in a '@Sendable' closure
+mutation of captured var 'history' in concurrently-executing code
+capture of 'fetchHistoryRequest' with non-Sendable type 'NSPersistentHistoryChangeRequest' in a '@Sendable' closure
+add '@preconcurrency' to treat 'Sendable'-related errors from module 'CoreData' as warnings
+```
+
+Two causes:
+
+- The closure returned `Void` and assigned into an outer `var`. A Void-returning closure binds to
+  the Objective-C `performBlockAndWait:`, imported as `@Sendable`, so the outer variable was
+  captured and mutated across an isolation boundary. Switching to the value-returning Swift
+  overload (`let history = context.performAndWait { … }`) removes the `var` entirely.
+- That overload's closure is `@Sendable` too, and `NSPersistentHistoryChangeRequest` is not
+  `Sendable`, so hoisting the request outside it was a capture. Building it inside the closure
+  removes that; `posted` is a `Date` and crosses fine.
+
+The `@preconcurrency` suggestion on the `import CoreData` line was a companion to those and went
+away with them — taking it literally would have suppressed the real warnings instead of fixing
+them.
+
+Verified: `** BUILD SUCCEEDED **` with zero warnings for both `platform=macOS` and
+`platform=iOS Simulator,name=iPhone 17`, forcing recompilation of both files first so the
+warnings would actually be re-emitted.
