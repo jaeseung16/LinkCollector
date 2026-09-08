@@ -76,6 +76,17 @@ struct LinkListView: View {
                         Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
                     }
                     
+                    #if canImport(AppKit)
+                    // .refreshable below draws no affordance in an AppKit List, so macOS needs
+                    // an explicit control to fall back on.
+                    Button {
+                        viewModel.refresh()
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                    }
+                    .keyboardShortcut("r")
+                    #endif
+                    
                     ShareLink("Export Links", item: generateBookmarkFile())
                 }
             }
@@ -109,7 +120,7 @@ struct LinkListView: View {
             }
             .searchable(text: $viewModel.searchString)
             .refreshable {
-                viewModel.fetchAll()
+                viewModel.refresh()
             }
             .onChange(of: viewModel.selected) {
                 selected = viewModel.selected

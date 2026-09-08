@@ -96,3 +96,21 @@ Verified: `** BUILD SUCCEEDED **` for both `-destination 'platform=macOS'` and
 
 Not yet verified at runtime — the real check is editing a link on iPad and watching the
 macOS window update without deactivating it.
+
+## Step 2 — done: a macOS-usable manual refresh
+
+`LinkCollector/Views/LinkListView.swift`
+
+- Added a "Refresh" toolbar button (`arrow.clockwise`) with `.keyboardShortcut("r")` — ⌘R —
+  guarded by `#if canImport(AppKit)`. `.refreshable` draws no affordance in an AppKit
+  `List`, so before this macOS had no manual refresh at all; iOS keeps pull-to-refresh and
+  its toolbar stays uncrowded.
+- Changed both the button and `.refreshable` to call `refresh()` rather than `fetchAll()`.
+  This deviates from the plan, which said `fetchAll()`: `fetchAll()` clears `searchString`,
+  so refreshing mid-search would silently drop the user's search. Neither function merges
+  history, so there is no behavioural difference beyond preserving the search.
+
+Verified: `** BUILD SUCCEEDED **` for both `-destination 'platform=macOS'` and
+`-destination 'platform=iOS Simulator,name=iPhone 17'`.
+
+Not verified at runtime — ⌘R and the toolbar button still need a click in the real app.
