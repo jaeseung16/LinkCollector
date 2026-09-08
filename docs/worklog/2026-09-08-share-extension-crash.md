@@ -401,3 +401,20 @@ them.
 Verified: `** BUILD SUCCEEDED **` with zero warnings for both `platform=macOS` and
 `platform=iOS Simulator,name=iPhone 17`, forcing recompilation of both files first so the
 warnings would actually be re-emitted.
+
+---
+
+# Follow-up 6: longitude
+
+`LinkPilerShareExtensionMac/ShareViewController.swift:232` and
+`LinkCollectorShareExtension/ShareViewController.swift:348` passed
+`location?.coordinate.latitude` as `longitude:`. Both now pass `coordinate.longitude`.
+
+`LinkCollectorViewModel` was already correct (`userLatitude`/`userLongitude` from the matching
+coordinate members), so the app's own saves were never affected — only links added through a
+share extension.
+
+Links already saved this way keep a longitude equal to their latitude. Nothing can repair them:
+the real longitude was never written anywhere, so it is not recoverable from the record.
+
+Verified: `** BUILD SUCCEEDED **`, no warnings, for macOS and the iOS simulator.

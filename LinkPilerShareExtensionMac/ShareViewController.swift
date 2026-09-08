@@ -229,7 +229,7 @@ class ShareViewController: NSViewController {
                                        favicon: favicon,
                                        note: "",
                                        latitude: location?.coordinate.latitude ?? 0.0,
-                                       longitude: location?.coordinate.latitude ?? 0.0,
+                                       longitude: location?.coordinate.longitude ?? 0.0,
                                        locality: self.locality,
                                        context: persistenceController.container.viewContext)
         
