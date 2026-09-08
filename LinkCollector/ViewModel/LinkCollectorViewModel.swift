@@ -30,8 +30,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     private var subscriptions: Set<AnyCancellable> = []
     
-    @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
-    
     var userLatitude: Double = 0
     var userLongitude: Double = 0
     @Published var userLocality: String = LinkCollectorViewModel.unknown
@@ -387,6 +385,17 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         fetchTags()
     }
     
+    // Re-publishes what is already in the view context. Unlike fetchAll() it leaves searchString
+    // alone, so a refresh triggered by an iCloud change can't wipe out what the user is searching for.
+    func refresh() {
+        if searchString.isEmpty {
+            fetchLinks()
+        } else {
+            searchLinks()
+        }
+        fetchTags()
+    }
+    
     var firstDate: Date {
         return links.last?.created ?? Date()
     }
@@ -517,9 +526,16 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         Task {
             do {
                 let objectIDs = try await persistence.fetchUpdates()
+                guard !objectIDs.isEmpty else { return }
+                
                 for objectId in objectIDs {
                     await addToIndex(objectId)
                 }
+                
+                // fetchUpdates() merges the history into the view context but publishes nothing.
+                // Without this the change stays invisible until scenePhase returns to .active.
+                logger.log("Refreshing after \(objectIDs.count, privacy: .public) remote changes")
+                refresh()
             } catch {
                 logger.log("Error while updating history: notification=\(notification)\n\(error.localizedDescription, privacy: .public)\n\(Thread.callStackSymbols, privacy: .public)")
             }
