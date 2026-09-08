@@ -325,3 +325,43 @@ change to accept a store URL (`defaultDirectoryURL()` is hardcoded), and a migra
 existing store into the group container. It removes the second and third mirrors entirely — no
 divergence, no duplicated 17 MB, and a shared link is visible to the app immediately instead of
 via a CloudKit round-trip, which would also retire the `handleRemoteChange` confirmation dance.
+
+---
+
+# Follow-up 4: one-time store reset on macOS (applied)
+
+Decision by the author: discard whatever is stranded in the extension's store rather than
+salvaging it. A user who notices a missing link can re-add it from the app.
+
+Note the app group was added to *both* extensions first (`6c88ad2`), even though the reset does
+not use it — it is groundwork for moving the extensions onto a shared app-group store.
+
+Also worth recording: "delete it during installation" is not available. macOS App Store and
+TestFlight installs run no hook; the bundle is simply replaced. The earliest code that can run is
+the extension's own first launch, which is what this does. And nothing needs to copy records
+from the app's store — the extension cannot reach it across the sandbox boundary anyway, and
+`NSPersistentCloudKitContainer` re-imports the whole library from iCloud by itself once the
+fresh store is created.
+
+## The change
+
+`LinkPilerShareExtensionMac/ShareViewController.swift`, macOS only — the iOS extension exports
+fine and resetting it would cost every iOS user a full re-download for nothing.
+
+- A file-private `ShareExtensionStoreReset` enum. `runIfNeeded()` compares a version int in the
+  extension's own `UserDefaults` against `version = 1` and, when behind, removes from
+  `NSPersistentContainer.defaultDirectoryURL()`: `LinkCollector.sqlite`, `-wal`, `-shm`,
+  `.LinkCollector_SUPPORT`, `LinkCollector_ckAssets`, and the `LinkCollector` directory that
+  holds `Persistence`'s `token.data` — a history token pointing into a destroyed store would
+  break `purgeHistory()` on the next launch.
+- The marker is written only if every removal succeeded. A half-deleted store is worse than a
+  wedged one, so a failure retries on the next launch instead of being recorded as done.
+- `persistenceController` had to become `lazy`; it was an inline stored property, and the
+  deletion has to happen before Core Data opens the store. `viewContext` and `loadView()` are
+  the only things that touch it, both after the lazy initialiser runs.
+
+New installs and healthy stores run it too, since the marker is simply absent — a delete of
+nothing followed by the normal first import. The unavoidable cost is that every Mac user's next
+share is slow while the library downloads, and may still hit the 10s "cannot confirm" alert once.
+
+Verified: `** BUILD SUCCEEDED **` for macOS and the iOS simulator. Not yet verified at runtime.

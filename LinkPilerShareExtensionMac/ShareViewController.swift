@@ -12,10 +12,67 @@ import CoreData
 import Persistence
 import MapKit
 
+// One-time reset of this extension's local store.
+//
+// The store had been mirroring correctly until 2026-05-17, when its imports stopped and every
+// export started failing with CKError.partialFailure -- 1000+ records re-offered with change
+// tags that the server had long since moved past, which fails the whole batch including the
+// link the user just shared. Nothing recovers from that state on its own and no API resets the
+// mirroring metadata, so the store has to go. NSPersistentCloudKitContainer rebuilds it and
+// re-imports the library from iCloud on the next launch.
+//
+// Anything in the old store that never exported is discarded, by design: it is the only data
+// there that is not already in iCloud, and there is no way to show the user what it was.
+// See docs/worklog/2026-09-08-share-extension-crash.md.
+private enum ShareExtensionStoreReset {
+    private static let logger = Logger()
+    private static let defaultsKey = "shareExtensionStoreResetVersion"
+    private static let version = 1
+
+    // Must run before anything opens the store, i.e. before Persistence is constructed.
+    static func runIfNeeded() -> Void {
+        guard UserDefaults.standard.integer(forKey: defaultsKey) < version else {
+            return
+        }
+
+        let directory = NSPersistentContainer.defaultDirectoryURL()
+        let name = LinkPilerConstants.appPathComponent.rawValue
+        // "\(name)" is the directory Persistence keeps its history token in; a token pointing
+        // into a store that no longer exists would break the purge on the next launch.
+        let items = ["\(name).sqlite", "\(name).sqlite-wal", "\(name).sqlite-shm",
+                     ".\(name)_SUPPORT", "\(name)_ckAssets", name]
+
+        var removedEverything = true
+        for item in items {
+            let url = directory.appendingPathComponent(item)
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                continue
+            }
+
+            do {
+                try FileManager.default.removeItem(at: url)
+                logger.log("Removed \(item, privacy: .public)")
+            } catch {
+                removedEverything = false
+                logger.error("Could not remove \(item, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            }
+        }
+
+        // Leave the marker unset on failure so the next launch tries again; a half-deleted
+        // store is worse than one that is still wedged.
+        if removedEverything {
+            UserDefaults.standard.set(version, forKey: defaultsKey)
+        }
+    }
+}
+
 class ShareViewController: NSViewController {
     private let logger = Logger()
     
-    private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+    private lazy var persistenceController: Persistence = {
+        ShareExtensionStoreReset.runIfNeeded()
+        return Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+    }()
     
     private var viewContext: NSManagedObjectContext {
         persistenceController.container.viewContext
