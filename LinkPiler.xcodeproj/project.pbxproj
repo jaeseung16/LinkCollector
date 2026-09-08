@@ -49,7 +49,6 @@
 		9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */; };
 		9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
 		9081DB182AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
-		90A89FBB2D9773AD002D1C34 /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
@@ -72,6 +71,7 @@
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		90A89FB92D9773AD002D1C34 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90A89FBA2D9773C1002D1C34 /* TypeIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FD202126C9A78E008CC190 /* TypeIdentifier.swift */; };
+		90A89FBB2D9773AD002D1C34 /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
 		90AB10022E6A0F0100AA0002 /* LinkSummarizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10012E6A0F0100AA0001 /* LinkSummarizer.swift */; };
 		90AB10042E6A0F0100AA0004 /* LinkSummarizerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10032E6A0F0100AA0003 /* LinkSummarizerError.swift */; };
 		90AB10062E6A0F0100AA0006 /* SummaryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10052E6A0F0100AA0005 /* SummaryLabel.swift */; };
@@ -781,7 +781,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -809,7 +809,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
@@ -840,7 +840,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
@@ -876,7 +876,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
@@ -1039,7 +1039,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
@@ -1072,7 +1072,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
@@ -1106,7 +1106,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1140,7 +1140,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 58;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
