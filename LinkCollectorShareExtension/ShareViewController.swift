@@ -9,7 +9,6 @@ import UIKit
 import Social
 import CoreData
 import MapKit
-import FaviconFinder
 import Persistence
 import os
 
@@ -206,114 +205,29 @@ class ShareViewController: UIViewController {
     }
     
     private func update(with publicURL: URL) {
-        DispatchQueue.main.async {
-            self.urlLabel.text = publicURL.absoluteString
-            self.activityIndicator.startAnimating()
-        }
-        
-        process(urlString: publicURL.absoluteString) { url, result in
-            DispatchQueue.main.async {
-                self.titleTextField.text = result ?? "Enter title"
-                self.activityIndicator.stopAnimating()
-                
-                if let url = url {
-                    self.findFavicon(url: url) { data, error in
-                        guard let data = data else {
-                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
-                            return
-                        }
-                        self.favicon = data
-                    }
-                }
-            }
-        }
+        update(with: publicURL.absoluteString)
     }
-    
+
     private func update(with plainText: String) {
-        DispatchQueue.main.async {
-            self.urlLabel.text = plainText
-            self.activityIndicator.startAnimating()
-        }
-        
-        process(urlString: plainText) { url, result in
-            DispatchQueue.main.async {
-                self.titleTextField.text = result ?? "Enter title"
-                self.activityIndicator.stopAnimating()
-                
-                if let url = url {
-                    self.findFavicon(url: url) { data, error in
-                        guard let data = data else {
-                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
-                            return
-                        }
-                        self.favicon = data
-                    }
-                }
-            }
-        }
-    }
-    
-    private func isValid(urlString: String) -> Bool {
-        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
-            return false
-        }
-        return scheme == "http" || scheme == "https"
-    }
-    
-    private func getURLAndHTML(from urlString: String) -> (URL?, String?) {
-        var url: URL?
-        var html: String?
-        
-        if isValid(urlString: urlString) {
-            (url, html) = tryDownloadHTML(from: urlString)
-        } else {
-            (url, html) = tryDownloadHTML(from: "https://\(urlString)")
-            if html == nil {
-                (url, html) = tryDownloadHTML(from: "http://\(urlString)")
-            }
-        }
-        return (url, html)
-    }
-        
-    private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
-        if let url = URL(string: urlString) {
-            return (url, try? String(contentsOf: url, encoding: .utf8))
-        } else {
-            return (nil, nil)
-        }
-    }
-    
-    private func process(urlString: String, completionHandler: @escaping (_ url: URL?, _ result: String?) -> Void) -> Void {
-        let (url, html) = getURLAndHTML(from: urlString)
-        
-        guard let url = url, let html = html else {
-            completionHandler(nil, nil)
-            return
-        }
-        
+        urlLabel.text = plainText
+        activityIndicator.startAnimating()
+
+        // LinkCollectorDownloader is an actor, so the download runs off the main actor and this
+        // resumes back on it. Doing it inline blocked the share sheet for the whole fetch, and
+        // for up to three of them on the https -> http retry path.
         Task {
-            let htmlParser = HTMLParser()
-            let result = await htmlParser.parse(url: url, html: html)
-            completionHandler(url, result)
-        }
-        
-    }
-    
-    private func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
-        Task {
-            do {
-                let favicon = try await FaviconFinder(url: url, configuration: .init(preferredSource: .ico, acceptHeaderImage: true))
-                    .fetchFaviconURLs()
-                    .download()
-                    .largest()
-                DispatchQueue.main.async {
-                    completionHandler(favicon.image?.data, nil)
-                }
-            } catch {
-                self.logger.log("Cannot find favicon from \(url, privacy: .public)")
-                DispatchQueue.main.async {
-                    completionHandler(nil, error)
-                }
+            let (url, html) = await LinkCollectorDownloader(url: plainText).getUrlAndHtml()
+
+            var title: String?
+            if let url = url, let html = html {
+                title = await HTMLParser().parse(url: url, html: html)
+            }
+
+            titleTextField.text = title ?? "Enter title"
+            activityIndicator.stopAnimating()
+
+            if let url = url {
+                favicon = await LinkCollectorDownloader(url: url.absoluteString).findFavicon()
             }
         }
     }

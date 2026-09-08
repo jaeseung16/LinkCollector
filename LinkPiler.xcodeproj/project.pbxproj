@@ -49,6 +49,7 @@
 		9078D0712A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */; };
 		9081DB172AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
 		9081DB182AA4D9250070729B /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
+		90A89FBB2D9773AD002D1C34 /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
 		9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081E05726CDD1BF003C43D4 /* TagEntity+Extension.swift */; };
 		9092A1E22A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
 		9092A1E32A957EE600020880 /* PersistenceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092A1E12A957EE600020880 /* PersistenceHelper.swift */; };
@@ -724,6 +725,7 @@
 				909C8F132D99754500D761FC /* HTMLParserError.swift in Sources */,
 				909C8F1F2D998A5800D761FC /* LinkCollector.xcdatamodeld in Sources */,
 				90A89FB92D9773AD002D1C34 /* HTMLParser.swift in Sources */,
+				90A89FBB2D9773AD002D1C34 /* LinkCollectorDownloader.swift in Sources */,
 				909C8F142D99754B00D761FC /* YouTubeOEmbed.swift in Sources */,
 				909C8F202D998A9B00D761FC /* LinkeEntity+Extension.swift in Sources */,
 				90A89FBA2D9773C1002D1C34 /* TypeIdentifier.swift in Sources */,

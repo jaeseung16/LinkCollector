@@ -418,3 +418,48 @@ Links already saved this way keep a longitude equal to their latitude. Nothing c
 the real longitude was never written anywhere, so it is not recoverable from the record.
 
 Verified: `** BUILD SUCCEEDED **`, no warnings, for macOS and the iOS simulator.
+
+---
+
+# Follow-up 7: the share extensions no longer block the main thread
+
+`tryDownloadHTML(from:)` used `String(contentsOf:encoding:)` — a synchronous network fetch. The
+class is `@MainActor`, so the `Task` in `accessWebpageProperties` inherited main-actor isolation
+and the whole chain (`update(with:)` → `process(urlString:)` → `getURLAndHTML` →
+`tryDownloadHTML`) ran on the main thread, freezing the share sheet for the duration — up to
+three times over on the `https://` → `http://` retry path. It is the thread 0 stack in the
+original crash report.
+
+## Reused the app's downloader instead of making the local copies async
+
+`LinkCollectorDownloader` (an actor, in the app target) already does exactly what the extensions
+were doing by hand: `getUrlAndHtml()` with the same scheme fallback over
+`URLSession.shared.data(from:)`, plus `isValid()` and `findFavicon()`. The extensions had
+duplicated all of it, synchronously.
+
+So `update(with publicURL:)` / `update(with plainText:)` now hop to the actor and resume on the
+main actor to touch the UI, and these are gone from both extensions: `process(urlString:completionHandler:)`,
+`getURLAndHTML(from:)`, `tryDownloadHTML(from:)`, `isValid(urlString:)`,
+`findFavicon(url:completionHandler:)` — about 110 lines each. `update(with publicURL:)` now just
+forwards to the string overload; the two bodies were identical. The `import FaviconFinder` in
+both files went with them, since the only use was the deleted `findFavicon`.
+
+## Target membership
+
+The iOS extension already had `LinkCollectorDownloader.swift` in its Sources phase — compiled but
+never used. Only the mac extension needed adding: one `PBXBuildFile` entry against the existing
+fileRef plus a line in phase `90DBCD7B2D93691C0059D2E2`, mirroring how `HTMLParser.swift` is
+already shared across the three targets.
+
+Worth noting for future files: the `LinkPilerShareExtensionMac` target uses a
+`PBXFileSystemSynchronizedRootGroup`, so anything placed in that *directory* joins the target
+automatically. Only files from elsewhere in the repo need the explicit entries CLAUDE.md
+describes.
+
+## Still synchronous
+
+`send(_:)` / `post(_:)` still fetch `/favicon.ico` with `try? Data(contentsOf: faviconURL)` on the
+main thread when the user submits, and ignore the `favicon` the download path already stored.
+Left alone deliberately — out of scope for this change.
+
+Verified: `** BUILD SUCCEEDED **` with zero warnings for macOS and the iOS simulator.
