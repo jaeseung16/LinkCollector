@@ -114,3 +114,37 @@ Verified: `** BUILD SUCCEEDED **` for both `-destination 'platform=macOS'` and
 `-destination 'platform=iOS Simulator,name=iPhone 17'`.
 
 Not verified at runtime — ⌘R and the toolbar button still need a click in the real app.
+
+## Step 3 — done: LinkDetailView observes its entity
+
+`LinkCollector/Views/LinkDetailView.swift`
+
+- `entity` is now `@ObservedObject var entity: LinkEntity`. `NSManagedObject` is an
+  `ObservableObject`, so a property merged from iCloud — or written locally by
+  `summarize()` — now redraws this view directly, rather than depending on the parent
+  re-rendering.
+- Removed `@State private var summary` and the `.onAppear` that seeded it. `summary` is a
+  computed `entity.summary ?? ""`. This was the concrete bug: `.id(selectedLink)` in
+  `ContentView` keeps the view's `@State` alive across redraws, so a summary changed on
+  another device stayed stale until the link was re-selected.
+- `tags` is no longer passed in from `ContentView`; it is computed from
+  `entity.getTagList()`, sorted by name. The sort is deliberate — `getTagList()` walks an
+  `NSSet`, so an unsorted list would shuffle order between redraws now that it is
+  recomputed on every body evaluation rather than built once at construction.
+- The summarize button now just `await viewModel.summarize(link: entity)` and lets the
+  observation deliver the result.
+
+`LinkCollector/ContentView.swift`
+- Call site updated to `LinkDetailView(entity: selectedLink)`.
+
+`LinkCollector/ViewModel/LinkCollectorViewModel.swift`
+- `summarize(link:)` marked `@discardableResult` and its doc comment corrected — the
+  "returns the summary so a view can show it without observing the managed object"
+  rationale no longer holds now that the view observes the entity.
+
+Verified: `** BUILD SUCCEEDED **` for both `-destination 'platform=macOS'` and
+`-destination 'platform=iOS Simulator,name=iPhone 17'`.
+
+Runtime checks worth making: a summary generated on one device appearing on another
+without re-selecting the link; tag order staying put across redraws; and Summarize still
+filling in the popover on the device that ran it.

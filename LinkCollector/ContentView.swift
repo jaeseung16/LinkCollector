@@ -39,7 +39,7 @@ struct ContentView: View {
             }
         } detail: {
             if let selectedLink = selectedLink {
-                LinkDetailView(entity: selectedLink, tags: selectedLink.getTagList())
+                LinkDetailView(entity: selectedLink)
                     .navigationTitle(selectedLink.title ?? "")
                     .id(selectedLink)
             } else if let selectedTag = selectedTag {

@@ -16,10 +16,20 @@ struct LinkDetailView: View {
     @State var showTags = false
     @State var showEditLinkView = false
     @State private var showSummary = false
-    // Held here rather than read from the entity, which the view doesn't observe
-    @State private var summary = ""
     
-    var entity: LinkEntity
+    // Observed so that a change merged from iCloud — or a summary written by summarize() —
+    // redraws this view instead of waiting for the next re-selection.
+    @ObservedObject var entity: LinkEntity
+    
+    private var summary: String {
+        entity.summary ?? ""
+    }
+    
+    // Sorted by name to match the tag list elsewhere: getTagList() walks an NSSet, so its order
+    // would otherwise shuffle between redraws.
+    private var tags: [TagEntity] {
+        entity.getTagList().sorted { ($0.name ?? "") < ($1.name ?? "") }
+    }
     
     private static var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
@@ -38,8 +48,6 @@ struct LinkDetailView: View {
             return locality!
         }
     }
-    
-    var tags: [TagEntity]
     
     var body: some View {
         GeometryReader { geometry in
@@ -86,9 +94,6 @@ struct LinkDetailView: View {
                              tags: tags)
                     .environmentObject(viewModel)
                     .frame(height: 0.9 * geometry.size.height)
-            }
-            .onAppear {
-                summary = entity.summary ?? ""
             }
         }
     }
@@ -245,9 +250,7 @@ struct LinkDetailView: View {
                 HStack {
                     Button {
                         Task {
-                            if let generated = await viewModel.summarize(link: entity) {
-                                summary = generated
-                            }
+                            await viewModel.summarize(link: entity)
                         }
                     } label: {
                         Text(summary.isEmpty ? "Summarize" : "Summarize Again")

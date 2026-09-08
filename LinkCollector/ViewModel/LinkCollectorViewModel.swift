@@ -292,8 +292,9 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     // Downloads the page again rather than summarizing what is stored: nothing keeps the page text,
-    // and a link saved long ago should be summarized as it reads now. Returns the summary so that a
-    // view can show it without observing the managed object.
+    // and a link saved long ago should be summarized as it reads now. The summary is written to the
+    // link and saved, so a view observing the entity picks it up; the return value is incidental.
+    @discardableResult
     func summarize(link: LinkEntity) async -> String? {
         guard let id = link.id, let url = link.url else {
             logger.log("Cannot summarize a link without an id and a url: \(link, privacy: .public)")
