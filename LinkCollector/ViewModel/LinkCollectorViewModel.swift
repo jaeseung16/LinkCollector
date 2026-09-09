@@ -7,8 +7,9 @@
 
 import Foundation
 import Combine
-import CoreLocation
 import CoreData
+import FoundationModels
+import MapKit
 import os
 import Persistence
 import SwiftUI
@@ -28,8 +29,6 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     private let persistence: Persistence
     
     private var subscriptions: Set<AnyCancellable> = []
-    
-    @Published var changedPeristentContext = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
     
     var userLatitude: Double = 0
     var userLongitude: Double = 0
@@ -68,6 +67,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
         NotificationCenter.default
           .publisher(for: .NSPersistentStoreRemoteChange)
+          .receive(on: DispatchQueue.main)
           .sink { self.fetchUpdates($0) }
           .store(in: &subscriptions)
         
@@ -89,12 +89,20 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                     self.spotlightLinkIndexing = true
                 }
                 
+                // removeDuplicates() matters: @Published emits on every assignment, equal or not,
+                // and searchLink() calls fetchAll(), which assigns searchString again. Without it
+                // the first fetchAll() starts a self-sustaining 0.3s re-fetch cycle.
                 $searchString
                     .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+                    .removeDuplicates()
                     .sink { _ in
                         self.searchLink()
                     }
                     .store(in: &subscriptions)
+                
+                logger.log("init: search is ready and the searchString sink is installed")
+            } else {
+                logger.log("init: searchHelper is not ready — search is unavailable this launch")
             }
             
             NotificationCenter.default
@@ -216,11 +224,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     }
     
     func set(searchString: String, selected: UUID) -> Void {
-        DispatchQueue.main.async {
-            self.searchString = ""
-            self.selected = UUID()
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        self.searchString = ""
+        self.selected = UUID()
+        
+        Task {
+            try? await Task.sleep(for: .seconds(0.5))
             self.searchString = searchString
             self.selected = selected
         }
@@ -228,31 +236,22 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     
     // MARK: - LocationManager
     func lookUpCurrentLocation() {
-        if let lastLocation = locationManager.location {
-            let geocoder = CLGeocoder()
-            geocoder.reverseGeocodeLocation(lastLocation) { (placemarks, error) in
-                if error == nil {
-                    self.userLocality = placemarks?[0].locality ?? LinkCollectorViewModel.unknown
-                } else {
-                    self.userLocality = LinkCollectorViewModel.unknown
-                }
-            }
-        } else {
-            self.userLocality = LinkCollectorViewModel.unknown
+        Task {
+            self.userLocality = await lookUpCurrentLocation()
         }
     }
-    
+
     func lookUpCurrentLocation() async -> String {
-        if let lastLocation = locationManager.location {
-            do {
-                let geocoder = CLGeocoder()
-                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
-                return placemarks.isEmpty ? LinkCollectorViewModel.unknown : placemarks[0].locality ?? LinkCollectorViewModel.unknown
-            } catch {
-                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
-                return LinkCollectorViewModel.unknown
-            }
-        } else {
+        guard let lastLocation = locationManager.location,
+              let request = MKReverseGeocodingRequest(location: lastLocation) else {
+            return LinkCollectorViewModel.unknown
+        }
+
+        do {
+            let mapItems = try await request.mapItems
+            return mapItems.first?.addressRepresentations?.cityName ?? LinkCollectorViewModel.unknown
+        } catch {
+            logger.log("Cannot find any descriptions for the location: \(lastLocation)")
             return LinkCollectorViewModel.unknown
         }
     }
@@ -282,9 +281,89 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         return await downloader.findFavicon()
     }
     
+    // MARK: - Summary
+    
+    private let summarizer = LinkSummarizer()
+    
+    // Summarizing a page takes tens of seconds, so a view needs to know which links are busy
+    @Published private(set) var summarizingLinks = Set<UUID>()
+    
+    var summaryModelAvailability: SystemLanguageModel.Availability {
+        SystemLanguageModel.default.availability
+    }
+    
+    func isSummarizing(_ link: LinkEntity) -> Bool {
+        guard let id = link.id else {
+            return false
+        }
+        return summarizingLinks.contains(id)
+    }
+    
+    // Downloads the page again rather than summarizing what is stored: nothing keeps the page text,
+    // and a link saved long ago should be summarized as it reads now. The summary is written to the
+    // link and saved, so a view observing the entity picks it up; the return value is incidental.
+    @discardableResult
+    func summarize(link: LinkEntity) async -> String? {
+        guard let id = link.id, let url = link.url else {
+            logger.log("Cannot summarize a link without an id and a url: \(link, privacy: .public)")
+            self.message = "Cannot summarize this link"
+            return nil
+        }
+        
+        guard !summarizingLinks.contains(id) else {
+            return nil
+        }
+        
+        summarizingLinks.insert(id)
+        defer { summarizingLinks.remove(id) }
+        
+        let (downloadedUrl, html) = await getUrlAndHtml(from: url.absoluteString)
+        
+        guard let downloadedUrl = downloadedUrl, let html = html else {
+            logger.log("Cannot download html from \(url, privacy: .public)")
+            self.message = "Cannot download the page: \(url.absoluteString)"
+            return nil
+        }
+        
+        let htmlParser = HTMLParser()
+        var summary: String?
+        
+        if let bodyText = await htmlParser.parseBodyText(url: downloadedUrl, html: html) {
+            do {
+                summary = try await summarizer.summarize(text: bodyText)
+            } catch {
+                logger.log("Cannot summarize \(url, privacy: .public): \(String(describing: error), privacy: .public)")
+            }
+        } else {
+            logger.log("Cannot extract any body text from \(url, privacy: .public)")
+        }
+        
+        // Whether the model is unavailable on this device or refused this particular page, what the
+        // page says about itself is better than showing nothing.
+        if summary == nil {
+            summary = await htmlParser.parseDescription(url: downloadedUrl, html: html)
+        }
+        
+        guard let summary = summary, !summary.isEmpty else {
+            self.message = "Cannot summarize: \(link.title ?? url.absoluteString)"
+            return nil
+        }
+        
+        link.summary = summary
+        
+        do {
+            try await save()
+        } catch {
+            logger.log("While saving a summary of \(url, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
+            self.message = "Cannot save the summary: \(link.title ?? url.absoluteString)"
+        }
+        
+        return summary
+    }
+    
     // MARK: - Persistence
     
-    func saveTag(_ tagDTO: TagDTO) -> Void {
+    func saveTag(_ tagDTO: TagDTO) async -> Void {
         if let tagEntity = getTagEntity(with: tagDTO.name) {
             if let link = tagDTO.link, let linkEntity = getLinkEntity(id: link.id) {
                 if let links = tagEntity.links, !links.contains(linkEntity) {
@@ -299,7 +378,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         }
         
         do {
-            try save()
+            try await save()
         } catch {
             logger.log("While saving \(String(describing: tagDTO)) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             self.message = "Cannot save tag: \( tagDTO.name)"
@@ -310,8 +389,21 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
     @Published var tags = [TagEntity]()
     
     func fetchAll() {
-        searchString = ""
+        if !searchString.isEmpty {
+            searchString = ""
+        }
         fetchLinks()
+        fetchTags()
+    }
+    
+    // Re-publishes what is already in the view context. Unlike fetchAll() it leaves searchString
+    // alone, so a refresh triggered by an iCloud change can't wipe out what the user is searching for.
+    func refresh() {
+        if searchString.isEmpty {
+            fetchLinks()
+        } else {
+            searchLinks()
+        }
         fetchTags()
     }
     
@@ -331,11 +423,11 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         tags = persistenceHelper.fetch(fetchRequest)
     }
     
-    func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) -> Void {
+    func saveLinkAndTags(title: String?, url: String?, favicon: Data?, note: String?, latitude: Double, longitude: Double, locality: String?, tags: [TagEntity]) async -> Void {
         let linkEntity = LinkEntity.create(title: title, url: url, favicon: favicon, note: note, latitude: self.userLatitude, longitude: self.userLongitude, locality: self.userLocality, context: self.persistenceHelper.viewContext)
         
         do {
-            try save()
+            try await save()
         } catch {
             logger.log("While saving \(linkEntity, privacy: .public) and \(tags, privacy: .public) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             self.message = "Cannot save link: \(String(describing: title))"
@@ -344,13 +436,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         let linkDTO = LinkDTO(id: linkEntity.id ?? UUID(), title: linkEntity.title ?? "", note: linkEntity.note ?? "")
         
         for tag in tags {
-            saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
+            await saveTag(TagDTO(name: tag.name ?? "", link: linkDTO))
         }
         
         fetchAll()
     }
     
-    func update(link: LinkDTO, with tags: [TagEntity]) -> Void {
+    func update(link: LinkDTO, with tags: [TagEntity]) async -> Void {
         guard let linkEntity = getLinkEntity(id: link.id) else {
             logger.log("Cannot find an existing link: \(link, privacy: .public)")
             return
@@ -366,7 +458,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
             linkEntity.addToTags(NSSet(array: tags))
             
             do {
-                try save()
+                try await save()
             } catch {
                 logger.log("While updating \(link) with \(tags) occured an unresolved error \(error.localizedDescription, privacy: .public)")
                 self.message = "Cannot update link: \(link)"
@@ -376,13 +468,13 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         
     }
     
-    func remove(tag: String, from link: LinkDTO) {
+    func remove(tag: String, from link: LinkDTO) async {
         if let linkEntity = getLinkEntity(id: link.id), let tagEntity = getTagEntity(with: tag) {
             tagEntity.removeFromLinks(linkEntity)
         }
         
         do {
-            try save()
+            try await save()
         } catch {
             logger.log("While removing \(tag) from \(link) occured an unresolved error \(error.localizedDescription, privacy: .public)")
             self.message = "Cannot save link = \(link.title)"
@@ -412,9 +504,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                                                              predicate: NSPredicate(format: "id == %@", argumentArray: [id]))
         let fetchedLinks = persistenceHelper.fetch(fetchRequest)
         if fetchedLinks.isEmpty {
-            DispatchQueue.main.async {
-                self.message = "Cannot find a link with id=\(id)"
-            }
+            self.message = "Cannot find a link with id=\(id)"
         }
         return fetchedLinks.isEmpty ? nil : fetchedLinks[0]
     }
@@ -425,9 +515,7 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
                                                              predicate: NSPredicate(format: "name == %@", argumentArray: [name]))
         let fetchedTags = persistenceHelper.fetch(fetchRequest)
         if fetchedTags.isEmpty {
-            DispatchQueue.main.async {
-                self.message = "Cannot find a tag: \(name)"
-            }
+            self.message = "Cannot find a tag: \(name)"
         }
         return fetchedTags.isEmpty ? nil : fetchedTags[0]
     }
@@ -440,10 +528,8 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         persistenceHelper.delete(tag)
     }
     
-    func save() throws -> Void {
-        Task {
-            try await persistenceHelper.save()
-        }
+    func save() async throws -> Void {
+        try await persistenceHelper.save()
     }
     
     // MARK: - Persistence History Request
@@ -451,9 +537,16 @@ class LinkCollectorViewModel: NSObject, ObservableObject {
         Task {
             do {
                 let objectIDs = try await persistence.fetchUpdates()
+                guard !objectIDs.isEmpty else { return }
+                
                 for objectId in objectIDs {
                     await addToIndex(objectId)
                 }
+                
+                // fetchUpdates() merges the history into the view context but publishes nothing.
+                // Without this the change stays invisible until scenePhase returns to .active.
+                logger.log("Refreshing after \(objectIDs.count, privacy: .public) remote changes")
+                refresh()
             } catch {
                 logger.log("Error while updating history: notification=\(notification)\n\(error.localizedDescription, privacy: .public)\n\(Thread.callStackSymbols, privacy: .public)")
             }

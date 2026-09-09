@@ -30,7 +30,11 @@ struct TagListView: View {
                         }
                     }
                 }
-                .onDelete(perform: removeTag)
+                .onDelete { indexSet in
+                    Task {
+                        await removeTag(indexSet: indexSet)
+                    }
+                }
             }
             #if canImport(UIKit)
             .listStyle(GroupedListStyle())
@@ -49,14 +53,14 @@ struct TagListView: View {
         }
     }
     
-    private func removeTag(indexSet: IndexSet) -> Void {
+    private func removeTag(indexSet: IndexSet) async -> Void {
         for index in indexSet {
             let tag = viewModel.tags[index]
             viewModel.delete(tag: tag)
         }
 
         do {
-            try viewModel.save()
+            try await viewModel.save()
         } catch {
             message = "Failed to delete the selected tag"
             showAlert = true

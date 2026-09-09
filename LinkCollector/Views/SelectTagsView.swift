@@ -56,7 +56,6 @@ struct SelectTagsView: View {
                 dismiss.callAsFunction()
             } label: {
                 Label("Done", systemImage: "chevron.backward")
-                    .foregroundColor(.blue)
             }
             
             Spacer()
@@ -69,7 +68,6 @@ struct SelectTagsView: View {
                 selectedTags.removeAll()
             } label: {
                 Text("Reset")
-                    .foregroundColor(.blue)
             }
         }
     }

@@ -71,6 +71,11 @@
 		90A5BB8F26C477C30044A0EA /* LinkCollector.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */; };
 		90A89FB92D9773AD002D1C34 /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A290A7258FB663004988D9 /* HTMLParser.swift */; };
 		90A89FBA2D9773C1002D1C34 /* TypeIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FD202126C9A78E008CC190 /* TypeIdentifier.swift */; };
+		90A89FBB2D9773AD002D1C34 /* LinkCollectorDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9081DB162AA4D9250070729B /* LinkCollectorDownloader.swift */; };
+		90AB10022E6A0F0100AA0002 /* LinkSummarizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10012E6A0F0100AA0001 /* LinkSummarizer.swift */; };
+		90AB10042E6A0F0100AA0004 /* LinkSummarizerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10032E6A0F0100AA0003 /* LinkSummarizerError.swift */; };
+		90AB10062E6A0F0100AA0006 /* SummaryLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AB10052E6A0F0100AA0005 /* SummaryLabel.swift */; };
+		90AC10012026081600000002 /* AppIcon_iOS26.icon in Resources */ = {isa = PBXBuildFile; fileRef = 90AC10012026081600000001 /* AppIcon_iOS26.icon */; };
 		90B3CDB628232F9000BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB528232F9000BF6354 /* FaviconFinder */; };
 		90B3CDB82823336800BF6354 /* FaviconFinder in Frameworks */ = {isa = PBXBuildFile; productRef = 90B3CDB72823336800BF6354 /* FaviconFinder */; };
 		90BAF1602D90BBDA009C9E8B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90BAF15E2D90BBDA009C9E8B /* LaunchScreen.storyboard */; platformFilter = ios; };
@@ -189,6 +194,10 @@
 		909C8F352D99CB0000D761FC /* LinkCollectorMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCollectorMenu.swift; sourceTree = "<group>"; };
 		90A290A7258FB663004988D9 /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		90A290AA258FB695004988D9 /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
+		90AB10012E6A0F0100AA0001 /* LinkSummarizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSummarizer.swift; sourceTree = "<group>"; };
+		90AB10032E6A0F0100AA0003 /* LinkSummarizerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSummarizerError.swift; sourceTree = "<group>"; };
+		90AB10052E6A0F0100AA0005 /* SummaryLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryLabel.swift; sourceTree = "<group>"; };
+		90AC10012026081600000001 /* AppIcon_iOS26.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon_iOS26.icon; sourceTree = "<group>"; };
 		90BAF15F2D90BBDA009C9E8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		90C30D372829CC9500061A5F /* LinkLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkLabel.swift; sourceTree = "<group>"; };
 		90C68DAD2595334600C78C1E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -277,6 +286,7 @@
 				900F3FFA26D86AA500C63590 /* TitleLabel.swift */,
 				900F3FFC26D86B6300C63590 /* LocationLabel.swift */,
 				90C30D372829CC9500061A5F /* LinkLabel.swift */,
+				90AB10052E6A0F0100AA0005 /* SummaryLabel.swift */,
 			);
 			path = Labels;
 			sourceTree = "<group>";
@@ -372,6 +382,7 @@
 				90CFB3372D7DDDE100ED620E /* LinkPilerApp.swift */,
 				900EA7BA28305A380055CBC4 /* LinkPilerConstants.swift */,
 				905E9C5125897B890090BFC6 /* Assets.xcassets */,
+				90AC10012026081600000001 /* AppIcon_iOS26.icon */,
 				905E9C5925897B890090BFC6 /* Info.plist */,
 				905E9C4E25897B870090BFC6 /* LinkCollector.xcdatamodeld */,
 				905E9C5325897B890090BFC6 /* Preview Content */,
@@ -405,6 +416,8 @@
 				9023F552258ECA3300192D42 /* LinkCollectorViewModel.swift */,
 				90A290A7258FB663004988D9 /* HTMLParser.swift */,
 				9078D06C2A9A5DDE0089CA21 /* HTMLParserError.swift */,
+				90AB10012E6A0F0100AA0001 /* LinkSummarizer.swift */,
+				90AB10032E6A0F0100AA0003 /* LinkSummarizerError.swift */,
 				90C68DB3259558F400C78C1E /* YouTubeOEmbed.swift */,
 				9092A1E12A957EE600020880 /* PersistenceHelper.swift */,
 				9078D06F2A9A8A880089CA21 /* LinkSpotlightDelegate.swift */,
@@ -537,7 +550,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					902C9B8326C063000071CADB = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -604,6 +617,7 @@
 				90BAF1602D90BBDA009C9E8B /* LaunchScreen.storyboard in Resources */,
 				905E9C5525897B890090BFC6 /* Preview Assets.xcassets in Resources */,
 				905E9C5225897B890090BFC6 /* Assets.xcassets in Resources */,
+				90AC10012026081600000002 /* AppIcon_iOS26.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -664,6 +678,8 @@
 				90C97D732D7CD323006195A8 /* FilterView.swift in Sources */,
 				90C68DB4259558F400C78C1E /* YouTubeOEmbed.swift in Sources */,
 				90A290A8258FB663004988D9 /* HTMLParser.swift in Sources */,
+				90AB10022E6A0F0100AA0002 /* LinkSummarizer.swift in Sources */,
+				90AB10042E6A0F0100AA0004 /* LinkSummarizerError.swift in Sources */,
 				90D25DC026CEE1D5007F7819 /* AddTagView.swift in Sources */,
 				9081E05826CDD1BF003C43D4 /* TagEntity+Extension.swift in Sources */,
 				90C30D382829CC9500061A5F /* LinkLabel.swift in Sources */,
@@ -671,6 +687,7 @@
 				9023C38B280E16010055E322 /* WidgetEntry.swift in Sources */,
 				90D332042DA091B200045ED6 /* TagListView.swift in Sources */,
 				900F3FF926D86A0600C63590 /* NoteLabel.swift in Sources */,
+				90AB10062E6A0F0100AA0006 /* SummaryLabel.swift in Sources */,
 				9078D0702A9A8A880089CA21 /* LinkSpotlightDelegate.swift in Sources */,
 				90C68DAE2595334600C78C1E /* MapView.swift in Sources */,
 				90C97D712D7CAA51006195A8 /* BookmarkGenerator.swift in Sources */,
@@ -708,6 +725,7 @@
 				909C8F132D99754500D761FC /* HTMLParserError.swift in Sources */,
 				909C8F1F2D998A5800D761FC /* LinkCollector.xcdatamodeld in Sources */,
 				90A89FB92D9773AD002D1C34 /* HTMLParser.swift in Sources */,
+				90A89FBB2D9773AD002D1C34 /* LinkCollectorDownloader.swift in Sources */,
 				909C8F142D99754B00D761FC /* YouTubeOEmbed.swift in Sources */,
 				909C8F202D998A9B00D761FC /* LinkeEntity+Extension.swift in Sources */,
 				90A89FBA2D9773C1002D1C34 /* TypeIdentifier.swift in Sources */,
@@ -763,16 +781,16 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;
@@ -781,7 +799,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -791,16 +809,16 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = LinkCollectorShareExtension/LinkCollectorShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				INFOPLIST_FILE = LinkCollectorShareExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkCollectorShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;
@@ -809,7 +827,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -822,20 +840,20 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -845,7 +863,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -858,20 +876,20 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_ENTITLEMENTS = LinkPilerWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LinkPilerWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -881,7 +899,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -940,15 +958,16 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -1000,14 +1019,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1015,31 +1035,32 @@
 		905E9C5D25897B890090BFC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_iOS26;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1047,31 +1068,32 @@
 		905E9C5E25897B890090BFC6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_iOS26;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkCollector/LinkCollector.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkCollector/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = LinkCollector/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkPiler;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1084,7 +1106,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1097,15 +1119,16 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -1117,7 +1140,7 @@
 				CODE_SIGN_ENTITLEMENTS = LinkPilerShareExtensionMac/LinkPilerShareExtensionMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 51;
+				CURRENT_PROJECT_VERSION = 59;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1130,14 +1153,15 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.6;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.resonance.jaeseung.LinkCollector.LinkPilerShareExtensionMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -1197,7 +1221,7 @@
 			repositoryURL = "https://github.com/jaeseung16/PersistenceSwift";
 			requirement = {
 				kind = exactVersion;
-				version = 0.2.15;
+				version = 0.2.20;
 			};
 		};
 		90A290A3258FA519004988D9 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
@@ -1205,7 +1229,7 @@
 			repositoryURL = "https://github.com/scinfu/SwiftSoup";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.0;
+				minimumVersion = 2.13.7;
 			};
 		};
 		90B3CDB428232F9000BF6354 /* XCRemoteSwiftPackageReference "FaviconFinder" */ = {
@@ -1213,7 +1237,7 @@
 			repositoryURL = "https://github.com/will-lumley/FaviconFinder";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 5.1.0;
+				minimumVersion = 5.1.5;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

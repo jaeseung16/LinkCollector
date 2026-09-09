@@ -15,8 +15,21 @@ struct LinkDetailView: View {
     @State var showNote = false
     @State var showTags = false
     @State var showEditLinkView = false
+    @State private var showSummary = false
     
-    var entity: LinkEntity
+    // Observed so that a change merged from iCloud — or a summary written by summarize() —
+    // redraws this view instead of waiting for the next re-selection.
+    @ObservedObject var entity: LinkEntity
+    
+    private var summary: String {
+        entity.summary ?? ""
+    }
+    
+    // Sorted by name to match the tag list elsewhere: getTagList() walks an NSSet, so its order
+    // would otherwise shuffle between redraws.
+    private var tags: [TagEntity] {
+        entity.getTagList().sorted { ($0.name ?? "") < ($1.name ?? "") }
+    }
     
     private static var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
@@ -36,8 +49,6 @@ struct LinkDetailView: View {
         }
     }
     
-    var tags: [TagEntity]
-    
     var body: some View {
         GeometryReader { geometry in
             VStack {
@@ -45,7 +56,7 @@ struct LinkDetailView: View {
                     .frame(width: geometry.size.width, height: 30, alignment: .center)
                     .scaledToFit()
                 
-                tagsView(geometry: geometry)
+                tagsView()
                     .padding()
                 
                 entity.created.map {
@@ -65,7 +76,6 @@ struct LinkDetailView: View {
                 entity.url.map {
                     WebView(url: $0)
                         .environmentObject(viewModel)
-                        .shadow(color: Color.gray, radius: 1.0)
                         .padding()
                 }
             }
@@ -123,6 +133,21 @@ struct LinkDetailView: View {
             Spacer()
             
             #if canImport(UIKit)
+            summaryView(geometry: geometry)
+            #else
+            summaryView(geometry: geometry)
+                .onHover(perform: { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                })
+            #endif
+            
+            Spacer()
+            
+            #if canImport(UIKit)
             editLinkView()
             #else
             editLinkView()
@@ -144,7 +169,6 @@ struct LinkDetailView: View {
             Link(destination: $0) {
                 Label("Open in Browser", systemImage: "link")
             }
-            .foregroundColor(.blue)
         }
     }
     
@@ -154,7 +178,6 @@ struct LinkDetailView: View {
         } label: {
             NoteLabel(title: "note")
         }
-        .foregroundColor(.blue)
         .popover(isPresented: $showNote) {
             VStack {
                 Spacer()
@@ -177,29 +200,105 @@ struct LinkDetailView: View {
                     showNote = false
                 } label: {
                     Text("Dismiss")
-                        .foregroundColor(.blue)
                 }
             }
             .padding()
         }
     }
     
-    @ScaledMetric(relativeTo: .body) var bodyTextHeight: CGFloat = 40.0
-    
-    private func tagsView(geometry: GeometryProxy) -> some View {
-        VStack {
-            if !self.tags.isEmpty {
-                List {
-                    ForEach(self.tags, id: \.id) { tag in
-                        if let name = tag.name {
-                            TagLabel(title: name)
-                                .font(.body)
-                                .foregroundColor(.primary)
+    private func summaryView(geometry: GeometryProxy) -> some View {
+        Button {
+            showSummary = true
+        } label: {
+            SummaryLabel(title: "summary")
+        }
+        .popover(isPresented: $showSummary) {
+            VStack {
+                Spacer()
+                
+                if viewModel.isSummarizing(entity) {
+                    ProgressView()
+                    
+                    Text("Summarizing this page may take a while")
+                        .font(.callout)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 0.5 * geometry.size.width)
+                } else if !summary.isEmpty {
+                    ScrollView {
+                        Text(summary)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(minWidth: 0.5 * geometry.size.width, maxWidth: geometry.size.width, minHeight: 0.2 * geometry.size.height, maxHeight: 0.8 * geometry.size.height)
+                } else {
+                    Text("No summary added")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 0.5 * geometry.size.width)
+                }
+                
+                summaryModelUnavailable.map {
+                    Text($0)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 0.5 * geometry.size.width)
+                }
+                
+                Spacer()
+                
+                HStack {
+                    Button {
+                        Task {
+                            await viewModel.summarize(link: entity)
                         }
+                    } label: {
+                        Text(summary.isEmpty ? "Summarize" : "Summarize Again")
+                    }
+                    .disabled(entity.url == nil || viewModel.isSummarizing(entity))
+                    
+                    Spacer()
+                    
+                    Button {
+                        showSummary = false
+                    } label: {
+                        Text("Dismiss")
                     }
                 }
-                .listStyle(PlainListStyle())
-                .frame(height: bodyTextHeight * CGFloat(self.tags.count))
+            }
+            .padding()
+        }
+    }
+    
+    // The summary falls back to the page's own description when the on-device model can't run, so
+    // an unavailable model is explained rather than used to disable the button.
+    private var summaryModelUnavailable: String? {
+        guard case .unavailable(let reason) = viewModel.summaryModelAvailability else {
+            return nil
+        }
+        
+        switch reason {
+        case .deviceNotEligible:
+            return "This device doesn't support Apple Intelligence, so the page's own description is used."
+        case .appleIntelligenceNotEnabled:
+            return "Apple Intelligence is turned off, so the page's own description is used."
+        case .modelNotReady:
+            return "The on-device model isn't ready yet, so the page's own description is used."
+        @unknown default:
+            return "On-device summarization isn't available, so the page's own description is used."
+        }
+    }
+    
+    private func tagsView() -> some View {
+        VStack(alignment: .leading) {
+            if !self.tags.isEmpty {
+                ForEach(self.tags, id: \.id) { tag in
+                    if let name = tag.name {
+                        TagLabel(title: name)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                    }
+                }
             } else {
                 Text("No tags added")
                     .font(.body)
@@ -214,6 +313,5 @@ struct LinkDetailView: View {
         } label: {
             Label("EDIT", systemImage: "pencil.circle")
         }
-        .foregroundColor(.blue)
     }
 }

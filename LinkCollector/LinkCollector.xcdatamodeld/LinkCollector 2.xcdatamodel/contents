@@ -9,6 +9,7 @@
         <attribute name="locality" optional="YES" attributeType="String"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="summary" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
         <attribute name="url" optional="YES" attributeType="URI"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TagEntity" inverseName="links" inverseEntity="TagEntity"/>

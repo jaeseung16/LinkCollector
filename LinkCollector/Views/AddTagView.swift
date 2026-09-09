@@ -54,7 +54,6 @@ struct AddTagView: View {
                 dismiss.callAsFunction()
             }, label: {
                 Label("Done", systemImage: "chevron.backward")
-                    .foregroundColor(.blue)
             })
             .frame(width: geometry.size.width, alignment: .leading)
             #else
@@ -62,7 +61,6 @@ struct AddTagView: View {
                 dismiss.callAsFunction()
             }, label: {
                 Label("Done", systemImage: "chevron.backward")
-                    .foregroundColor(.blue)
             })
             .frame(width: geometry.size.width, alignment: .leading)
             .onHover(perform: { hovering in
@@ -132,7 +130,11 @@ struct AddTagView: View {
                         .foregroundColor(.primary)
                 }
             }
-            .onDelete(perform: removeTag)
+            .onDelete { indexSet in
+                Task {
+                    await removeTag(indexSet: indexSet)
+                }
+            }
         }
         .listStyle(InsetListStyle())
     }
@@ -155,7 +157,9 @@ struct AddTagView: View {
             Spacer()
             
             Button(action: {
-                self.save()
+                Task {
+                    await self.save()
+                }
             }, label: {
                 Label("Save", systemImage: "square.and.arrow.down")
             })
@@ -164,21 +168,21 @@ struct AddTagView: View {
         }
     }
     
-    private func save() -> Void {
-        viewModel.saveTag(TagDTO(name: tagName))
+    private func save() async -> Void {
+        await viewModel.saveTag(TagDTO(name: tagName))
         viewModel.fetchAll()
         tagName = ""
         saveButtonEnabled = false
     }
     
-    private func removeTag(indexSet: IndexSet) -> Void {
+    private func removeTag(indexSet: IndexSet) async -> Void {
         for index in indexSet {
             let tag = filteredTags[index]
             viewModel.delete(tag: tag)
         }
 
         do {
-            try viewModel.save()
+            try await viewModel.save()
         } catch {
             viewModel.message = "Failed to save changes"
         }

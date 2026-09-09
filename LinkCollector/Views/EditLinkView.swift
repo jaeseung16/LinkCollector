@@ -103,7 +103,6 @@ struct EditLinkView: View {
                 editTags = true
             } label: {
                 TagLabel(title: "Edit tags")
-                    .foregroundColor(Color.blue)
             }
         }
     }
@@ -115,7 +114,6 @@ struct EditLinkView: View {
             }, label: {
                 Label("Cancel", systemImage: "chevron.backward")
             })
-            .foregroundColor(Color.blue)
             
             Spacer()
             
@@ -124,7 +122,9 @@ struct EditLinkView: View {
             Spacer()
             
             Button(action: {
-                saveEntities()
+                Task {
+                    await saveEntities()
+                }
                 dismiss.callAsFunction()
             }, label: {
                 Label("Save", systemImage: "square.and.arrow.down")
@@ -134,8 +134,8 @@ struct EditLinkView: View {
         }
     }
     
-    private func saveEntities() -> Void {
-        viewModel.update(link: LinkDTO(id: id, title: title, note: note), with: tags)
+    private func saveEntities() async -> Void {
+        await viewModel.update(link: LinkDTO(id: id, title: title, note: note), with: tags)
     }
 }
 

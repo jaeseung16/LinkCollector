@@ -11,7 +11,7 @@ import UIKit
 import AppKit
 #endif
 import CoreData
-@preconcurrency import UserNotifications
+import UserNotifications
 import CloudKit
 import os
 import Persistence

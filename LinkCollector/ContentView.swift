@@ -18,48 +18,48 @@ struct ContentView: View {
     @State private var selectedTag: TagEntity?
     
     var body: some View {
-        VStack {
-            NavigationSplitView {
-                List(selection: $selectedMenu) {
-                    ForEach(LinkCollectorMenu.allCases) { menu in
-                        NavigationLink(value: menu) {
-                            Text(menu.rawValue)
-                        }
+        NavigationSplitView {
+            List(selection: $selectedMenu) {
+                ForEach(LinkCollectorMenu.allCases) { menu in
+                    NavigationLink(value: menu) {
+                        Text(menu.rawValue)
                     }
                 }
-            } content: {
-                switch selectedMenu {
-                case .links:
-                    LinkListView(selectedLink: $selectedLink)
-                        .navigationTitle("Links")
-                case .tags:
-                    TagListView(selectedTag: $selectedTag)
-                        .navigationTitle("Tags")
-                case nil:
-                    EmptyView()
-                }
-            } detail: {
-                if let selectedLink = selectedLink {
-                    LinkDetailView(entity: selectedLink, tags: selectedLink.getTagList())
-                        .navigationTitle(selectedLink.title ?? "")
-                        .id(selectedLink)
-                } else if let selectedTag = selectedTag {
-                    TagDetailView(entity: selectedTag)
-                        .navigationTitle(selectedTag.name ?? "")
-                        .id(selectedTag)
-                } else {
-                    EmptyView()
-                }
+            }
+        } content: {
+            switch selectedMenu {
+            case .links:
+                LinkListView(selectedLink: $selectedLink)
+                    .navigationTitle("Links")
+            case .tags:
+                TagListView(selectedTag: $selectedTag)
+                    .navigationTitle("Tags")
+            case nil:
+                EmptyView()
+            }
+        } detail: {
+            if let selectedLink = selectedLink {
+                LinkDetailView(entity: selectedLink)
+                    .navigationTitle(selectedLink.title ?? "")
+                    .id(selectedLink)
+            } else if let selectedTag = selectedTag {
+                TagDetailView(entity: selectedTag)
+                    .navigationTitle(selectedTag.name ?? "")
+                    .id(selectedTag)
+            } else {
+                EmptyView()
             }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             if newPhase == .active {
                 viewModel.fetchAll()
             } else {
-                do {
-                    try  viewModel.save()
-                } catch {
-                    // TODO:
+                Task {
+                    do {
+                        try await viewModel.save()
+                    } catch {
+                        viewModel.message = "Failed to save changes"
+                    }
                 }
                 viewModel.writeWidgetEntries()
             }

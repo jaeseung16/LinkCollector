@@ -5,17 +5,73 @@
 //  Created by Jae Seung Lee on 3/25/25.
 //
 
-@preconcurrency import Cocoa
+import Cocoa
 import os
-@preconcurrency import FaviconFinder
 import CoreData
 import Persistence
-import CoreLocation
+import MapKit
+
+// One-time reset of this extension's local store.
+//
+// The store had been mirroring correctly until 2026-05-17, when its imports stopped and every
+// export started failing with CKError.partialFailure -- 1000+ records re-offered with change
+// tags that the server had long since moved past, which fails the whole batch including the
+// link the user just shared. Nothing recovers from that state on its own and no API resets the
+// mirroring metadata, so the store has to go. NSPersistentCloudKitContainer rebuilds it and
+// re-imports the library from iCloud on the next launch.
+//
+// Anything in the old store that never exported is discarded, by design: it is the only data
+// there that is not already in iCloud, and there is no way to show the user what it was.
+// See docs/worklog/2026-09-08-share-extension-crash.md.
+private enum ShareExtensionStoreReset {
+    private static let logger = Logger()
+    private static let defaultsKey = "shareExtensionStoreResetVersion"
+    private static let version = 1
+
+    // Must run before anything opens the store, i.e. before Persistence is constructed.
+    static func runIfNeeded() -> Void {
+        guard UserDefaults.standard.integer(forKey: defaultsKey) < version else {
+            return
+        }
+
+        let directory = NSPersistentContainer.defaultDirectoryURL()
+        let name = LinkPilerConstants.appPathComponent.rawValue
+        // "\(name)" is the directory Persistence keeps its history token in; a token pointing
+        // into a store that no longer exists would break the purge on the next launch.
+        let items = ["\(name).sqlite", "\(name).sqlite-wal", "\(name).sqlite-shm",
+                     ".\(name)_SUPPORT", "\(name)_ckAssets", name]
+
+        var removedEverything = true
+        for item in items {
+            let url = directory.appendingPathComponent(item)
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                continue
+            }
+
+            do {
+                try FileManager.default.removeItem(at: url)
+                logger.log("Removed \(item, privacy: .public)")
+            } catch {
+                removedEverything = false
+                logger.error("Could not remove \(item, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            }
+        }
+
+        // Leave the marker unset on failure so the next launch tries again; a half-deleted
+        // store is worse than one that is still wedged.
+        if removedEverything {
+            UserDefaults.standard.set(version, forKey: defaultsKey)
+        }
+    }
+}
 
 class ShareViewController: NSViewController {
     private let logger = Logger()
     
-    private let persistenceController = Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+    private lazy var persistenceController: Persistence = {
+        ShareExtensionStoreReset.runIfNeeded()
+        return Persistence(name: LinkPilerConstants.appPathComponent.rawValue, identifier: LinkPilerConstants.containerIdentifier.rawValue)
+    }()
     
     private var viewContext: NSManagedObjectContext {
         persistenceController.container.viewContext
@@ -33,7 +89,6 @@ class ShareViewController: NSViewController {
     private var linkEntity: LinkEntity?
     private var favicon: Data?
     
-    private let htmlParser = HTMLParser()
     private let locationManager = CLLocationManager()
     private var location: CLLocation? {
         didSet {
@@ -52,17 +107,23 @@ class ShareViewController: NSViewController {
         }
     }
     
+    private func lookUpCurrentLocation() {
+        Task {
+            self.locality = await lookUpCurrentLocation()
+        }
+    }
+
     private func lookUpCurrentLocation() async -> String {
-        if let lastLocation = location {
-            do {
-                let geocoder = CLGeocoder()
-                let placemarks = try await geocoder.reverseGeocodeLocation(lastLocation)
-                return placemarks.isEmpty ? unknown : placemarks[0].locality ?? unknown
-            } catch {
-                logger.log("Cannot find any descriptions for the location: \(lastLocation)")
-                return unknown
-            }
-        } else {
+        guard let lastLocation = locationManager.location,
+              let request = MKReverseGeocodingRequest(location: lastLocation) else {
+            return unknown
+        }
+
+        do {
+            let mapItems = try await request.mapItems
+            return mapItems.first?.addressRepresentations?.cityName ?? unknown
+        } catch {
+            logger.log("Cannot find any descriptions for the location: \(lastLocation)")
             return unknown
         }
     }
@@ -95,37 +156,47 @@ class ShareViewController: NSViewController {
                                                object: persistenceController.container.persistentStoreCoordinator)
     }
     
-    @objc private func processNotification(_ notification: Notification) -> Void {
+    // Core Data posts .NSPersistentStoreRemoteChange on its own private queue. This class is
+    // @MainActor by inheritance, so under Swift 6 the @objc thunk asserts main-actor isolation
+    // before entering the body and traps. Take the callback nonisolated and hop explicitly.
+    @objc private nonisolated func processNotification(_ notification: Notification) -> Void {
+        Task { @MainActor in
+            self.handleRemoteChange()
+        }
+    }
+
+    private func handleRemoteChange() -> Void {
         guard let posted = posted else {
             return
         }
-        
-        let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: posted)
+
         let context = persistenceController.container.newBackgroundContext()
-        
-        guard let historyResult = try? context.execute(fetchHistoryRequest) as? NSPersistentHistoryResult,
-              let history = historyResult.result as? [NSPersistentHistoryTransaction] else {
-            DispatchQueue.main.async {
-                self.showAlertAndTerminate()
-            }
+
+        // execute() has to run on the context's own queue, and the request is built in there
+        // too: it is not Sendable, and performAndWait's closure is.
+        let history = context.performAndWait {
+            let request = NSPersistentHistoryChangeRequest.fetchHistory(after: posted)
+            return (try? context.execute(request) as? NSPersistentHistoryResult)?.result as? [NSPersistentHistoryTransaction]
+        }
+
+        guard let history else {
+            showAlertAndTerminate()
             return
         }
-        
+
         for transaction in history {
             if transaction.timestamp > posted && transaction.contextName == contextName {
                 guard let changes = transaction.changes else { continue }
-                
+
                 for change in changes {
                     if change.changeType == .insert {
                         if let link = self.linkEntity, change.changedObjectID == link.objectID {
-                            DispatchQueue.main.async {
-                                self.progressIndicator.stopAnimation(nil)
-                            }
-                            
+                            self.progressIndicator.stopAnimation(nil)
+
                             if self.extensionContext != nil {
                                 self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
                             }
-                            
+
                             return
                         }
                     }
@@ -135,37 +206,31 @@ class ShareViewController: NSViewController {
     }
 
     @IBAction func send(_ sender: AnyObject?) {
-        DispatchQueue.main.async {
-            self.progressIndicator.startAnimation(nil)
-        }
-        
-        var favicon: Data?
-        if let url = URL(string: urlTextField.stringValue) {
-            var urlComponents = URLComponents()
-            urlComponents.scheme = url.scheme
-            urlComponents.host = url.host
-            urlComponents.path = "/favicon.ico"
-            
-            if let faviconURL = urlComponents.url {
-                favicon = try? Data(contentsOf: faviconURL)
+        progressIndicator.startAnimation(nil)
+
+        Task {
+            // The download path already found one, unless the item arrived through JavaScript
+            // preprocessing, which does no network of its own.
+            if favicon == nil {
+                favicon = await LinkCollectorDownloader(url: urlTextField.stringValue).findFavicon()
             }
-        }
-        
-        posted = Date()
-        linkEntity = LinkEntity.create(title: titleTextField.stringValue,
-                                       url: urlTextField.stringValue,
-                                       favicon: favicon,
-                                       note: "",
-                                       latitude: location?.coordinate.latitude ?? 0.0,
-                                       longitude: location?.coordinate.latitude ?? 0.0,
-                                       locality: self.locality,
-                                       context: persistenceController.container.viewContext)
-        
-        save(with: contextName)
-        
-        // Terminate after 10 sec
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
-            self.showAlertAndTerminate()
+
+            posted = Date()
+            linkEntity = LinkEntity.create(title: titleTextField.stringValue,
+                                           url: urlTextField.stringValue,
+                                           favicon: favicon,
+                                           note: "",
+                                           latitude: location?.coordinate.latitude ?? 0.0,
+                                           longitude: location?.coordinate.longitude ?? 0.0,
+                                           locality: self.locality,
+                                           context: persistenceController.container.viewContext)
+
+            save(with: contextName)
+
+            // Terminate after 10 sec
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
+                self.showAlertAndTerminate()
+            }
         }
     }
     
@@ -258,113 +323,29 @@ class ShareViewController: NSViewController {
     }
     
     private func update(with publicURL: URL) {
-        DispatchQueue.main.async {
-            self.urlTextField.stringValue = publicURL.absoluteString
-            self.progressIndicator.startAnimation(nil)
-        }
-        
-        process(urlString: publicURL.absoluteString) { url, result in
-            DispatchQueue.main.async {
-                self.titleTextField.stringValue = result ?? "Enter title"
-                self.progressIndicator.stopAnimation(nil)
-                
-                if let url = url {
-                    self.findFavicon(url: url) { data, error in
-                        guard let data = data else {
-                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
-                            return
-                        }
-                        self.favicon = data
-                    }
-                }
-            }
-        }
+        update(with: publicURL.absoluteString)
     }
-    
+
     private func update(with plainText: String) {
-        DispatchQueue.main.async {
-            self.urlTextField.stringValue = plainText
-            self.progressIndicator.startAnimation(nil)
-        }
-        
-        process(urlString: plainText) { url, result in
-            DispatchQueue.main.async {
-                self.titleTextField.stringValue = result ?? "Enter title"
-                self.progressIndicator.stopAnimation(nil)
-                
-                if let url = url {
-                    self.findFavicon(url: url) { data, error in
-                        guard let data = data else {
-                            self.logger.log("Can't download favicon from \(url, privacy: .public): \(String(describing: error?.localizedDescription), privacy: .public))")
-                            return
-                        }
-                        self.favicon = data
-                    }
-                }
-            }
-        }
-    }
-    
-    private func process(urlString: String, completionHandler: @escaping (_ url: URL?, _ result: String?) -> Void) -> Void {
-        let (url, html) = getURLAndHTML(from: urlString)
-        
-        guard let url = url, let html = html else {
-            completionHandler(nil, nil)
-            return
-        }
-        
+        urlTextField.stringValue = plainText
+        progressIndicator.startAnimation(nil)
+
+        // LinkCollectorDownloader is an actor, so the download runs off the main actor and this
+        // resumes back on it. Doing it inline blocked the share sheet for the whole fetch, and
+        // for up to three of them on the https -> http retry path.
         Task {
-            let htmlParser = HTMLParser()
-            let result = await htmlParser.parse(url: url, html: html)
-            completionHandler(url, result)
-        }
-    }
-    
-    private func getURLAndHTML(from urlString: String) -> (URL?, String?) {
-        var url: URL?
-        var html: String?
-        
-        if isValid(urlString: urlString) {
-            (url, html) = tryDownloadHTML(from: urlString)
-        } else {
-            (url, html) = tryDownloadHTML(from: "https://\(urlString)")
-            if html == nil {
-                (url, html) = tryDownloadHTML(from: "http://\(urlString)")
+            let (url, html) = await LinkCollectorDownloader(url: plainText).getUrlAndHtml()
+
+            var title: String?
+            if let url = url, let html = html {
+                title = await HTMLParser().parse(url: url, html: html)
             }
-        }
-        return (url, html)
-    }
-    
-    private func tryDownloadHTML(from urlString: String) -> (URL?, String?) {
-        if let url = URL(string: urlString) {
-            return (url, try? String(contentsOf: url, encoding: .utf8))
-        } else {
-            return (nil, nil)
-        }
-    }
-    
-    private func isValid(urlString: String) -> Bool {
-        guard let urlComponent = URLComponents(string: urlString), let scheme = urlComponent.scheme else {
-            return false
-        }
-        return scheme == "http" || scheme == "https"
-    }
-    
-    private func findFavicon(url: URL, completionHandler: @escaping (_ favicon: Data?, _ error: Error?) -> Void) {
-        Task {
-            do {
-                let favicon = try await FaviconFinder(url: url, configuration: .init(preferredSource: .ico, acceptHeaderImage: true))
-                    .fetchFaviconURLs()
-                    .download()
-                    .largest()
-                DispatchQueue.main.async {
-                    completionHandler(favicon.image?.data, nil)
-                }
-            } catch {
-                self.logger.log("Cannot find favicon from \(url, privacy: .public)")
-                DispatchQueue.main.async {
-                    completionHandler(nil, error)
-                }
+
+            titleTextField.stringValue = title ?? "Enter title"
+            progressIndicator.stopAnimation(nil)
+
+            if let url = url {
+                favicon = await LinkCollectorDownloader(url: url.absoluteString).findFavicon()
             }
         }
     }

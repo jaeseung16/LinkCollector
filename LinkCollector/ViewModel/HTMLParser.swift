@@ -12,55 +12,31 @@ import os
 actor HTMLParser {
     private static let emptyString = ""
     
+    // Elements that never contribute to the readable content of a page. The landmark roles cover
+    // the site chrome of pages that mark it up with divs instead of nav/aside/header/footer tags.
+    private static let noiseSelector = "script, style, noscript, template, nav, aside, form, iframe, svg, [role=navigation], [role=banner], [role=complementary], [role=contentinfo], [role=search]"
+    // Containers that, when present, usually hold the article body itself
+    private static let contentSelector = "article, main, [role=main]"
+    // Below this length a candidate container is treated as boilerplate and the whole body is used instead
+    private static let minimumContentLength = 200
+    
     private let logger = Logger()
     
     private var document: Document?
     private var title = HTMLParser.emptyString
     private var ogTitle = HTMLParser.emptyString
+    private var ogDescription = HTMLParser.emptyString
+    private var metaDescription = HTMLParser.emptyString
+    private var bodyText = HTMLParser.emptyString
     
     private var titleToUse: String {
         return !ogTitle.isEmpty ? ogTitle : (!title.isEmpty ? title : HTMLParser.emptyString)
     }
     
-    func parse(url: URL, html: String, completionHandler: @escaping (_ result: String?) -> Void) -> Void {
-        if !populateDocument(url: url, html: html) {
-            completionHandler(nil)
-        }
-        
-        if let document = document {
-            populateTitle(document: document)
-            populateOgTitle(document: document)
-        }
-        
-        Task {
-            if let host = url.host {
-                if host.contains("youtube.com") {
-                    await populateOgTitle(url)
-                    completionHandler(titleToUse)
-                } else {
-                    completionHandler(titleToUse)
-                }
-            } else {
-                completionHandler(titleToUse)
-            }
-        }
-    }
-    
-    func parseTitle(url: URL, html: String) async -> String? {
-        if !populateDocument(url: url, html: html) {
-            return nil
-        }
-        
-        if let document = document {
-            populateTitle(document: document)
-            populateOgTitle(document: document)
-        }
-        
-        if let host = url.host, host.contains("youtube.com") {
-            await populateOgTitle(url)
-        }
-        
-        return titleToUse
+    // og:description is what a page says about itself; <meta name="description"> is the older form
+    // of the same thing, and plenty of pages still ship only that one.
+    private var descriptionToUse: String {
+        return !ogDescription.isEmpty ? ogDescription : metaDescription
     }
     
     private func populateDocument(url: URL, html: String) -> Bool {
@@ -114,6 +90,45 @@ actor HTMLParser {
         }
     }
     
+    private func populateDescription(document: Document) -> Void {
+        do {
+            let metaTags = try document.select("meta")
+            
+            for metaTag in metaTags {
+                let property = try metaTag.attr("property")
+                let name = try metaTag.attr("name")
+                
+                if property == "og:description" {
+                    self.ogDescription = try metaTag.attr("content")
+                } else if name == "description" {
+                    self.metaDescription = try metaTag.attr("content")
+                }
+            }
+        } catch {
+            logger.log("Cannot find any meta tags")
+        }
+    }
+    
+    private func populateBodyText(document: Document) -> Void {
+        do {
+            try document.select(HTMLParser.noiseSelector).remove()
+            
+            let candidates = try document.select(HTMLParser.contentSelector).map { try $0.text() }
+            
+            if let content = candidates.max(by: { $0.count < $1.count }), content.count >= HTMLParser.minimumContentLength {
+                self.bodyText = content
+            } else if let body = document.body() {
+                self.bodyText = try body.text()
+            } else {
+                logger.log("Cannot find a body tag")
+            }
+        } catch Exception.Error(let type, let message) {
+            logger.log("Caught an error: \(String(describing: type), privacy: .public) - \(String(describing: message), privacy: .public)")
+        } catch {
+            logger.log("Cannot extract the body text")
+        }
+    }
+    
     func parse(url: URL, html: String) async -> String? {
         if !populateDocument(url: url, html: html) {
             return nil
@@ -131,35 +146,34 @@ actor HTMLParser {
         return titleToUse
     }
     
-    private func findYouTubeTitle(_ youTubeUrl: URL, completionHandler: @escaping (_ result: YouTubeOEmbed) -> Void) {
-        guard
-            let escapedString = youTubeUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-            let url = URL(string: "https://www.youtube.com/oembed?url=\(escapedString)")
-        else {
-            logger.log("Check if url belongs to YouTube: \(youTubeUrl, privacy: .public)")
-            return
+    // Extracts the readable text of the page to feed a summarizer. Parses the html again
+    // rather than reusing any document left over from parse(url:html:), since the noise
+    // elements are stripped from the document in place.
+    func parseBodyText(url: URL, html: String) -> String? {
+        if !populateDocument(url: url, html: html) {
+            return nil
         }
         
-        logger.log("url = \(url, privacy: .public)")
-        
-        Task {
-            do {
-                let (data, response) = try await URLSession.shared.data(from: url)
-                self.logger.log("data = \(data, privacy: .public)")
-                
-                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                    let statusCode = (response as? HTTPURLResponse)!.statusCode
-                    self.logger.log("The status code was not between 200 and 299: \(statusCode, privacy: .public)")
-                    throw HTMLParserError.invalidServerResponse
-                }
-                
-                let youTubeOMebed = try JSONDecoder().decode(YouTubeOEmbed.self, from: data)
-                    
-                completionHandler(youTubeOMebed)
-            } catch {
-                self.logger.log("Error while finding youtube title for url=\(url): \(error.localizedDescription, privacy: .public)")
-            }
+        if let document = document {
+            populateBodyText(document: document)
         }
+        
+        return bodyText.isEmpty ? nil : bodyText
+    }
+    
+    // The description the page publishes about itself, used as a summary when the on-device model
+    // is unavailable or won't summarize the page.
+    func parseDescription(url: URL, html: String) -> String? {
+        if !populateDocument(url: url, html: html) {
+            return nil
+        }
+        
+        if let document = document {
+            populateDescription(document: document)
+        }
+        
+        let description = descriptionToUse.trimmingCharacters(in: .whitespacesAndNewlines)
+        return description.isEmpty ? nil : description
     }
     
     private func findTitle(youTubeUrl: URL) async throws -> String {

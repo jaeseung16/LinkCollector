@@ -51,7 +51,11 @@ struct LinkListView: View {
                         LinkLabel(link: link)
                     }
                 }
-                .onDelete(perform: removeLink)
+                .onDelete { indexSet in
+                    Task {
+                        await removeLink(indexSet: indexSet)
+                    }
+                }
             }
             #if canImport(UIKit)
             .listStyle(GroupedListStyle())
@@ -65,13 +69,23 @@ struct LinkListView: View {
                     } label: {
                         Label("Add", systemImage: "plus")
                     }
-                    .foregroundColor(Color.blue)
                     
                     Button  {
                         presentFilterItemsView = true
                     } label: {
                         Label("Filter", systemImage: "line.horizontal.3.decrease.circle")
                     }
+                    
+                    #if canImport(AppKit)
+                    // .refreshable below draws no affordance in an AppKit List, so macOS needs
+                    // an explicit control to fall back on.
+                    Button {
+                        viewModel.refresh()
+                    } label: {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                    }
+                    .keyboardShortcut("r")
+                    #endif
                     
                     ShareLink("Export Links", item: generateBookmarkFile())
                 }
@@ -106,7 +120,7 @@ struct LinkListView: View {
             }
             .searchable(text: $viewModel.searchString)
             .refreshable {
-                viewModel.fetchAll()
+                viewModel.refresh()
             }
             .onChange(of: viewModel.selected) {
                 selected = viewModel.selected
@@ -117,14 +131,14 @@ struct LinkListView: View {
         }
     }
     
-    private func removeLink(indexSet: IndexSet) -> Void {
+    private func removeLink(indexSet: IndexSet) async -> Void {
         for index in indexSet {
             let link = filteredLinks[index]
             viewModel.delete(link: link)
         }
         
         do {
-            try viewModel.save()
+            try await viewModel.save()
         } catch {
             message = "Failed to delete the selected link"
             showAlert = true
