@@ -505,3 +505,75 @@ that follows it, which still happens later. The 10s `showAlertAndTerminate()` fa
 now starts after the fetch instead of racing it.
 
 Verified: `** BUILD SUCCEEDED **` with zero warnings for macOS and the iOS simulator.
+
+---
+
+# Remaining work
+
+Neither is needed for build 57. Both came out of this investigation and are recorded here so
+they are not lost; the second is `2026.md`-sized and probably belongs there rather than here.
+
+## 1. Log CloudKit mirroring events
+
+Small, and cheap insurance.
+
+Nothing in this project observes `NSPersistentCloudKitContainer.eventChangedNotification`. That
+is why diagnosing the wedged store meant copying the sqlite file out of the extension's container
+and reading the `ANSCKEVENT` table by hand: every useful field in the CloudKit log lines is
+`<private>`, and the one error the extension did surface (`CKErrorDomain Code=2`) said nothing
+about which records failed or why.
+
+Observing the notification gives the same information the event table holds, in the app's own
+log, from a TestFlight build:
+
+```swift
+NotificationCenter.default
+    .publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
+    .compactMap { $0.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event }
+    .sink { event in
+        // event.type is .setup / .import / .export; also succeeded, startDate, endDate, error
+        logger.log("CloudKit \(event.type.rawValue, privacy: .public) succeeded=\(event.succeeded, privacy: .public) error=\(String(describing: event.error), privacy: .public)")
+    }
+```
+
+Best placed inside `Persistence` in the PersistenceSwift package, so the app, both share
+extensions and any future target get it without repeating themselves. Failing that,
+`LinkCollectorViewModel.init` alongside the existing `.NSPersistentStoreRemoteChange` sink, and
+each `ShareViewController`.
+
+Log the error with `privacy: .public` deliberately — the default redaction is exactly what made
+this hard. A `CKPartialErrors` payload names record IDs, so keep it to the error description
+rather than dumping the whole `userInfo`.
+
+## 2. One app-group store instead of three private mirrors
+
+The structural fix for the class of bug this session was about.
+
+Today the app and each share extension construct their own `Persistence`, each gets its own
+store in its own sandbox container, and they reach each other only through CloudKit. That is why
+the mac extension held a full ~17 MB duplicate of the library, why it could silently stop
+mirroring for four months, and why a link shared from the Mac had to make a CloudKit round trip
+before the app could see it.
+
+Pointing all three at a single store in the app group removes the second and third mirrors
+entirely: nothing to diverge, nothing to wedge, no duplicated copies, and a shared link is in the
+app's store the moment it is saved. It would also retire `handleRemoteChange()` and the 10-second
+"cannot confirm whether the post is saved" alert, which only exist because the extension has to
+wait for its own write to come back around through iCloud.
+
+What it needs:
+
+- The app-group entitlement on both extensions — done in `6c88ad2`.
+- A `Persistence` change to accept a store URL. `NSPersistentContainer.defaultDirectoryURL()` is
+  hardcoded in the package, and `HistoryToken` derives its `token.data` path from it too, so both
+  have to move together.
+- A one-time migration of the app's existing store into the group container
+  (`NSPersistentStoreCoordinator.replacePersistentStore(at:destinationOptions:withPersistentStoreFrom:sourceOptions:type:)`).
+  The CloudKit mirroring metadata lives inside the store file, so moving the file keeps the
+  mirroring intact — the app's store is the one to move, since it is the healthy one.
+- The extensions then need no store of their own at all, and the reset added in `9a11a33` can be
+  dropped once every user has passed through it.
+
+Multi-process access to one Core Data store in an app group is the ordinary supported pattern
+(it is what the widget's container is already used for), but it is a real change to how writes
+are coordinated and wants its own testing pass on both platforms.
